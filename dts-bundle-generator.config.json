@@ -1,0 +1,9 @@
+{
+    "entries": [
+        {
+            "filePath": "./dist/types/index.d.ts",
+            "outFile": "./dist/ndarray.d.ts",
+            "noCheck": true
+        }
+    ]
+}

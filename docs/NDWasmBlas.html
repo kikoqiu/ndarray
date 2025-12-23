@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>NDWasmBlas - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="NDArray.html">NDArray</a><ul class='methods'><li data-type='method'><a href="NDArray.html#abs">abs</a></li><li data-type='method'><a href="NDArray.html#add">add</a></li><li data-type='method'><a href="NDArray.html#all">all</a></li><li data-type='method'><a href="NDArray.html#any">any</a></li><li data-type='method'><a href="NDArray.html#argmax">argmax</a></li><li data-type='method'><a href="NDArray.html#argmin">argmin</a></li><li data-type='method'><a href="NDArray.html#argsort">argsort</a></li><li data-type='method'><a href="NDArray.html#asContiguous">asContiguous</a></li><li data-type='method'><a href="NDArray.html#bitwise_and">bitwise_and</a></li><li data-type='method'><a href="NDArray.html#bitwise_lshift">bitwise_lshift</a></li><li data-type='method'><a href="NDArray.html#bitwise_not">bitwise_not</a></li><li data-type='method'><a href="NDArray.html#bitwise_or">bitwise_or</a></li><li data-type='method'><a href="NDArray.html#bitwise_rshift">bitwise_rshift</a></li><li data-type='method'><a href="NDArray.html#bitwise_xor">bitwise_xor</a></li><li data-type='method'><a href="NDArray.html#ceil">ceil</a></li><li data-type='method'><a href="NDArray.html#cholesky">cholesky</a></li><li data-type='method'><a href="NDArray.html#colview">colview</a></li><li data-type='method'><a href="NDArray.html#cond">cond</a></li><li data-type='method'><a href="NDArray.html#conv2d">conv2d</a></li><li data-type='method'><a href="NDArray.html#copy">copy</a></li><li data-type='method'><a href="NDArray.html#correlate2d">correlate2d</a></li><li data-type='method'><a href="NDArray.html#cos">cos</a></li><li data-type='method'><a href="NDArray.html#cov">cov</a></li><li data-type='method'><a href="NDArray.html#cumprod">cumprod</a></li><li data-type='method'><a href="NDArray.html#dct">dct</a></li><li data-type='method'><a href="NDArray.html#div">div</a></li><li data-type='method'><a href="NDArray.html#eigen">eigen</a></li><li data-type='method'><a href="NDArray.html#eigenSym">eigenSym</a></li><li data-type='method'><a href="NDArray.html#eq">eq</a></li><li data-type='method'><a href="NDArray.html#exp">exp</a></li><li data-type='method'><a href="NDArray.html#fft">fft</a></li><li data-type='method'><a href="NDArray.html#fft2">fft2</a></li><li data-type='method'><a href="NDArray.html#filter">filter</a></li><li data-type='method'><a href="NDArray.html#flatten">flatten</a></li><li data-type='method'><a href="NDArray.html#floor">floor</a></li><li data-type='method'><a href="NDArray.html#ger">ger</a></li><li data-type='method'><a href="NDArray.html#get">get</a></li><li data-type='method'><a href="NDArray.html#gt">gt</a></li><li data-type='method'><a href="NDArray.html#gte">gte</a></li><li data-type='method'><a href="NDArray.html#iadd">iadd</a></li><li data-type='method'><a href="NDArray.html#idiv">idiv</a></li><li data-type='method'><a href="NDArray.html#ifft">ifft</a></li><li data-type='method'><a href="NDArray.html#ifft2">ifft2</a></li><li data-type='method'><a href="NDArray.html#imod">imod</a></li><li data-type='method'><a href="NDArray.html#imul">imul</a></li><li data-type='method'><a href="NDArray.html#inv">inv</a></li><li data-type='method'><a href="NDArray.html#ipow">ipow</a></li><li data-type='method'><a href="NDArray.html#isub">isub</a></li><li data-type='method'><a href="NDArray.html#iterate">iterate</a></li><li data-type='method'><a href="NDArray.html#kmeans">kmeans</a></li><li data-type='method'><a href="NDArray.html#kronecker">kronecker</a></li><li data-type='method'><a href="NDArray.html#log">log</a></li><li data-type='method'><a href="NDArray.html#logical_and">logical_and</a></li><li data-type='method'><a href="NDArray.html#logical_not">logical_not</a></li><li data-type='method'><a href="NDArray.html#logical_or">logical_or</a></li><li data-type='method'><a href="NDArray.html#lt">lt</a></li><li data-type='method'><a href="NDArray.html#lte">lte</a></li><li data-type='method'><a href="NDArray.html#lu">lu</a></li><li data-type='method'><a href="NDArray.html#map">map</a></li><li data-type='method'><a href="NDArray.html#matPow">matPow</a></li><li data-type='method'><a href="NDArray.html#matVecMul">matVecMul</a></li><li data-type='method'><a href="NDArray.html#matmul">matmul</a></li><li data-type='method'><a href="NDArray.html#matmulBatch">matmulBatch</a></li><li data-type='method'><a href="NDArray.html#max">max</a></li><li data-type='method'><a href="NDArray.html#mean">mean</a></li><li data-type='method'><a href="NDArray.html#min">min</a></li><li data-type='method'><a href="NDArray.html#mod">mod</a></li><li data-type='method'><a href="NDArray.html#mul">mul</a></li><li data-type='method'><a href="NDArray.html#neg">neg</a></li><li data-type='method'><a href="NDArray.html#neq">neq</a></li><li data-type='method'><a href="NDArray.html#norm">norm</a></li><li data-type='method'><a href="NDArray.html#pairwiseDist">pairwiseDist</a></li><li data-type='method'><a href="NDArray.html#pick">pick</a></li><li data-type='method'><a href="NDArray.html#pinv">pinv</a></li><li data-type='method'><a href="NDArray.html#pow">pow</a></li><li data-type='method'><a href="NDArray.html#push">push</a></li><li data-type='method'><a href="NDArray.html#qr">qr</a></li><li data-type='method'><a href="NDArray.html#rank">rank</a></li><li data-type='method'><a href="NDArray.html#reshape">reshape</a></li><li data-type='method'><a href="NDArray.html#rfft">rfft</a></li><li data-type='method'><a href="NDArray.html#rifft">rifft</a></li><li data-type='method'><a href="NDArray.html#round">round</a></li><li data-type='method'><a href="NDArray.html#rowview">rowview</a></li><li data-type='method'><a href="NDArray.html#set">set</a></li><li data-type='method'><a href="NDArray.html#sin">sin</a></li><li data-type='method'><a href="NDArray.html#slice">slice</a></li><li data-type='method'><a href="NDArray.html#solve">solve</a></li><li data-type='method'><a href="NDArray.html#sqrt">sqrt</a></li><li data-type='method'><a href="NDArray.html#squeeze">squeeze</a></li><li data-type='method'><a href="NDArray.html#std">std</a></li><li data-type='method'><a href="NDArray.html#sub">sub</a></li><li data-type='method'><a href="NDArray.html#sum">sum</a></li><li data-type='method'><a href="NDArray.html#svd">svd</a></li><li data-type='method'><a href="NDArray.html#syrk">syrk</a></li><li data-type='method'><a href="NDArray.html#tan">tan</a></li><li data-type='method'><a href="NDArray.html#toArray">toArray</a></li><li data-type='method'><a href="NDArray.html#toString">toString</a></li><li data-type='method'><a href="NDArray.html#toWasm">toWasm</a></li><li data-type='method'><a href="NDArray.html#topk">topk</a></li><li data-type='method'><a href="NDArray.html#trace">trace</a></li><li data-type='method'><a href="NDArray.html#transpose">transpose</a></li><li data-type='method'><a href="NDArray.html#var">var</a></li></ul></li><li><a href="NDWasmArray.html">NDWasmArray</a><ul class='methods'><li data-type='method'><a href="NDWasmArray.html#dispose">dispose</a></li><li data-type='method'><a href="NDWasmArray.html#matmul">matmul</a></li><li data-type='method'><a href="NDWasmArray.html#matmulBatch">matmulBatch</a></li><li data-type='method'><a href="NDWasmArray.html#pull">pull</a></li><li data-type='method'><a href="NDWasmArray.html#.fromArray">fromArray</a></li></ul></li><li><a href="WasmBuffer.html">WasmBuffer</a><ul class='methods'><li data-type='method'><a href="WasmBuffer.html#dispose">dispose</a></li><li data-type='method'><a href="WasmBuffer.html#pull">pull</a></li><li data-type='method'><a href="WasmBuffer.html#push">push</a></li><li data-type='method'><a href="WasmBuffer.html#refresh">refresh</a></li></ul></li><li><a href="WasmRuntime.html">WasmRuntime</a><ul class='methods'><li data-type='method'><a href="WasmRuntime.html#createBuffer">createBuffer</a></li><li data-type='method'><a href="WasmRuntime.html#init">init</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="NDProb.html">NDProb</a><ul class='methods'><li data-type='method'><a href="NDProb.html#.bernoulli">bernoulli</a></li><li data-type='method'><a href="NDProb.html#.exponential">exponential</a></li><li data-type='method'><a href="NDProb.html#.normal">normal</a></li><li data-type='method'><a href="NDProb.html#.poisson">poisson</a></li><li data-type='method'><a href="NDProb.html#.random">random</a></li></ul></li><li><a href="NDWasm.html">NDWasm</a><ul class='methods'><li data-type='method'><a href="NDWasm.html#._compute">_compute</a></li><li data-type='method'><a href="NDWasm.html#.bind">bind</a></li><li data-type='method'><a href="NDWasm.html#.init">init</a></li></ul></li><li><a href="NDWasmAnalysis.html">NDWasmAnalysis</a><ul class='methods'><li data-type='method'><a href="NDWasmAnalysis.html#.argsort">argsort</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.cond">cond</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.corr">corr</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.cov">cov</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.eigenSym">eigenSym</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.kmeans">kmeans</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.kronecker">kronecker</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.norm">norm</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.pairwiseDist">pairwiseDist</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.rank">rank</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.topk">topk</a></li></ul></li><li><a href="NDWasmBlas.html">NDWasmBlas</a><ul class='methods'><li data-type='method'><a href="NDWasmBlas.html#.ger">ger</a></li><li data-type='method'><a href="NDWasmBlas.html#.matPow">matPow</a></li><li data-type='method'><a href="NDWasmBlas.html#.matVecMul">matVecMul</a></li><li data-type='method'><a href="NDWasmBlas.html#.matmul">matmul</a></li><li data-type='method'><a href="NDWasmBlas.html#.matmulBatch">matmulBatch</a></li><li data-type='method'><a href="NDWasmBlas.html#.syrk">syrk</a></li><li data-type='method'><a href="NDWasmBlas.html#.trace">trace</a></li><li data-type='method'><a href="NDWasmBlas.html#.trsm">trsm</a></li></ul></li><li><a href="NDWasmDecomp.html">NDWasmDecomp</a><ul class='methods'><li data-type='method'><a href="NDWasmDecomp.html#.cholesky">cholesky</a></li><li data-type='method'><a href="NDWasmDecomp.html#.det">det</a></li><li data-type='method'><a href="NDWasmDecomp.html#.eigen">eigen</a></li><li data-type='method'><a href="NDWasmDecomp.html#.inv">inv</a></li><li data-type='method'><a href="NDWasmDecomp.html#.logDet">logDet</a></li><li data-type='method'><a href="NDWasmDecomp.html#.lu">lu</a></li><li data-type='method'><a href="NDWasmDecomp.html#.pinv">pinv</a></li><li data-type='method'><a href="NDWasmDecomp.html#.qr">qr</a></li><li data-type='method'><a href="NDWasmDecomp.html#.solve">solve</a></li><li data-type='method'><a href="NDWasmDecomp.html#.svd">svd</a></li></ul></li><li><a href="NDWasmImage.html">NDWasmImage</a><ul class='methods'><li data-type='method'><a href="NDWasmImage.html#.convertUint8ArrrayToDataurl">convertUint8ArrrayToDataurl</a></li><li data-type='method'><a href="NDWasmImage.html#.decode">decode</a></li><li data-type='method'><a href="NDWasmImage.html#.encode">encode</a></li><li data-type='method'><a href="NDWasmImage.html#.encodeJpeg">encodeJpeg</a></li><li data-type='method'><a href="NDWasmImage.html#.encodePng">encodePng</a></li></ul></li><li><a href="NDWasmOptimize.html">NDWasmOptimize</a><ul class='methods'><li data-type='method'><a href="NDWasmOptimize.html#.linearRegression">linearRegression</a></li><li data-type='method'><a href="NDWasmOptimize.html#.linprog">linprog</a></li><li data-type='method'><a href="NDWasmOptimize.html#.minimize">minimize</a></li></ul></li><li><a href="NDWasmSignal.html">NDWasmSignal</a><ul class='methods'><li data-type='method'><a href="NDWasmSignal.html#.conv2d">conv2d</a></li><li data-type='method'><a href="NDWasmSignal.html#.correlate2d">correlate2d</a></li><li data-type='method'><a href="NDWasmSignal.html#.dct">dct</a></li><li data-type='method'><a href="NDWasmSignal.html#.fft">fft</a></li><li data-type='method'><a href="NDWasmSignal.html#.fft2">fft2</a></li><li data-type='method'><a href="NDWasmSignal.html#.ifft">ifft</a></li><li data-type='method'><a href="NDWasmSignal.html#.ifft2">ifft2</a></li><li data-type='method'><a href="NDWasmSignal.html#.rfft">rfft</a></li><li data-type='method'><a href="NDWasmSignal.html#.rifft">rifft</a></li></ul></li><li><a href="help.html">help</a><ul class='methods'><li data-type='method'><a href="help.html#.getHelpDoc">getHelpDoc</a></li><li data-type='method'><a href="help.html#.helpdoc">helpdoc</a></li><li data-type='method'><a href="help.html#.helphtml">helphtml</a></li></ul></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-1-creation.html">1-creation</a></li><li><a href="tutorial-2-basic-operations.html">2-basic-operations</a></li><li><a href="tutorial-3-basic-indexing-slicing.html">3-basic-indexing-slicing</a></li><li><a href="tutorial-4-advanced-indexing-setting.html">4-advanced-indexing-setting</a></li><li><a href="tutorial-5-data-management.html">5-data-management</a></li><li><a href="tutorial-6-wasm-integration.html">6-wasm-integration</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DTYPE_MAP">DTYPE_MAP</a></li><li><a href="global.html#arange">arange</a></li><li><a href="global.html#array">array</a></li><li><a href="global.html#concat">concat</a></li><li><a href="global.html#eye">eye</a></li><li><a href="global.html#float32">float32</a></li><li><a href="global.html#float64">float64</a></li><li><a href="global.html#fromWasm">fromWasm</a></li><li><a href="global.html#full">full</a></li><li><a href="global.html#int16">int16</a></li><li><a href="global.html#int32">int32</a></li><li><a href="global.html#int8">int8</a></li><li><a href="global.html#linspace">linspace</a></li><li><a href="global.html#ones">ones</a></li><li><a href="global.html#stack">stack</a></li><li><a href="global.html#uint16">uint16</a></li><li><a href="global.html#uint32">uint32</a></li><li><a href="global.html#uint8">uint8</a></li><li><a href="global.html#uint8c">uint8c</a></li><li><a href="global.html#where">where</a></li><li><a href="global.html#zeros">zeros</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">NDWasmBlas</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        
+            Namespace
+        
+        </h2>
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+
+
+    
+
+    <h4 class="name" id="NDWasmBlas">NDWasmBlas</h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>NDWasmBlas: BLAS (Basic Linear Algebra Subprograms)
+Handles O(n^2) and O(n^3) matrix-matrix and matrix-vector operations.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ndwasm_blas.js.html">ndwasm_blas.js</a>, <a href="ndwasm_blas.js.html#line3">line 3</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id=".ger"><span class="type-signature type-signature-static">(static) </span>ger<span class="signature">(x, y)</span><span class="type-signature"> &rarr; {<a href="NDArray.html">NDArray</a>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Vector Outer Product (Rank-1 Update): A = x * y^T.
+Complexity: O(m * n)</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ndwasm_blas.js.html">ndwasm_blas.js</a>, <a href="ndwasm_blas.js.html#line200">line 200</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="NDArray.html">NDArray</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Vector of shape [m].</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>y</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="NDArray.html">NDArray</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Vector of shape [n].</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Result matrix of shape [m, n].</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="NDArray.html">NDArray</a></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".matPow"><span class="type-signature type-signature-static">(static) </span>matPow<span class="signature">(a)</span><span class="type-signature"> &rarr; {<a href="NDArray.html">NDArray</a>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>matPow computes A^k (Matrix Power).
+Matrix Functions (O(n^3))</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ndwasm_blas.js.html">ndwasm_blas.js</a>, <a href="ndwasm_blas.js.html#line81">line 81</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="NDArray.html">NDArray</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Matrix of shape [n, n].</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Result matrix of shape [n, n].</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="NDArray.html">NDArray</a></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".matVecMul"><span class="type-signature type-signature-static">(static) </span>matVecMul<span class="signature">(a, x)</span><span class="type-signature"> &rarr; {<a href="NDArray.html">NDArray</a>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Matrix-Vector Multiplication: y = A * x.
+Complexity: O(m * n)</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ndwasm_blas.js.html">ndwasm_blas.js</a>, <a href="ndwasm_blas.js.html#line179">line 179</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="NDArray.html">NDArray</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Matrix of shape [m, n].</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="NDArray.html">NDArray</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Vector of shape [n].</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Result vector of shape [m].</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="NDArray.html">NDArray</a></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".matmul"><span class="type-signature type-signature-static">(static) </span>matmul<span class="signature">(a, b)</span><span class="type-signature"> &rarr; {<a href="NDArray.html">NDArray</a>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>General Matrix Multiplication (GEMM): C = A * B.
+Complexity: O(m * n * k)</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ndwasm_blas.js.html">ndwasm_blas.js</a>, <a href="ndwasm_blas.js.html#line56">line 56</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="NDArray.html">NDArray</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Left matrix of shape [m, n].</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>b</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="NDArray.html">NDArray</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Right matrix of shape [n, k].</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Result matrix of shape [m, k].</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="NDArray.html">NDArray</a></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".matmulBatch"><span class="type-signature type-signature-static">(static) </span>matmulBatch<span class="signature">(a, b)</span><span class="type-signature"> &rarr; {<a href="NDArray.html">NDArray</a>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Batched Matrix Multiplication: C[i] = A[i] * B[i].
+Common in deep learning inference.
+Complexity: O(batch * m * n * k)</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ndwasm_blas.js.html">ndwasm_blas.js</a>, <a href="ndwasm_blas.js.html#line104">line 104</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="NDArray.html">NDArray</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Batch of matrices of shape [batch, m, n].</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>b</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="NDArray.html">NDArray</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Batch of matrices of shape [batch, n, k].</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Result batch of shape [batch, m, k].</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="NDArray.html">NDArray</a></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".syrk"><span class="type-signature type-signature-static">(static) </span>syrk<span class="signature">(a)</span><span class="type-signature"> &rarr; {<a href="NDArray.html">NDArray</a>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Symmetric Rank-K Update: C = alpha * A * A^T + beta * C.
+Used for efficiently computing covariance matrices or Gram matrices.
+Complexity: O(n^2 * k)</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ndwasm_blas.js.html">ndwasm_blas.js</a>, <a href="ndwasm_blas.js.html#line131">line 131</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="NDArray.html">NDArray</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Input matrix of shape [n, k].</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Symmetric result matrix of shape [n, n].</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="NDArray.html">NDArray</a></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".trace"><span class="type-signature type-signature-static">(static) </span>trace<span class="signature">(a)</span><span class="type-signature"> &rarr; {number}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Calculates the trace of a 2D square matrix (sum of diagonal elements).
+Complexity: O(n)</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ndwasm_blas.js.html">ndwasm_blas.js</a>, <a href="ndwasm_blas.js.html#line17">line 17</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="NDArray.html">NDArray</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-throws">Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc usertext">
+        <p>If the array is not 2D or not a square matrix.</p>
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl class="param-type">
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">Error</span>
+
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>The sum of the diagonal elements.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".trsm"><span class="type-signature type-signature-static">(static) </span>trsm<span class="signature">(a, b)</span><span class="type-signature"> &rarr; {<a href="NDArray.html">NDArray</a>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Triangular System Solver: Solves A * X = B for X, where A is a triangular matrix.
+Complexity: O(m^2 * n)</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ndwasm_blas.js.html">ndwasm_blas.js</a>, <a href="ndwasm_blas.js.html#line150">line 150</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="NDArray.html">NDArray</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Triangular matrix of shape [m, m].</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>b</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="NDArray.html">NDArray</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Right-hand side matrix/vector of shape [m, n].</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Solution matrix X of shape [m, n].</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="NDArray.html">NDArray</a></span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Sat Jan 10 2026 22:03:26 GMT+0800 (中国标准时间) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

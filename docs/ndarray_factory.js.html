@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>ndarray_factory.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="NDArray.html">NDArray</a><ul class='methods'><li data-type='method'><a href="NDArray.html#abs">abs</a></li><li data-type='method'><a href="NDArray.html#add">add</a></li><li data-type='method'><a href="NDArray.html#all">all</a></li><li data-type='method'><a href="NDArray.html#any">any</a></li><li data-type='method'><a href="NDArray.html#argmax">argmax</a></li><li data-type='method'><a href="NDArray.html#argmin">argmin</a></li><li data-type='method'><a href="NDArray.html#argsort">argsort</a></li><li data-type='method'><a href="NDArray.html#asContiguous">asContiguous</a></li><li data-type='method'><a href="NDArray.html#bitwise_and">bitwise_and</a></li><li data-type='method'><a href="NDArray.html#bitwise_lshift">bitwise_lshift</a></li><li data-type='method'><a href="NDArray.html#bitwise_not">bitwise_not</a></li><li data-type='method'><a href="NDArray.html#bitwise_or">bitwise_or</a></li><li data-type='method'><a href="NDArray.html#bitwise_rshift">bitwise_rshift</a></li><li data-type='method'><a href="NDArray.html#bitwise_xor">bitwise_xor</a></li><li data-type='method'><a href="NDArray.html#ceil">ceil</a></li><li data-type='method'><a href="NDArray.html#cholesky">cholesky</a></li><li data-type='method'><a href="NDArray.html#colview">colview</a></li><li data-type='method'><a href="NDArray.html#cond">cond</a></li><li data-type='method'><a href="NDArray.html#conv2d">conv2d</a></li><li data-type='method'><a href="NDArray.html#copy">copy</a></li><li data-type='method'><a href="NDArray.html#correlate2d">correlate2d</a></li><li data-type='method'><a href="NDArray.html#cos">cos</a></li><li data-type='method'><a href="NDArray.html#cov">cov</a></li><li data-type='method'><a href="NDArray.html#cumprod">cumprod</a></li><li data-type='method'><a href="NDArray.html#dct">dct</a></li><li data-type='method'><a href="NDArray.html#div">div</a></li><li data-type='method'><a href="NDArray.html#eigen">eigen</a></li><li data-type='method'><a href="NDArray.html#eigenSym">eigenSym</a></li><li data-type='method'><a href="NDArray.html#eq">eq</a></li><li data-type='method'><a href="NDArray.html#exp">exp</a></li><li data-type='method'><a href="NDArray.html#fft">fft</a></li><li data-type='method'><a href="NDArray.html#fft2">fft2</a></li><li data-type='method'><a href="NDArray.html#filter">filter</a></li><li data-type='method'><a href="NDArray.html#flatten">flatten</a></li><li data-type='method'><a href="NDArray.html#floor">floor</a></li><li data-type='method'><a href="NDArray.html#ger">ger</a></li><li data-type='method'><a href="NDArray.html#get">get</a></li><li data-type='method'><a href="NDArray.html#gt">gt</a></li><li data-type='method'><a href="NDArray.html#gte">gte</a></li><li data-type='method'><a href="NDArray.html#iadd">iadd</a></li><li data-type='method'><a href="NDArray.html#idiv">idiv</a></li><li data-type='method'><a href="NDArray.html#ifft">ifft</a></li><li data-type='method'><a href="NDArray.html#ifft2">ifft2</a></li><li data-type='method'><a href="NDArray.html#imod">imod</a></li><li data-type='method'><a href="NDArray.html#imul">imul</a></li><li data-type='method'><a href="NDArray.html#inv">inv</a></li><li data-type='method'><a href="NDArray.html#ipow">ipow</a></li><li data-type='method'><a href="NDArray.html#isub">isub</a></li><li data-type='method'><a href="NDArray.html#iterate">iterate</a></li><li data-type='method'><a href="NDArray.html#kmeans">kmeans</a></li><li data-type='method'><a href="NDArray.html#kronecker">kronecker</a></li><li data-type='method'><a href="NDArray.html#log">log</a></li><li data-type='method'><a href="NDArray.html#logical_and">logical_and</a></li><li data-type='method'><a href="NDArray.html#logical_not">logical_not</a></li><li data-type='method'><a href="NDArray.html#logical_or">logical_or</a></li><li data-type='method'><a href="NDArray.html#lt">lt</a></li><li data-type='method'><a href="NDArray.html#lte">lte</a></li><li data-type='method'><a href="NDArray.html#lu">lu</a></li><li data-type='method'><a href="NDArray.html#map">map</a></li><li data-type='method'><a href="NDArray.html#matPow">matPow</a></li><li data-type='method'><a href="NDArray.html#matVecMul">matVecMul</a></li><li data-type='method'><a href="NDArray.html#matmul">matmul</a></li><li data-type='method'><a href="NDArray.html#matmulBatch">matmulBatch</a></li><li data-type='method'><a href="NDArray.html#max">max</a></li><li data-type='method'><a href="NDArray.html#mean">mean</a></li><li data-type='method'><a href="NDArray.html#min">min</a></li><li data-type='method'><a href="NDArray.html#mod">mod</a></li><li data-type='method'><a href="NDArray.html#mul">mul</a></li><li data-type='method'><a href="NDArray.html#neg">neg</a></li><li data-type='method'><a href="NDArray.html#neq">neq</a></li><li data-type='method'><a href="NDArray.html#norm">norm</a></li><li data-type='method'><a href="NDArray.html#pairwiseDist">pairwiseDist</a></li><li data-type='method'><a href="NDArray.html#pick">pick</a></li><li data-type='method'><a href="NDArray.html#pinv">pinv</a></li><li data-type='method'><a href="NDArray.html#pow">pow</a></li><li data-type='method'><a href="NDArray.html#push">push</a></li><li data-type='method'><a href="NDArray.html#qr">qr</a></li><li data-type='method'><a href="NDArray.html#rank">rank</a></li><li data-type='method'><a href="NDArray.html#reshape">reshape</a></li><li data-type='method'><a href="NDArray.html#rfft">rfft</a></li><li data-type='method'><a href="NDArray.html#rifft">rifft</a></li><li data-type='method'><a href="NDArray.html#round">round</a></li><li data-type='method'><a href="NDArray.html#rowview">rowview</a></li><li data-type='method'><a href="NDArray.html#set">set</a></li><li data-type='method'><a href="NDArray.html#sin">sin</a></li><li data-type='method'><a href="NDArray.html#slice">slice</a></li><li data-type='method'><a href="NDArray.html#solve">solve</a></li><li data-type='method'><a href="NDArray.html#sqrt">sqrt</a></li><li data-type='method'><a href="NDArray.html#squeeze">squeeze</a></li><li data-type='method'><a href="NDArray.html#std">std</a></li><li data-type='method'><a href="NDArray.html#sub">sub</a></li><li data-type='method'><a href="NDArray.html#sum">sum</a></li><li data-type='method'><a href="NDArray.html#svd">svd</a></li><li data-type='method'><a href="NDArray.html#syrk">syrk</a></li><li data-type='method'><a href="NDArray.html#tan">tan</a></li><li data-type='method'><a href="NDArray.html#toArray">toArray</a></li><li data-type='method'><a href="NDArray.html#toString">toString</a></li><li data-type='method'><a href="NDArray.html#toWasm">toWasm</a></li><li data-type='method'><a href="NDArray.html#topk">topk</a></li><li data-type='method'><a href="NDArray.html#trace">trace</a></li><li data-type='method'><a href="NDArray.html#transpose">transpose</a></li><li data-type='method'><a href="NDArray.html#var">var</a></li></ul></li><li><a href="NDWasmArray.html">NDWasmArray</a><ul class='methods'><li data-type='method'><a href="NDWasmArray.html#dispose">dispose</a></li><li data-type='method'><a href="NDWasmArray.html#matmul">matmul</a></li><li data-type='method'><a href="NDWasmArray.html#matmulBatch">matmulBatch</a></li><li data-type='method'><a href="NDWasmArray.html#pull">pull</a></li><li data-type='method'><a href="NDWasmArray.html#.fromArray">fromArray</a></li></ul></li><li><a href="WasmBuffer.html">WasmBuffer</a><ul class='methods'><li data-type='method'><a href="WasmBuffer.html#dispose">dispose</a></li><li data-type='method'><a href="WasmBuffer.html#pull">pull</a></li><li data-type='method'><a href="WasmBuffer.html#push">push</a></li><li data-type='method'><a href="WasmBuffer.html#refresh">refresh</a></li></ul></li><li><a href="WasmRuntime.html">WasmRuntime</a><ul class='methods'><li data-type='method'><a href="WasmRuntime.html#createBuffer">createBuffer</a></li><li data-type='method'><a href="WasmRuntime.html#init">init</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="NDProb.html">NDProb</a><ul class='methods'><li data-type='method'><a href="NDProb.html#.bernoulli">bernoulli</a></li><li data-type='method'><a href="NDProb.html#.exponential">exponential</a></li><li data-type='method'><a href="NDProb.html#.normal">normal</a></li><li data-type='method'><a href="NDProb.html#.poisson">poisson</a></li><li data-type='method'><a href="NDProb.html#.random">random</a></li></ul></li><li><a href="NDWasm.html">NDWasm</a><ul class='methods'><li data-type='method'><a href="NDWasm.html#._compute">_compute</a></li><li data-type='method'><a href="NDWasm.html#.bind">bind</a></li><li data-type='method'><a href="NDWasm.html#.init">init</a></li></ul></li><li><a href="NDWasmAnalysis.html">NDWasmAnalysis</a><ul class='methods'><li data-type='method'><a href="NDWasmAnalysis.html#.argsort">argsort</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.cond">cond</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.corr">corr</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.cov">cov</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.eigenSym">eigenSym</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.kmeans">kmeans</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.kronecker">kronecker</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.norm">norm</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.pairwiseDist">pairwiseDist</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.rank">rank</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.topk">topk</a></li></ul></li><li><a href="NDWasmBlas.html">NDWasmBlas</a><ul class='methods'><li data-type='method'><a href="NDWasmBlas.html#.ger">ger</a></li><li data-type='method'><a href="NDWasmBlas.html#.matPow">matPow</a></li><li data-type='method'><a href="NDWasmBlas.html#.matVecMul">matVecMul</a></li><li data-type='method'><a href="NDWasmBlas.html#.matmul">matmul</a></li><li data-type='method'><a href="NDWasmBlas.html#.matmulBatch">matmulBatch</a></li><li data-type='method'><a href="NDWasmBlas.html#.syrk">syrk</a></li><li data-type='method'><a href="NDWasmBlas.html#.trace">trace</a></li><li data-type='method'><a href="NDWasmBlas.html#.trsm">trsm</a></li></ul></li><li><a href="NDWasmDecomp.html">NDWasmDecomp</a><ul class='methods'><li data-type='method'><a href="NDWasmDecomp.html#.cholesky">cholesky</a></li><li data-type='method'><a href="NDWasmDecomp.html#.det">det</a></li><li data-type='method'><a href="NDWasmDecomp.html#.eigen">eigen</a></li><li data-type='method'><a href="NDWasmDecomp.html#.inv">inv</a></li><li data-type='method'><a href="NDWasmDecomp.html#.logDet">logDet</a></li><li data-type='method'><a href="NDWasmDecomp.html#.lu">lu</a></li><li data-type='method'><a href="NDWasmDecomp.html#.pinv">pinv</a></li><li data-type='method'><a href="NDWasmDecomp.html#.qr">qr</a></li><li data-type='method'><a href="NDWasmDecomp.html#.solve">solve</a></li><li data-type='method'><a href="NDWasmDecomp.html#.svd">svd</a></li></ul></li><li><a href="NDWasmImage.html">NDWasmImage</a><ul class='methods'><li data-type='method'><a href="NDWasmImage.html#.convertUint8ArrrayToDataurl">convertUint8ArrrayToDataurl</a></li><li data-type='method'><a href="NDWasmImage.html#.decode">decode</a></li><li data-type='method'><a href="NDWasmImage.html#.encode">encode</a></li><li data-type='method'><a href="NDWasmImage.html#.encodeJpeg">encodeJpeg</a></li><li data-type='method'><a href="NDWasmImage.html#.encodePng">encodePng</a></li></ul></li><li><a href="NDWasmOptimize.html">NDWasmOptimize</a><ul class='methods'><li data-type='method'><a href="NDWasmOptimize.html#.linearRegression">linearRegression</a></li><li data-type='method'><a href="NDWasmOptimize.html#.linprog">linprog</a></li><li data-type='method'><a href="NDWasmOptimize.html#.minimize">minimize</a></li></ul></li><li><a href="NDWasmSignal.html">NDWasmSignal</a><ul class='methods'><li data-type='method'><a href="NDWasmSignal.html#.conv2d">conv2d</a></li><li data-type='method'><a href="NDWasmSignal.html#.correlate2d">correlate2d</a></li><li data-type='method'><a href="NDWasmSignal.html#.dct">dct</a></li><li data-type='method'><a href="NDWasmSignal.html#.fft">fft</a></li><li data-type='method'><a href="NDWasmSignal.html#.fft2">fft2</a></li><li data-type='method'><a href="NDWasmSignal.html#.ifft">ifft</a></li><li data-type='method'><a href="NDWasmSignal.html#.ifft2">ifft2</a></li><li data-type='method'><a href="NDWasmSignal.html#.rfft">rfft</a></li><li data-type='method'><a href="NDWasmSignal.html#.rifft">rifft</a></li></ul></li><li><a href="help.html">help</a><ul class='methods'><li data-type='method'><a href="help.html#.getHelpDoc">getHelpDoc</a></li><li data-type='method'><a href="help.html#.helpdoc">helpdoc</a></li><li data-type='method'><a href="help.html#.helphtml">helphtml</a></li></ul></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-1-creation.html">1-creation</a></li><li><a href="tutorial-2-basic-operations.html">2-basic-operations</a></li><li><a href="tutorial-3-basic-indexing-slicing.html">3-basic-indexing-slicing</a></li><li><a href="tutorial-4-advanced-indexing-setting.html">4-advanced-indexing-setting</a></li><li><a href="tutorial-5-data-management.html">5-data-management</a></li><li><a href="tutorial-6-wasm-integration.html">6-wasm-integration</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DTYPE_MAP">DTYPE_MAP</a></li><li><a href="global.html#arange">arange</a></li><li><a href="global.html#array">array</a></li><li><a href="global.html#concat">concat</a></li><li><a href="global.html#eye">eye</a></li><li><a href="global.html#float32">float32</a></li><li><a href="global.html#float64">float64</a></li><li><a href="global.html#fromWasm">fromWasm</a></li><li><a href="global.html#full">full</a></li><li><a href="global.html#int16">int16</a></li><li><a href="global.html#int32">int32</a></li><li><a href="global.html#int8">int8</a></li><li><a href="global.html#linspace">linspace</a></li><li><a href="global.html#ones">ones</a></li><li><a href="global.html#stack">stack</a></li><li><a href="global.html#uint16">uint16</a></li><li><a href="global.html#uint32">uint32</a></li><li><a href="global.html#uint8">uint8</a></li><li><a href="global.html#uint8c">uint8c</a></li><li><a href="global.html#where">where</a></li><li><a href="global.html#zeros">zeros</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">ndarray_factory.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// --- factory functions ---
+import { NDArray, DTYPE_MAP } from './ndarray_core.js';
+
+/**
+ * Creates an NDArray from a regular array or TypedArray.
+ * @param {Array|TypedArray} source - The source data.
+ * @param {string} [dtype='float64'] - The desired data type.
+ * @return {NDArray}
+ */
+export function array(source, dtype = 'float64') {
+    const Ctor = DTYPE_MAP[dtype] || Float64Array;
+    const isTyped = (v) => ArrayBuffer.isView(v) &amp;&amp; !(v instanceof DataView);
+
+    // 1. Shape Inference &amp; Strict Validation
+    const getShape = (v) => {
+        if (isTyped(v)) return [v.length];
+        if (!Array.isArray(v)) return []; // Scalar
+        if (v.length === 0) throw new Error("Input array cannot be empty.");
+
+        const sub = getShape(v[0]);
+        const subStr = sub.join(',');
+        
+        for (let i = 1; i &lt; v.length; i++) {
+            if (getShape(v[i]).join(',') !== subStr) {
+                throw new Error(`Jagged array detected at index ${i}.`);
+            }
+        }
+        return [v.length, ...sub];
+    };
+
+    const shape = getShape(source);
+    const size = shape.reduce((a, b) => a * b, 1);
+    const data = new Ctor(size);
+
+    // 2. Fill Data
+    // Special handling for scalar (0-dim) to avoid logic complexity in loop
+    if (shape.length === 0) {
+        data[0] = source;
+    } else {
+        let offset = 0;
+        const lastDim = shape.length - 1; // The index of the innermost dimension
+
+        const fill = (v, dim) => {
+            if (dim === lastDim) {
+                // Optimization: We are at the bottom level.
+                // v is guaranteed to be an Array-like (JS Array or TypedArray)
+                // data.set is the fastest way to copy a block of memory.
+                data.set(v, offset);
+                offset += v.length;
+            } else {
+                // We are not at the bottom. v is guaranteed to be an Array.
+                // Recurse deeper.
+                for (let i = 0; i &lt; v.length; i++) {
+                    fill(v[i], dim + 1);
+                }
+            }
+        };
+        fill(source, 0);
+    }
+
+    return new NDArray(data, { shape, dtype });
+}
+
+/**
+ * Creates an NDArray from a regular array or TypedArray.
+ * @param {Array|TypedArray} source - The source data.
+ * @return {NDArray}
+ */
+export function float64(source){
+    return array(source,"float64");
+}
+/**
+ * Creates an NDArray from a regular array or TypedArray.
+ * @param {Array|TypedArray} source - The source data.
+ * @return {NDArray}
+ */
+export function float32(source){
+    return array(source,"float32");
+}
+/**
+ * Creates an NDArray from a regular array or TypedArray.
+ * @param {Array|TypedArray} source - The source data.
+ * @return {NDArray}
+ */
+export function uint32(source){
+    return array(source,"uint32");
+}
+/**
+ * Creates an NDArray from a regular array or TypedArray.
+ * @param {Array|TypedArray} source - The source data.
+ * @return {NDArray}
+ */
+export function int32(source){
+    return array(source,"int32");
+}
+/**
+ * Creates an NDArray from a regular array or TypedArray.
+ * @param {Array|TypedArray} source - The source data.
+ * @return {NDArray}
+ */
+export function int16(source){
+    return array(source,"int16");
+}
+/**
+ * Creates an NDArray from a regular array or TypedArray.
+ * @param {Array|TypedArray} source - The source data.
+ * @return {NDArray}
+ */
+export function uint16(source){
+    return array(source,"uint16");
+}
+/**
+ * Creates an NDArray from a regular array or TypedArray.
+ * @param {Array|TypedArray} source - The source data.
+ * @return {NDArray}
+ */
+export function int8(source){
+    return array(source,"int8");
+}
+/**
+ * Creates an NDArray from a regular array or TypedArray.
+ * @param {Array|TypedArray} source - The source data.
+ * @return {NDArray}
+ */
+export function uint8(source){
+    return array(source,"uint8");
+}
+/**
+ * Creates an NDArray from a regular array or TypedArray.
+ * @param {Array|TypedArray} source - The source data.
+ * @return {NDArray}
+ */
+export function uint8c(source){
+    return array(source,"uint8c");
+}
+
+/**
+ * Creates a new NDArray of the given shape, filled with zeros.
+ * @param {Array&lt;number>} shape - The shape of the new array.
+ * @param {string} [dtype='float64'] - The data type of the new array.
+ * @returns {NDArray}
+ */
+export function zeros(shape, dtype = 'float64') {
+    const size = shape.reduce((a, b) => a * b, 1);
+    const Constructor = DTYPE_MAP[dtype];
+    return new NDArray(new Constructor(size), { shape, dtype });
+}
+
+/**
+ * Creates a new NDArray of the given shape, filled with ones.
+ * @param {Array&lt;number>} shape - The shape of the new array.
+ * @param {string} [dtype='float64'] - The data type of the new array.
+ * @returns {NDArray}
+ */
+export function ones(shape, dtype = 'float64') {
+    const arr = zeros(shape, dtype);
+    arr.data.fill(1);
+    return arr;
+}
+
+/**
+ * Creates a new NDArray of the given shape, filled with a specified value.
+ * @param {Array&lt;number>} shape - The shape of the new array.
+ * @param {*} value - The value to fill the array with.
+ * @param {string} [dtype='float64'] - The data type of the new array.
+ * @returns {NDArray}
+ */
+export function full(shape, value, dtype = 'float64') {
+    const arr = zeros(shape, dtype);
+    arr.data.fill(value);
+    return arr;
+}
+
+/**
+ * Like Python's arange: [start, stop)
+ * @param {number} start
+ * @param {number | null} stop
+ * @param {number | null} step
+ * @param {string} dtype
+ */
+export function arange(start, stop = null, step = 1, dtype = 'float64') {
+    if (stop === null) {
+        stop = start;
+        start = 0;
+    }
+    const size = Math.ceil((stop - start) / step);
+    const Constructor = DTYPE_MAP[dtype];
+    const data = new Constructor(size);
+    for (let i = 0; i &lt; size; i++) {
+        data[i] = start + i * step;
+    }
+    return new NDArray(data, { shape: [size], dtype });
+}
+
+/**
+ * Linearly spaced points.
+ * @param {number} start
+ * @param {number | null} stop
+ * @param {number} num
+ * @param {string} dtype
+ * @returns {NDArray}
+ */
+export function linspace(start, stop, num = 50, dtype = 'float64') {
+    const step = (stop - start) / (num - 1);
+    const Constructor = DTYPE_MAP[dtype];
+    const data = new Constructor(num);
+    for (let i = 0; i &lt; num; i++) {
+        data[i] = start + i * step;
+    }
+    return new NDArray(data, { shape: [num], dtype });
+}
+
+
+/**
+ * where(condition, x, y)
+ * Returns a new array with elements chosen from x or y depending on condition.
+ * Supports NumPy-style broadcasting across all three arguments, including 0-sized dimensions.
+ * 
+ * @param {NDArray|Array|number} condition - Where True, yield x, otherwise yield y.
+ * @param {NDArray|Array|number} x - Values from which to choose if condition is True.
+ * @param {NDArray|Array|number} y - Values from which to choose if condition is False.
+ * @returns {NDArray} A new contiguous NDArray.
+ */
+export function where(condition, x, y) {
+    // 1. Standardize inputs to NDArray
+    const toNDArray = (val, defaultDtype = 'float64') => {
+        return (val instanceof NDArray) ? val : array(val, defaultDtype);
+    };
+
+    const cond = toNDArray(condition, 'int8');
+
+    const dtypes = [(x instanceof NDArray)?x.dtype:null , (y instanceof NDArray)?y.dtype:null];
+    let dtype = null;
+    for(let i of dtypes){
+        if(dtype === null){
+            dtype = i;
+        }else if(dtype !== i &amp;&amp; i !== null){
+            throw new Error(`dtype is different ${dtype} ${i}`);
+        }
+    }
+    if(dtype===null){
+        dtype="float64";
+    }
+    const xArr = toNDArray(x, dtype);
+    const yArr = toNDArray(y, dtype);
+
+    // 2. Determine output shape using strict NumPy broadcasting rules
+    const outNdim = Math.max(cond.ndim, xArr.ndim, yArr.ndim);
+    const outShape = new Int32Array(outNdim);
+
+    for (let i = 1; i &lt;= outNdim; i++) {
+        // Dimension sizes from the right (defaulting to 1 for missing dimensions)
+        const dC = (cond.ndim - i >= 0) ? cond.shape[cond.ndim - i] : 1;
+        const dX = (xArr.ndim - i >= 0) ? xArr.shape[xArr.ndim - i] : 1;
+        const dY = (yArr.ndim - i >= 0) ? yArr.shape[yArr.ndim - i] : 1;
+
+        // Broadcasting logic: 
+        // A dimension is compatible if all values are equal, or if some are 1.
+        let maxDim = 1;
+        const dims = [dC, dX, dY];
+        for (let j = 0; j &lt; 3; j++) {
+            const d = dims[j];
+            if (d !== 1) {
+                if (maxDim !== 1 &amp;&amp; maxDim !== d) {
+                    throw new Error(`Incompatible shapes for where: condition [${cond.shape}], x [${xArr.shape}], y [${yArr.shape}]`);
+                }
+                maxDim = d;
+            }
+        }
+        outShape[outNdim - i] = maxDim;
+    }
+
+    // 3. Prepare traversal metadata
+    // reduce returns 1 for outNdim == 0 (scalars) and 0 if any dim is 0.
+    const outSize = outShape.reduce((a, b) => a * b, 1);
+    
+    const sC = new Int32Array(outNdim);
+    const sX = new Int32Array(outNdim);
+    const sY = new Int32Array(outNdim);
+    const wrapC = new Float64Array(outNdim);
+    const wrapX = new Float64Array(outNdim);
+    const wrapY = new Float64Array(outNdim);
+
+    for (let i = 0; i &lt; outNdim; i++) {
+        const dim = outShape[i];
+        const axisFromRight = outNdim - i;
+
+        const getStride = (arr, axisRight) => {
+            const axis = arr.ndim - axisRight;
+            // Broadcast (stride 0) if dimension is missing (axis &lt; 0) or size is 1
+            if (axis &lt; 0 || arr.shape[axis] === 1) return 0;
+            return arr.strides[axis];
+        };
+
+        sC[i] = getStride(cond, axisFromRight);
+        sX[i] = getStride(xArr, axisFromRight);
+        sY[i] = getStride(yArr, axisFromRight);
+
+        // wrapBack is the distance to jump from the last element back to the first in a dimension
+        wrapC[i] = (dim - 1) * sC[i];
+        wrapX[i] = (dim - 1) * sX[i];
+        wrapY[i] = (dim - 1) * sY[i];
+    }
+
+    // 4. Execution Engine
+    const Constructor = DTYPE_MAP[xArr.dtype] || Float64Array;
+    const newData = new Constructor(outSize);
+    const currentIdx = new Int32Array(outNdim);
+    
+    let pC = cond.offset;
+    let pX = xArr.offset;
+    let pY = yArr.offset;
+
+    const dataC = cond.data;
+    const dataX = xArr.data;
+    const dataY = yArr.data;
+
+    // Loop runs outSize times. If outSize is 0, it doesn't run at all.
+    // If outSize is 1 (0D scalar), it runs exactly once.
+    for (let i = 0; i &lt; outSize; i++) {
+        // Core ternary selection
+        newData[i] = dataC[pC] ? dataX[pX] : dataY[pY];
+
+        // Odometer increment with manual pointer updates
+        for (let d = outNdim - 1; d >= 0; d--) {
+            if (++currentIdx[d] &lt; outShape[d]) {
+                pC += sC[d];
+                pX += sX[d];
+                pY += sY[d];
+                break;
+            } else {
+                currentIdx[d] = 0;
+                pC -= wrapC[d];
+                pX -= wrapX[d];
+                pY -= wrapY[d];
+            }
+        }
+    }
+
+    return new NDArray(newData, { 
+        shape: outShape, 
+        dtype: xArr.dtype 
+    });
+};
+
+
+
+/**
+ * Joins a sequence of arrays along an existing axis.
+ * @param {Array&lt;NDArray>} arrays The arrays must have the same shape, except in the dimension corresponding to `axis`.
+ * @param {number} [axis=0] The axis along which the arrays will be joined.
+ * @returns {NDArray} A new NDArray.
+ */
+export function concat(arrays, axis = 0) {
+    if (!arrays || arrays.length === 0) {
+        throw new Error('Array list cannot be empty.');
+    }
+
+    if (arrays.length === 1) {
+        return arrays[0].copy(); // .copy() is available in this file.
+    }
+
+    const firstArr = arrays[0];
+    const { dtype, ndim } = firstArr;
+
+    // --- Validation and Metadata ---
+    if (ndim === 0) {
+        if (!arrays.every(arr => arr.ndim === 0)) {
+            throw new Error('All arrays must be scalars to concatenate with a scalar.');
+        }
+        const newData = new (DTYPE_MAP[dtype])(arrays.length);
+        for (let i = 0; i &lt; arrays.length; i++) {
+            newData[i] = arrays[i].data[arrays[i].offset];
+        }
+        return new NDArray(newData, { shape: [arrays.length], dtype });
+    }
+    
+    const finalAxis = axis &lt; 0 ? ndim + axis : axis;
+    if (finalAxis &lt; 0 || finalAxis >= ndim) {
+        throw new Error(`Axis ${axis} is out of bounds for array of dimension ${ndim}.`);
+    }
+
+    let newShape = [...firstArr.shape];
+    let concatDimSize = 0;
+
+    for (const arr of arrays) {
+        if (arr.ndim !== ndim) throw new Error('All arrays must have same number of dimensions.');
+        if (arr.dtype !== dtype) throw new Error('All arrays must have same dtype.');
+        for (let j = 0; j &lt; ndim; j++) {
+            if (j !== finalAxis &amp;&amp; arr.shape[j] !== newShape[j]) {
+                throw new Error(`Dimension mismatch on axis ${j}: expected ${newShape[j]} but got ${arr.shape[j]}.`);
+            }
+        }
+        concatDimSize += arr.shape[finalAxis];
+    }
+    newShape[finalAxis] = concatDimSize;
+    // --- End Validation ---
+
+    const result = zeros(newShape, dtype);
+
+    let destAxisOffset = 0;
+    for (const arr of arrays) {
+        if (arr.size === 0) continue;
+
+        const dimSize = arr.shape[finalAxis];
+        
+        const sliceSpec = Array(ndim).fill(null);
+        sliceSpec[finalAxis] = [destAxisOffset, destAxisOffset + dimSize];
+
+        const view = result.slice(...sliceSpec);
+        
+        view.set(arr);
+        
+        destAxisOffset += dimSize;
+    }
+
+    return result;
+}
+
+
+/**
+ * Joins a sequence of arrays along a new axis.
+ * The `stack` function creates a new dimension, whereas `concat` joins along an existing one.
+ * All input arrays must have the same shape and dtype.
+ *
+ * @param {Array&lt;NDArray>} arrays - The list of arrays to stack.
+ * @param {number} [axis=0] - The axis in the result array along which the input arrays are stacked.
+ * @returns {NDArray} A new NDArray.
+ */
+export function stack(arrays, axis = 0) {
+    if (!arrays || arrays.length === 0) {
+        throw new Error('Array list cannot be empty.');
+    }
+
+    const firstArr = arrays[0];
+    const { shape: oldShape, ndim: oldNdim, dtype } = firstArr;
+
+    // The result of stack will have one more dimension than the input arrays
+    const targetNdim = oldNdim + 1;
+    
+    // Normalize negative axis (e.g., -1 refers to the last possible axis)
+    let finalAxis = axis &lt; 0 ? targetNdim + axis : axis;
+    if (finalAxis &lt; 0 || finalAxis >= targetNdim) {
+        throw new Error(`Axis ${axis} is out of bounds for stack into ${targetNdim} dimensions.`);
+    }
+
+    // Step 1: Validate shapes and expand dimensions
+    const expandedArrays = arrays.map((arr, index) => {
+        // Ensure dimensionality matches
+        if (arr.ndim !== oldNdim) {
+            throw new Error(`Array at index ${index} has ${arr.ndim} dimensions, expected ${oldNdim}.`);
+        }
+        
+        // Ensure dtypes match
+        if (arr.dtype !== dtype) {
+            throw new Error(`Dtype mismatch at index ${index}. Expected ${dtype}.`);
+        }
+
+        // Ensure shapes match exactly
+        for (let i = 0; i &lt; oldNdim; i++) {
+            if (arr.shape[i] !== oldShape[i]) {
+                throw new Error(
+                    `Shape mismatch at index ${index}: expected [${oldShape}] but got [${arr.shape}].`
+                );
+            }
+        }
+
+        /**
+         * Step 2: Reshape the array to add a singleton dimension at the target axis.
+         * Example: If shape is [3, 4] and axis is 1, new shape becomes [3, 1, 4].
+         */
+        const newShape = [...arr.shape];
+        newShape.splice(finalAxis, 0, 1);
+
+        // return a new view with the expanded shape
+        return arr.reshape(...newShape);
+    });
+
+    /**
+     * Step 3: Concatenate the expanded arrays along the newly created axis.
+     * Since every array now has a size of 1 at 'finalAxis', 
+     * concat will join them to a size of 'arrays.length' at that axis.
+     */
+    return concat(expandedArrays, finalAxis);
+};
+
+
+
+
+
+
+
+
+
+
+/**
+ * Creates a 2D identity matrix.
+ * @param {number} n - Number of rows.
+ * @param {number} [m] - Number of columns. Defaults to n if not provided.
+ * @param {string} [dtype='float64'] - Data type of the array.
+ * @returns {NDArray} A 2D NDArray with ones on the main diagonal.
+ */
+export function eye(n, m, dtype = 'float64') {
+    const rows = n;
+    const cols = m === undefined ? n : m;
+    const shape = [rows, cols];
+    
+    // 1. Initialize an all-zero NDArray.
+    // This handles data allocation and dtype mapping via the existing zeros method.
+    const res = zeros(shape, dtype);
+    
+    const offset = 0;
+    // 2. Fill the main diagonal with 1.
+    // For a contiguous 2D array, the element at (i, i) is at index: i * cols + i.
+    const minDim = Math.min(rows, cols);
+    for (let i = 0; i &lt; minDim; i++) {
+        res.data[offset + i * cols + i] = 1;
+    }
+    
+    return res;
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Sat Jan 10 2026 22:03:26 GMT+0800 (中国标准时间) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

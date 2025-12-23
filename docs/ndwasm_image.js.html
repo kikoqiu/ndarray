@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>ndwasm_image.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="NDArray.html">NDArray</a><ul class='methods'><li data-type='method'><a href="NDArray.html#abs">abs</a></li><li data-type='method'><a href="NDArray.html#add">add</a></li><li data-type='method'><a href="NDArray.html#all">all</a></li><li data-type='method'><a href="NDArray.html#any">any</a></li><li data-type='method'><a href="NDArray.html#argmax">argmax</a></li><li data-type='method'><a href="NDArray.html#argmin">argmin</a></li><li data-type='method'><a href="NDArray.html#argsort">argsort</a></li><li data-type='method'><a href="NDArray.html#asContiguous">asContiguous</a></li><li data-type='method'><a href="NDArray.html#bitwise_and">bitwise_and</a></li><li data-type='method'><a href="NDArray.html#bitwise_lshift">bitwise_lshift</a></li><li data-type='method'><a href="NDArray.html#bitwise_not">bitwise_not</a></li><li data-type='method'><a href="NDArray.html#bitwise_or">bitwise_or</a></li><li data-type='method'><a href="NDArray.html#bitwise_rshift">bitwise_rshift</a></li><li data-type='method'><a href="NDArray.html#bitwise_xor">bitwise_xor</a></li><li data-type='method'><a href="NDArray.html#ceil">ceil</a></li><li data-type='method'><a href="NDArray.html#cholesky">cholesky</a></li><li data-type='method'><a href="NDArray.html#colview">colview</a></li><li data-type='method'><a href="NDArray.html#cond">cond</a></li><li data-type='method'><a href="NDArray.html#conv2d">conv2d</a></li><li data-type='method'><a href="NDArray.html#copy">copy</a></li><li data-type='method'><a href="NDArray.html#correlate2d">correlate2d</a></li><li data-type='method'><a href="NDArray.html#cos">cos</a></li><li data-type='method'><a href="NDArray.html#cov">cov</a></li><li data-type='method'><a href="NDArray.html#cumprod">cumprod</a></li><li data-type='method'><a href="NDArray.html#dct">dct</a></li><li data-type='method'><a href="NDArray.html#div">div</a></li><li data-type='method'><a href="NDArray.html#eigen">eigen</a></li><li data-type='method'><a href="NDArray.html#eigenSym">eigenSym</a></li><li data-type='method'><a href="NDArray.html#eq">eq</a></li><li data-type='method'><a href="NDArray.html#exp">exp</a></li><li data-type='method'><a href="NDArray.html#fft">fft</a></li><li data-type='method'><a href="NDArray.html#fft2">fft2</a></li><li data-type='method'><a href="NDArray.html#filter">filter</a></li><li data-type='method'><a href="NDArray.html#flatten">flatten</a></li><li data-type='method'><a href="NDArray.html#floor">floor</a></li><li data-type='method'><a href="NDArray.html#ger">ger</a></li><li data-type='method'><a href="NDArray.html#get">get</a></li><li data-type='method'><a href="NDArray.html#gt">gt</a></li><li data-type='method'><a href="NDArray.html#gte">gte</a></li><li data-type='method'><a href="NDArray.html#iadd">iadd</a></li><li data-type='method'><a href="NDArray.html#idiv">idiv</a></li><li data-type='method'><a href="NDArray.html#ifft">ifft</a></li><li data-type='method'><a href="NDArray.html#ifft2">ifft2</a></li><li data-type='method'><a href="NDArray.html#imod">imod</a></li><li data-type='method'><a href="NDArray.html#imul">imul</a></li><li data-type='method'><a href="NDArray.html#inv">inv</a></li><li data-type='method'><a href="NDArray.html#ipow">ipow</a></li><li data-type='method'><a href="NDArray.html#isub">isub</a></li><li data-type='method'><a href="NDArray.html#iterate">iterate</a></li><li data-type='method'><a href="NDArray.html#kmeans">kmeans</a></li><li data-type='method'><a href="NDArray.html#kronecker">kronecker</a></li><li data-type='method'><a href="NDArray.html#log">log</a></li><li data-type='method'><a href="NDArray.html#logical_and">logical_and</a></li><li data-type='method'><a href="NDArray.html#logical_not">logical_not</a></li><li data-type='method'><a href="NDArray.html#logical_or">logical_or</a></li><li data-type='method'><a href="NDArray.html#lt">lt</a></li><li data-type='method'><a href="NDArray.html#lte">lte</a></li><li data-type='method'><a href="NDArray.html#lu">lu</a></li><li data-type='method'><a href="NDArray.html#map">map</a></li><li data-type='method'><a href="NDArray.html#matPow">matPow</a></li><li data-type='method'><a href="NDArray.html#matVecMul">matVecMul</a></li><li data-type='method'><a href="NDArray.html#matmul">matmul</a></li><li data-type='method'><a href="NDArray.html#matmulBatch">matmulBatch</a></li><li data-type='method'><a href="NDArray.html#max">max</a></li><li data-type='method'><a href="NDArray.html#mean">mean</a></li><li data-type='method'><a href="NDArray.html#min">min</a></li><li data-type='method'><a href="NDArray.html#mod">mod</a></li><li data-type='method'><a href="NDArray.html#mul">mul</a></li><li data-type='method'><a href="NDArray.html#neg">neg</a></li><li data-type='method'><a href="NDArray.html#neq">neq</a></li><li data-type='method'><a href="NDArray.html#norm">norm</a></li><li data-type='method'><a href="NDArray.html#pairwiseDist">pairwiseDist</a></li><li data-type='method'><a href="NDArray.html#pick">pick</a></li><li data-type='method'><a href="NDArray.html#pinv">pinv</a></li><li data-type='method'><a href="NDArray.html#pow">pow</a></li><li data-type='method'><a href="NDArray.html#push">push</a></li><li data-type='method'><a href="NDArray.html#qr">qr</a></li><li data-type='method'><a href="NDArray.html#rank">rank</a></li><li data-type='method'><a href="NDArray.html#reshape">reshape</a></li><li data-type='method'><a href="NDArray.html#rfft">rfft</a></li><li data-type='method'><a href="NDArray.html#rifft">rifft</a></li><li data-type='method'><a href="NDArray.html#round">round</a></li><li data-type='method'><a href="NDArray.html#rowview">rowview</a></li><li data-type='method'><a href="NDArray.html#set">set</a></li><li data-type='method'><a href="NDArray.html#sin">sin</a></li><li data-type='method'><a href="NDArray.html#slice">slice</a></li><li data-type='method'><a href="NDArray.html#solve">solve</a></li><li data-type='method'><a href="NDArray.html#sqrt">sqrt</a></li><li data-type='method'><a href="NDArray.html#squeeze">squeeze</a></li><li data-type='method'><a href="NDArray.html#std">std</a></li><li data-type='method'><a href="NDArray.html#sub">sub</a></li><li data-type='method'><a href="NDArray.html#sum">sum</a></li><li data-type='method'><a href="NDArray.html#svd">svd</a></li><li data-type='method'><a href="NDArray.html#syrk">syrk</a></li><li data-type='method'><a href="NDArray.html#tan">tan</a></li><li data-type='method'><a href="NDArray.html#toArray">toArray</a></li><li data-type='method'><a href="NDArray.html#toString">toString</a></li><li data-type='method'><a href="NDArray.html#toWasm">toWasm</a></li><li data-type='method'><a href="NDArray.html#topk">topk</a></li><li data-type='method'><a href="NDArray.html#trace">trace</a></li><li data-type='method'><a href="NDArray.html#transpose">transpose</a></li><li data-type='method'><a href="NDArray.html#var">var</a></li></ul></li><li><a href="NDWasmArray.html">NDWasmArray</a><ul class='methods'><li data-type='method'><a href="NDWasmArray.html#dispose">dispose</a></li><li data-type='method'><a href="NDWasmArray.html#matmul">matmul</a></li><li data-type='method'><a href="NDWasmArray.html#matmulBatch">matmulBatch</a></li><li data-type='method'><a href="NDWasmArray.html#pull">pull</a></li><li data-type='method'><a href="NDWasmArray.html#.fromArray">fromArray</a></li></ul></li><li><a href="WasmBuffer.html">WasmBuffer</a><ul class='methods'><li data-type='method'><a href="WasmBuffer.html#dispose">dispose</a></li><li data-type='method'><a href="WasmBuffer.html#pull">pull</a></li><li data-type='method'><a href="WasmBuffer.html#push">push</a></li><li data-type='method'><a href="WasmBuffer.html#refresh">refresh</a></li></ul></li><li><a href="WasmRuntime.html">WasmRuntime</a><ul class='methods'><li data-type='method'><a href="WasmRuntime.html#createBuffer">createBuffer</a></li><li data-type='method'><a href="WasmRuntime.html#init">init</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="NDProb.html">NDProb</a><ul class='methods'><li data-type='method'><a href="NDProb.html#.bernoulli">bernoulli</a></li><li data-type='method'><a href="NDProb.html#.exponential">exponential</a></li><li data-type='method'><a href="NDProb.html#.normal">normal</a></li><li data-type='method'><a href="NDProb.html#.poisson">poisson</a></li><li data-type='method'><a href="NDProb.html#.random">random</a></li></ul></li><li><a href="NDWasm.html">NDWasm</a><ul class='methods'><li data-type='method'><a href="NDWasm.html#._compute">_compute</a></li><li data-type='method'><a href="NDWasm.html#.bind">bind</a></li><li data-type='method'><a href="NDWasm.html#.init">init</a></li></ul></li><li><a href="NDWasmAnalysis.html">NDWasmAnalysis</a><ul class='methods'><li data-type='method'><a href="NDWasmAnalysis.html#.argsort">argsort</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.cond">cond</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.corr">corr</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.cov">cov</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.eigenSym">eigenSym</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.kmeans">kmeans</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.kronecker">kronecker</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.norm">norm</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.pairwiseDist">pairwiseDist</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.rank">rank</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.topk">topk</a></li></ul></li><li><a href="NDWasmBlas.html">NDWasmBlas</a><ul class='methods'><li data-type='method'><a href="NDWasmBlas.html#.ger">ger</a></li><li data-type='method'><a href="NDWasmBlas.html#.matPow">matPow</a></li><li data-type='method'><a href="NDWasmBlas.html#.matVecMul">matVecMul</a></li><li data-type='method'><a href="NDWasmBlas.html#.matmul">matmul</a></li><li data-type='method'><a href="NDWasmBlas.html#.matmulBatch">matmulBatch</a></li><li data-type='method'><a href="NDWasmBlas.html#.syrk">syrk</a></li><li data-type='method'><a href="NDWasmBlas.html#.trace">trace</a></li><li data-type='method'><a href="NDWasmBlas.html#.trsm">trsm</a></li></ul></li><li><a href="NDWasmDecomp.html">NDWasmDecomp</a><ul class='methods'><li data-type='method'><a href="NDWasmDecomp.html#.cholesky">cholesky</a></li><li data-type='method'><a href="NDWasmDecomp.html#.det">det</a></li><li data-type='method'><a href="NDWasmDecomp.html#.eigen">eigen</a></li><li data-type='method'><a href="NDWasmDecomp.html#.inv">inv</a></li><li data-type='method'><a href="NDWasmDecomp.html#.logDet">logDet</a></li><li data-type='method'><a href="NDWasmDecomp.html#.lu">lu</a></li><li data-type='method'><a href="NDWasmDecomp.html#.pinv">pinv</a></li><li data-type='method'><a href="NDWasmDecomp.html#.qr">qr</a></li><li data-type='method'><a href="NDWasmDecomp.html#.solve">solve</a></li><li data-type='method'><a href="NDWasmDecomp.html#.svd">svd</a></li></ul></li><li><a href="NDWasmImage.html">NDWasmImage</a><ul class='methods'><li data-type='method'><a href="NDWasmImage.html#.convertUint8ArrrayToDataurl">convertUint8ArrrayToDataurl</a></li><li data-type='method'><a href="NDWasmImage.html#.decode">decode</a></li><li data-type='method'><a href="NDWasmImage.html#.encode">encode</a></li><li data-type='method'><a href="NDWasmImage.html#.encodeJpeg">encodeJpeg</a></li><li data-type='method'><a href="NDWasmImage.html#.encodePng">encodePng</a></li></ul></li><li><a href="NDWasmOptimize.html">NDWasmOptimize</a><ul class='methods'><li data-type='method'><a href="NDWasmOptimize.html#.linearRegression">linearRegression</a></li><li data-type='method'><a href="NDWasmOptimize.html#.linprog">linprog</a></li><li data-type='method'><a href="NDWasmOptimize.html#.minimize">minimize</a></li></ul></li><li><a href="NDWasmSignal.html">NDWasmSignal</a><ul class='methods'><li data-type='method'><a href="NDWasmSignal.html#.conv2d">conv2d</a></li><li data-type='method'><a href="NDWasmSignal.html#.correlate2d">correlate2d</a></li><li data-type='method'><a href="NDWasmSignal.html#.dct">dct</a></li><li data-type='method'><a href="NDWasmSignal.html#.fft">fft</a></li><li data-type='method'><a href="NDWasmSignal.html#.fft2">fft2</a></li><li data-type='method'><a href="NDWasmSignal.html#.ifft">ifft</a></li><li data-type='method'><a href="NDWasmSignal.html#.ifft2">ifft2</a></li><li data-type='method'><a href="NDWasmSignal.html#.rfft">rfft</a></li><li data-type='method'><a href="NDWasmSignal.html#.rifft">rifft</a></li></ul></li><li><a href="help.html">help</a><ul class='methods'><li data-type='method'><a href="help.html#.getHelpDoc">getHelpDoc</a></li><li data-type='method'><a href="help.html#.helpdoc">helpdoc</a></li><li data-type='method'><a href="help.html#.helphtml">helphtml</a></li></ul></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-1-creation.html">1-creation</a></li><li><a href="tutorial-2-basic-operations.html">2-basic-operations</a></li><li><a href="tutorial-3-basic-indexing-slicing.html">3-basic-indexing-slicing</a></li><li><a href="tutorial-4-advanced-indexing-setting.html">4-advanced-indexing-setting</a></li><li><a href="tutorial-5-data-management.html">5-data-management</a></li><li><a href="tutorial-6-wasm-integration.html">6-wasm-integration</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DTYPE_MAP">DTYPE_MAP</a></li><li><a href="global.html#arange">arange</a></li><li><a href="global.html#array">array</a></li><li><a href="global.html#concat">concat</a></li><li><a href="global.html#eye">eye</a></li><li><a href="global.html#float32">float32</a></li><li><a href="global.html#float64">float64</a></li><li><a href="global.html#fromWasm">fromWasm</a></li><li><a href="global.html#full">full</a></li><li><a href="global.html#int16">int16</a></li><li><a href="global.html#int32">int32</a></li><li><a href="global.html#int8">int8</a></li><li><a href="global.html#linspace">linspace</a></li><li><a href="global.html#ones">ones</a></li><li><a href="global.html#stack">stack</a></li><li><a href="global.html#uint16">uint16</a></li><li><a href="global.html#uint32">uint32</a></li><li><a href="global.html#uint8">uint8</a></li><li><a href="global.html#uint8c">uint8c</a></li><li><a href="global.html#where">where</a></li><li><a href="global.html#zeros">zeros</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">ndwasm_image.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { NDArray, DTYPE_MAP } from './ndarray_core.js';
+import NDWasm from './ndwasm.js';
+
+/**
+ * @namespace NDWasmImage
+ * @description Provides WebAssembly-powered functions for image processing.
+ * This module allows for efficient conversion between image binary data and NDArrays.
+ */
+export const NDWasmImage = {
+    /**
+     * Decodes a binary image into an NDArray.
+     * Supports common formats like PNG, JPEG, GIF, and WebP.
+     * The resulting NDArray will have a shape of [height, width, 4] and a 'uint8c' dtype,
+     * representing RGBA channels. This provides a consistent starting point for image manipulation.
+     *
+     * @memberof NDWasmImage
+     * @param {Uint8Array} imageBytes - The raw binary data of the image file.
+     * @returns {NDArray|null} A 3D NDArray representing the image, or null if decoding fails.
+     * @example
+     * const imageBlob = await fetch('./my-image.png').then(res => res.blob());
+     * const imageBytes = new Uint8Array(await imageBlob.arrayBuffer());
+     * const imageArray = NDWasmImage.decode(imageBytes);
+     * // imageArray.shape is [height, width, 4]
+     */
+    decode(imageBytes) {
+        if (!NDWasm.runtime || !NDWasm.runtime.isLoaded) {
+            throw new Error("NDWasm runtime is not initialized. Call NDWasm.init() first.");
+        }
+        if (!(imageBytes instanceof Uint8Array)) {
+            throw new Error("Input must be a Uint8Array.");
+        }
+
+        const exports = NDWasm.runtime.exports;
+        let imagePtr = 0;
+        let resultPtr = 0;
+        let pixelDataPtr = 0;
+
+        try {
+            // 1. Allocate memory for the input image and copy it to WASM.
+            imagePtr = exports.malloc(imageBytes.length);
+            if (!imagePtr) throw new Error("WASM malloc failed for image bytes.");
+            new Uint8Array(exports.mem.buffer, imagePtr, imageBytes.length).set(imageBytes);
+
+            // 2. Call the WASM decoding function.
+            resultPtr = exports.decode_image(imagePtr, imageBytes.length);
+            if (!resultPtr) {
+                console.error("Failed to decode image in WASM. The image format may be invalid or unsupported.");
+                return null;
+            }
+
+            // 3. Read the result structure [pixel_ptr, pixel_size, width, height] from WASM memory.
+            const resultView = new DataView(exports.mem.buffer, resultPtr, 16);
+            pixelDataPtr = resultView.getUint32(0, true);
+            const pixelDataSize = resultView.getUint32(4, true);
+            const width = resultView.getUint32(8, true);
+            const height = resultView.getUint32(12, true);
+
+            if (!pixelDataPtr) {
+                console.error("WASM decode_image returned a null pixel data pointer.");
+                return null;
+            }
+
+            // 4. Create a copy of the pixel data from WASM memory.
+            const pixelData = new Uint8ClampedArray(exports.mem.buffer, pixelDataPtr, pixelDataSize).slice();
+
+            // 5. Create the final NDArray.
+            return new NDArray(pixelData, { shape: [height, width, 4], dtype: 'uint8c' });
+
+        } finally {
+            // 6. Free all allocated WASM memory.
+            if (imagePtr) exports.free(imagePtr, imageBytes.length);
+            if (resultPtr) exports.free(resultPtr, 16);
+            if (pixelDataPtr) {
+                const resultView = new DataView(exports.mem.buffer, resultPtr, 16);
+                const pixelDataSize = resultView.getUint32(4, true);
+                exports.free(pixelDataPtr, pixelDataSize);
+            }
+        }
+    },
+
+    /**
+     * Encodes an NDArray into a binary image format (PNG or JPEG).
+     *
+     * @memberof NDWasmImage
+     * @param {NDArray} ndarray - The input array.
+     *   Supported dtypes: 'uint8', 'uint8c', 'float32', 'float64'. Float values should be in the range [0, 1].
+     *   Supported shapes: [h, w] (grayscale), [h, w, 1] (grayscale), [h, w, 3] (RGB), or [h, w, 4] (RGBA).
+     * @param {object} [options={}] - Encoding options.
+     * @param {string} [options.format='png'] - The target format: 'png' or 'jpeg'. It is recommended to use the `encodePng` or `encodeJpeg` helpers instead.
+     * @param {number} [options.quality=90] - The quality for JPEG encoding (1-100). Ignored for PNG.
+     * @returns {Uint8Array|null} A Uint8Array containing the binary data of the encoded image, or null on failure.
+     * @see {@link NDWasmImage.encodePng}
+     * @see {@link NDWasmImage.encodeJpeg}
+     * @example
+     * // Encode a 3-channel float array to a high-quality JPEG using the main function
+     * const floatArr = NDArray.random([100, 150, 3]);
+     * const jpegBytes = NDWasmImage.encode(floatArr, { format: 'jpeg', quality: 95 });
+     */
+    encode(ndarray, { format = 'png', quality = 90 } = {}) {
+        if (!NDWasm.runtime || !NDWasm.runtime.isLoaded) {
+            throw new Error("NDWasm runtime is not initialized. Call NDWasm.init() first.");
+        }
+        if (!(ndarray instanceof NDArray)) {
+            throw new Error("Input must be an NDArray.");
+        }
+
+        // --- 1. Validate and Pre-process NDArray ---
+        
+        // Validate dimensions and channels
+        let channels;
+        if (ndarray.ndim === 2) {
+            channels = 1;
+        } else if (ndarray.ndim === 3) {
+            channels = ndarray.shape[2];
+            if (channels !== 1 &amp;&amp; channels !== 3 &amp;&amp; channels !== 4) {
+                throw new Error(`Unsupported channel count for 3D array: ${channels}. Must be 1, 3, or 4.`);
+            }
+        } else {
+            throw new Error(`Unsupported array dimensions: ${ndarray.ndim}. Must be 2 or 3.`);
+        }
+
+        let arrayToEncode = ndarray;
+        
+        // Handle float dtypes by scaling to uint8
+        if (ndarray.dtype === 'float32' || ndarray.dtype === 'float64') {
+            const scaledData = new Uint8Array(ndarray.size);
+            // This is a simple but slow way to iterate. A faster, vectorized `mul` and `astype` would be an improvement.
+            let i = 0;
+            ndarray.iterate(value => {
+                scaledData[i++] = Math.max(0, Math.min(255, value * 255));
+            });
+            arrayToEncode = new NDArray(scaledData, { shape: ndarray.shape, dtype: 'uint8' });
+        }
+        
+        // Ensure data is contiguous C-style for easy passing to WASM
+        let sourceData = arrayToEncode.data;
+        if (!arrayToEncode.isContiguous) {
+            const flatData = new (DTYPE_MAP[arrayToEncode.dtype])(arrayToEncode.size);
+            let i = 0;
+            arrayToEncode.iterate(v => flatData[i++] = v);
+            sourceData = flatData;
+        }
+
+        // --- 2. Interact with WASM ---
+        
+        const exports = NDWasm.runtime.exports;
+        let pixelDataPtr = 0;
+        let formatPtr = 0;
+        let resultPtr = 0;
+        let encodedDataPtr = 0;
+        
+        const [height, width] = arrayToEncode.shape;
+        const formatBytes = new TextEncoder().encode(format);
+
+        try {
+            // Allocate and copy pixel data to WASM.
+            pixelDataPtr = exports.malloc(sourceData.byteLength);
+            if (!pixelDataPtr) throw new Error("WASM malloc failed for pixel data.");
+            new Uint8Array(exports.mem.buffer, pixelDataPtr, sourceData.byteLength).set(sourceData);
+
+            // Allocate and copy format string to WASM.
+            formatPtr = exports.malloc(formatBytes.length);
+            if (!formatPtr) throw new Error("WASM malloc failed for format string.");
+            new Uint8Array(exports.mem.buffer, formatPtr, formatBytes.length).set(formatBytes);
+
+            // Call the WASM encoding function.
+            resultPtr = exports.encode_image(pixelDataPtr, width, height, channels, quality, formatPtr, formatBytes.length);
+            if (!resultPtr) {
+                console.error(`Failed to encode image to ${format} in WASM.`);
+                return null;
+            }
+
+            // Read the result structure [encoded_ptr, encoded_size].
+            const resultView = new DataView(exports.mem.buffer, resultPtr, 8);
+            encodedDataPtr = resultView.getUint32(0, true);
+            const encodedDataSize = resultView.getUint32(4, true);
+
+            if (!encodedDataPtr) {
+                console.error("WASM encode_image returned a null data pointer.");
+                return null;
+            }
+
+            // Create a copy of the encoded image data.
+            const encodedData = new Uint8Array(exports.mem.buffer, encodedDataPtr, encodedDataSize).slice();
+            
+            return encodedData;
+
+        } finally {
+            // Free all allocated WASM memory.
+            if (pixelDataPtr) exports.free(pixelDataPtr, sourceData.byteLength);
+            if (formatPtr) exports.free(formatPtr, formatBytes.length);
+            if (resultPtr) exports.free(resultPtr, 8);
+            if (encodedDataPtr) {
+                const resultView = new DataView(exports.mem.buffer, resultPtr, 8);
+                const encodedDataSize = resultView.getUint32(4, true);
+                exports.free(encodedDataPtr, encodedDataSize);
+            }
+        }
+    },
+
+    /**
+     * Encodes an NDArray into a PNG image.
+     * This is a helper function that calls `encode` with `format: 'png'`.
+     * @memberof NDWasmImage
+     * @param {NDArray} ndarray - The input array. See `encode` for supported shapes and dtypes.
+     * @returns {Uint8Array|null} A Uint8Array containing the binary data of the PNG image.
+     * @example
+     * const grayArr = ndarray.zeros([16, 16]);
+     * const pngBytes = NDWasmImage.encodePng(grayArr);
+     */
+    encodePng(ndarray) {
+        return this.encode(ndarray, { format: 'png' });
+    },
+
+    /**
+     * Encodes an NDArray into a JPEG image.
+     * This is a helper function that calls `encode` with `format: 'jpeg'`.
+     * @memberof NDWasmImage
+     * @param {NDArray} ndarray - The input array. See `encode` for supported shapes and dtypes.
+     * @param {object} [options={}] - Encoding options.
+     * @param {number} [options.quality=90] - The quality for JPEG encoding (1-100).
+     * @returns {Uint8Array|null} A Uint8Array containing the binary data of the JPEG image.
+     * @example
+     * const floatArr = NDArray.random([20, 20, 3]);
+     * const jpegBytes = NDWasmImage.encodeJpeg(floatArr, { quality: 85 });
+     */
+    encodeJpeg(ndarray, options = {}) {
+        return this.encode(ndarray, { ...options, format: 'jpeg' });
+    },
+    
+    /**
+     * Converts a Uint8Array of binary data into a Base64 Data URL.
+     * This is a utility function that runs purely in JavaScript.
+     *
+     * @memberof NDWasmImage
+     * @param {Uint8Array} uint8array - The byte array to convert.
+     * @param {string} [mimeType='image/png'] - The MIME type for the Data URL (e.g., 'image/jpeg').
+     * @returns {string} The complete Data URL string.
+     * @example
+     * const pngBytes = NDWasmImage.encodePng(myNdarray);
+     * const dataUrl = NDWasmImage.convertUint8ArrrayToDataurl(pngBytes, 'image/png');
+     * // &lt;img src={dataUrl} />
+     */
+    convertUint8ArrrayToDataurl(uint8array, mimeType = 'image/png') {
+        // In a browser environment
+        if (typeof window !== 'undefined' &amp;&amp; typeof window.btoa === 'function') {
+            let binary = '';
+            const len = uint8array.byteLength;
+            for (let i = 0; i &lt; len; i++) {
+                binary += String.fromCharCode(uint8array[i]);
+            }
+            const base64 = window.btoa(binary);
+            return `data:${mimeType};base64,${base64}`;
+        }
+        // In a Node.js environment
+        if (typeof Buffer !== 'undefined') {
+            const base64 = Buffer.from(uint8array).toString('base64');
+            return `data:${mimeType};base64,${base64}`;
+        }
+        
+        throw new Error("Unsupported environment: btoa or Buffer not available.");
+    }
+};
+
+export default NDWasmImage;</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Sat Jan 10 2026 22:03:26 GMT+0800 (中国标准时间) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

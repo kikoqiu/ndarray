@@ -1,0 +1,1769 @@
+/**
+ * File: ndarray_core.js
+ * Responsibility: Core class definition, metadata management, memory layout algorithms, factory functions.
+ */
+import { NDProb } from "./ndarray_prob";
+import { NDWasm, WasmRuntime } from "./ndwasm";
+import { NDWasmDecomp } from "./ndwasm_decomp";
+import { NDWasmAnalysis } from "./ndwasm_analysis";
+import { NDWasmBlas } from "./ndwasm_blas";
+import { NDWasmSignal } from "./ndwasm_signal";
+import { NDWasmImage } from "./ndwasm_image";
+import { NDWasmOptimize } from './ndwasm_optimize';
+import { array, full, zeros } from './ndarray_factory';
+import { NDWasmArray } from "./ndwasmarray";
+import * as Jit from "./ndarray_jit";
+
+/**
+ * The TypedArray map
+ */
+export const DTYPE_MAP = {
+    'float64': Float64Array,
+    'float32': Float32Array,
+    'int32': Int32Array,
+    'uint32': Uint32Array,
+    'int16': Int16Array,
+    'uint16': Uint16Array,
+    'int8': Int8Array,
+    'uint8': Uint8Array,
+    'uint8c': Uint8ClampedArray
+};
+/**
+ * The NDArray class
+ */
+export class NDArray {
+    /**
+     * @param {TypedArray} data - The underlying physical storage.
+     * @param {Object} options
+     * @param {Array|Int32Array} options.shape - The dimensions of the array.
+     * @param {Array|Int32Array} [options.strides] - The strides, defaults to C-style.
+     * @param {number} [options.offset=0] - The view offset.
+     * @param {string} [options.dtype] - The data type.
+     */
+    constructor(data, { shape, strides, offset = 0, dtype }) {
+        this.data = data;
+        this.shape = shape instanceof Int32Array ? shape : Int32Array.from(shape);
+        this.ndim = this.shape.length;
+        this.offset = offset;
+        this.dtype = dtype || this._determineDtype(data);
+        
+        // 1. Calculate the total number of elements.
+        this.size = 1;
+        for (let i = 0; i < this.ndim; i++) this.size *= this.shape[i];
+
+        // 2. Initialize or validate strides.
+        if (strides) {
+            this.strides = strides instanceof Int32Array ? strides : Int32Array.from(strides);
+        } else {
+            this.strides = this._computeDefaultStrides(this.shape);
+        }
+
+        // 3. Pre-calculate the memory contiguity flag (a key optimization).
+        // Only contiguous memory allows for single-layer flat loops in JS and efficient copying in WASM.
+        this.isContiguous = this._checkContiguity();
+    }
+
+    static random = NDProb;
+    static blas = NDWasmBlas;
+    static decomp = NDWasmDecomp;
+    static analysis = NDWasmAnalysis;
+    static image = NDWasmImage;
+    static signal = NDWasmSignal;
+    /**
+     * Optimization module for linear programming, non-linear minimization, and linear regression.
+     * @memberof NDArray
+     * @type {NDWasmOptimize}
+     */
+    static optimize = NDWasmOptimize;
+
+    // --- Internal private helpers ---
+
+    _determineDtype(data) {
+        for (const [name, Constructor] of Object.entries(DTYPE_MAP)) {
+            if (data instanceof Constructor) return name;
+        }
+        return 'float64';
+    }
+
+    _computeDefaultStrides(shape) {
+        const strides = new Int32Array(this.ndim);
+        let s = 1;
+        for (let i = this.ndim - 1; i >= 0; i--) {
+            strides[i] = s;
+            s *= shape[i];
+        }
+        return strides;
+    }
+
+    _checkContiguity() {
+        if (this.ndim === 0) return true;
+        let expectedStride = 1;
+        for (let i = this.ndim - 1; i >= 0; i--) {
+            // If a dimension's stride does not match the expected contiguous layout, it's a non-contiguous view (e.g., after transpose or slice).
+            if (this.shape[i] > 1 && this.strides[i] !== expectedStride) {
+                return false;
+            }
+            expectedStride *= this.shape[i];
+        }
+        return true;
+    }
+
+    /**
+     * High-performance addressing: converts multidimensional indices to a physical offset.
+     * @private
+     * @param {Array|Int32Array} indices 
+     * @param {number}
+     */
+    _getOffset(indices) {
+        let ptr = this.offset;
+        for (let i = 0; i < indices.length; i++) {
+            ptr += indices[i] * this.strides[i];
+        }
+        return ptr;
+    }
+    
+
+    /**
+     * To JavaScript Array
+     * @returns {Array|number} the array
+     */
+    toArray() {
+        const { data, shape, strides, offset, ndim } = this;
+
+        if (ndim === 0) {
+            return data[offset];
+        }
+
+        /**
+         * @param {number} dimIdx 
+         * @param {number} currentOffset 
+         */
+        const recurse = (dimIdx, currentOffset) => {
+            const size = shape[dimIdx];
+            const stride = strides[dimIdx];
+            const result = new Array(size);
+
+            if (dimIdx === ndim - 1) {
+                for (let i = 0; i < size; i++) {
+                    result[i] = data[currentOffset + i * stride];
+                }
+            } else {
+                for (let i = 0; i < size; i++) {
+                    result[i] = recurse(dimIdx + 1, currentOffset + i * stride);
+                }
+            }
+            return result;
+        };
+
+        return recurse(0, offset);
+    }
+
+    /**
+     * Returns a string representation of the ndarray.
+     * Formats high-dimensional data with proper indentation and line breaks.
+     * @returns {String}
+     */
+    toString() {
+        const { shape, strides, offset, ndim, data, dtype } = this;
+
+        // Handle 0-dimensional array (scalar)
+        if (ndim === 0) {
+            return `array(${data[offset]}, dtype=${dtype})`;
+        }
+
+        /**
+         * Recursive helper to format array dimensions.
+         * @param {number} dimIdx - Current dimension index being processed.
+         * @param {number} currentOffset - Current absolute memory offset in the data buffer.
+         * @param {string} indent - String used for vertical alignment.
+         */
+        const format = (dimIdx, currentOffset, indent) => {
+            // Base case: Final dimension (innermost level)
+            // Returns a simple comma-separated list: [1, 2, 3]
+            if (dimIdx === ndim - 1) {
+                const elements = [];
+                const len = shape[dimIdx];
+                const stride = strides[dimIdx];
+                
+                for (let i = 0; i < len; i++) {
+                    elements.push(data[currentOffset + i * stride]);
+                }
+                return '[' + elements.join(', ') + ']';
+            }
+
+            // Recursive case: High-dimensional levels
+            const results = [];
+            const nextDim = dimIdx + 1;
+            const len = shape[dimIdx];
+            const stride = strides[dimIdx];
+
+            // Increase indentation for the next level to align with the opening bracket
+            const nextIndent = indent + ' ';
+
+            for (let i = 0; i < len; i++) {
+                results.push(format(nextDim, currentOffset + i * stride, nextIndent));
+            }
+
+            // Visual formatting: 
+            // 1. Matrices (depth 2) use a single newline.
+            // 2. Tensors (depth 3+) use multiple newlines to create visual blocks between slices.
+            const depthFromBottom = ndim - dimIdx;
+            const lineBreaks = '\n'.repeat(Math.max(1, depthFromBottom - 1));
+            const separator = ',' + lineBreaks + nextIndent;
+
+            return '[' + results.join(separator) + ']';
+        };
+
+        // "array(" has a length of 6, so we start the indentation with 6 spaces
+        const prefix = 'array(';
+        const dataString = format(0, offset, ' '.repeat(prefix.length));
+        
+        return `${prefix}${dataString}, dtype=${dtype})`;
+    }
+
+
+     /**
+     * High-performance element-wise mapping with jit compilation.
+     * @param {string | Function} fnOrStr - The function string to apply to each element, like 'Math.sqrt(${val})', or a lambda expression
+     * @returns {NDArray} A new array with the results.
+     * 
+     */
+    map(fnOrStr, dtype = undefined) {
+        const outDtype = dtype || this.dtype;
+        const result = zeros(this.shape, outDtype);
+        
+        const opStr = fnOrStr.toString();
+        const cacheKey = `unary|${this.dtype}|${outDtype}|${opStr}|${this.shape}|${this.strides}`;
+        
+        let kernel = Jit._createUnaryKernel(cacheKey, this.shape, this.strides, fnOrStr);
+
+        kernel(this.data, result.data, this.offset, result.offset);
+        return result;
+    }
+
+    
+
+
+    /**
+     * Generic iterator that handles stride logic. It's slow. use map if you want to use jit.
+     * @param {Function} callback - A function called with `(value, index, flatPhysicalIndex)`.
+     * @see NDArray#map
+     */
+    iterate(callback) {
+        const currentIdx = new Int32Array(this.ndim);
+        for (let i = 0; i < this.size; i++) {
+            const ptr = this._getOffset(currentIdx);
+            callback(this.data[ptr], i, ptr);
+            // Increment multidimensional index
+            for (let d = this.ndim - 1; d >= 0; d--) {
+                if (++currentIdx[d] < this.shape[d]) break;
+                currentIdx[d] = 0;
+            }
+        }
+    }
+    
+    // --- Basic Arithmetic ---
+    /**
+     * Element-wise addition. Supports broadcasting.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to add.
+     * @returns {NDArray} A new array containing the results.
+     * 
+     */
+    add(other){
+        return this._binaryOp(other, (a, b) => a + b);
+    }
+    /**
+     * Element-wise subtraction. Supports broadcasting.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to subtract.
+     * @returns {NDArray} A new array containing the results.
+     * 
+     */
+    sub(other){
+        return this._binaryOp(other,(a, b) => a - b);
+    }
+    /**
+     * Element-wise multiplication. Supports broadcasting.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to multiply by.
+     * @returns {NDArray} A new array containing the results.
+     * 
+     */
+    mul(other){
+        return this._binaryOp(other,(a, b) => a * b);
+    }
+    /**
+     * Element-wise division. Supports broadcasting.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to divide by.
+     * @returns {NDArray} A new array containing the results.
+     * 
+     */
+    div(other){
+        return this._binaryOp(other,(a, b) => a / b);
+    }
+    /**
+     * Element-wise exponentiation. Supports broadcasting.
+     * @function
+     * @param {NDArray|number} other - The array or scalar exponent.
+     * @returns {NDArray} A new array containing the results.
+     * 
+     */
+    pow(other){
+        return this._binaryOp(other,(a, b) => a ** b);
+    }
+    /**
+     * Element-wise modulo. Supports broadcasting.
+     * @function
+     * @param {NDArray|number} other - The array or scalar divisor.
+     * @returns {NDArray} A new array containing the results.
+     * 
+     */
+    mod(other){
+        return this._binaryOp(other,(a, b) => a % b);
+    }
+
+    // --- In-place Arithmetic ---
+    /**
+     * In-place element-wise addition.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to add.
+     * @returns {NDArray} The modified array (`this`).
+     * 
+     */
+    iadd(other){
+        return this._binaryOp(other,(a, b) => a + b, true);
+    }
+    /**
+     * In-place element-wise subtraction.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to subtract.
+     * @returns {NDArray} The modified array (`this`).
+     * 
+     */
+    isub(other){
+        return this._binaryOp(other,(a, b) => a - b, true);
+    }
+    /**
+     * In-place element-wise multiplication.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to multiply by.
+     * @returns {NDArray} The modified array (`this`).
+     * 
+     */
+    imul(other){
+        return this._binaryOp(other,(a, b) => a * b, true);
+    }
+    /**
+     * In-place element-wise division.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to divide by.
+     * @returns {NDArray} The modified array (`this`).
+     * 
+     */
+    idiv(other){
+        return this._binaryOp(other,(a, b) => a / b, true);
+    }
+    /**
+     * In-place element-wise exponentiation.
+     * @function
+     * @param {NDArray|number} other - The array or scalar exponent.
+     * @returns {NDArray} The modified array (`this`).
+     * 
+     */
+    ipow(other){
+        return this._binaryOp(other,(a, b) => a ** b, true);
+    }
+    /**
+     * In-place element-wise modulo.
+     * @function
+     * @param {NDArray|number} other - The array or scalar divisor.
+     * @returns {NDArray} The modified array (`this`).
+     * 
+     */
+    imod(other){
+        return this._binaryOp(other,(a, b) => a % b, true);
+    }
+
+    /**
+     * bitwise AND. Returns a new array.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to perform the operation with.
+     * @returns {NDArray}
+     * 
+     */
+    bitwise_and(other){
+        return this._binaryOp(other,(a, b) => a & b, false);
+    }
+
+    /**
+     * bitwise OR. Returns a new array.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to perform the operation with.
+     * @returns {NDArray}
+     * 
+     */
+    bitwise_or(other){
+        return this._binaryOp(other,(a, b) => a | b, false);
+    }
+
+    /**
+     * bitwise XOR. Returns a new array.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to perform the operation with.
+     * @returns {NDArray}
+     * 
+     */
+    bitwise_xor(other){
+        return this._binaryOp(other,(a, b) => a ^ b, false);
+    }
+    
+    /**
+     * bitwise lshift. Returns a new array.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to perform the operation with.
+     * @returns {NDArray}
+     * 
+     */
+    bitwise_lshift(other){
+        return this._binaryOp(other,(a, b) => a << b, false);
+    }
+
+    /**
+     * bitwise (logical) rshift. Returns a new array.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to perform the operation with.
+     * @returns {NDArray}
+     * 
+     */
+    bitwise_rshift(other){
+        return this._binaryOp(other,(a, b) => a >>> b, false);
+    }
+
+    /**
+     * bitwise NOT. Returns a new array.
+     * @function
+     * @returns {NDArray}
+     * 
+     */
+    bitwise_not() { return this.map("~${val}"); };
+
+    // --- Unary Operations ---
+    /**
+     * Returns a new array with the numeric negation of each element.
+     * @function
+     * @returns {NDArray}
+     * 
+     */
+    neg() { return this.map("-${val}"); };
+
+    /**
+     * Returns a new array with the absolute value of each element.
+     * @function
+     * @returns {NDArray}
+     * 
+     */
+    abs() { return this.map("Math.abs(${val})"); };
+    /**
+     * Returns a new array with `e` raised to the power of each element.
+     * @function
+     * @returns {NDArray}
+     * 
+     */
+    exp() { return this.map("Math.exp(${val})"); };
+    /**
+     * Returns a new array with the square root of each element.
+     * @function
+     * @returns {NDArray}
+     * 
+     */
+    sqrt() { return this.map("Math.sqrt(${val})"); };
+     /**
+     * Returns a new array with the sine of each element.
+     * @function
+     * @returns {NDArray}
+     * 
+     */
+    sin() { return this.map("Math.sin(${val})"); };
+    /**
+     * Returns a new array with the cosine of each element.
+     * @function
+     * @returns {NDArray}
+     * 
+     */
+    cos() { return this.map("Math.cos(${val})"); };
+    /**
+     * Returns a new array with the tangent of each element.
+     * @function
+     * @returns {NDArray}
+     * 
+     */
+    tan() { return this.map("Math.tan(${val})"); };
+    /**
+     * Returns a new array with the natural logarithm (base e) of each element.
+     * @function
+     * @returns {NDArray}
+     * 
+     */
+    log() { return this.map("Math.log(${val})"); };
+    /**
+     * Returns a new array with the smallest integer greater than or equal to each element.
+     * @function
+     * @returns {NDArray}
+     * 
+     */
+    ceil() { return this.map("Math.ceil(${val})"); };
+    /**
+     * Returns a new array with the largest integer less than or equal to each element.
+     * @function
+     * @returns {NDArray}
+     * 
+     */
+    floor() { return this.map("Math.floor(${val})"); };
+    /**
+     * Returns a new array with the value of each element rounded to the nearest integer.
+     * @function
+     * @returns {NDArray}
+     * 
+     */
+    round() { return this.map("Math.round(${val})"); };
+
+    // --- Comparison and Logic Operators ---
+    /**
+     * Element-wise equality comparison. Returns a new boolean (uint8) array.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to compare with.
+     * @returns {NDArray}
+     * 
+     */
+    eq(other){
+        return this._comparisonOp(other,(a, b) => a === b);
+    }
+    /**
+     * Element-wise inequality comparison. Returns a new boolean (uint8) array.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to compare with.
+     * @returns {NDArray}
+     * 
+     */
+    neq(other){
+        return this._comparisonOp(other,(a, b) => a !== b);
+    }
+    /**
+     * Element-wise greater-than comparison. Returns a new boolean (uint8) array.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to compare with.
+     * @returns {NDArray}
+     * 
+     */
+    gt(other){
+        return this._comparisonOp(other,(a, b) => a > b);
+    }
+    /**
+     * Element-wise greater-than-or-equal comparison. Returns a new boolean (uint8) array.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to compare with.
+     * @returns {NDArray}
+     * 
+     */
+    gte(other){
+        return this._comparisonOp(other,(a, b) => a >= b);
+    }
+    /**
+     * Element-wise less-than comparison. Returns a new boolean (uint8) array.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to compare with.
+     * @returns {NDArray}
+     * 
+     */
+    lt(other){
+        return this._comparisonOp(other,(a, b) => a < b);
+    }
+    /**
+     * Element-wise less-than-or-equal comparison. Returns a new boolean (uint8) array.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to compare with.
+     * @returns {NDArray}
+     * 
+     */
+    lte(other){
+        return this._comparisonOp(other,(a, b) => a <= b);
+    }
+
+    /**
+     * Element-wise logical AND. Returns a new boolean (uint8) array.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to perform the operation with.
+     * @returns {NDArray}
+     * 
+     */
+    logical_and(other){
+        return this._comparisonOp(other,(a, b) => a && b);
+    }
+    /**
+     * Element-wise logical OR. Returns a new boolean (uint8) array.
+     * @function
+     * @param {NDArray|number} other - The array or scalar to perform the operation with.
+     * @returns {NDArray}
+     * 
+     */
+    logical_or(other){
+        return this._comparisonOp(other,(a, b) => a || b);
+    }
+    /**
+     * Element-wise logical NOT. Returns a new boolean (uint8) array.
+     * @function
+     * @returns {NDArray}
+     * 
+     */
+    logical_not() {
+        return this.map("(${val} ? 0 : 1)" );
+    }
+
+    // --- Reductions ---
+    /**
+     * Computes the sum of elements along the specified axis.
+     * 
+     * @param {number|null} [axis=null]
+     * @returns {NDArray|number}
+     */
+    sum(axis = null) { 
+        return this._reduce(axis, () => 0, (a, b) => a + b); 
+    }
+
+    /**
+     * Computes the cumprod of elements along the specified axis.
+     * 
+     * @param {number|null} [axis=null]
+     * @returns {NDArray|number}
+     */
+    cumprod(axis = null) { 
+        return this._reduce(axis, () => 1, (a, b) => a * b); 
+    }
+
+    /**
+     * Computes the arithmetic mean along the specified axis.
+     * 
+     * @param {number|null} [axis=null]
+     * @returns {NDArray|number}
+     */
+    mean(axis = null) { 
+        return this._reduce(axis, () => 0, (a, b) => a + b, (acc, n) => acc / n); 
+    }
+
+    /**
+     * Returns the maximum value along the specified axis.
+     * 
+     * @param {number|null} [axis=null]
+     * @returns {NDArray|number}
+     */
+    max(axis = null) { 
+        return this._reduce(axis, () => -Infinity, (a,b) => Math.max(a,b) ); 
+    }
+
+    /**
+     * Returns the minimum value along the specified axis.
+     * 
+     * @param {number|null} [axis=null]
+     * @returns {NDArray|number}
+     */
+    min(axis = null) { 
+        return this._reduce(axis, () => Infinity, (a,b) => Math.min(a,b) ); 
+    }
+
+    /**
+     * Computes the variance along the specified axis.
+     * Note: This implementation uses a two-pass approach (mean first, then squared differences).
+     * Ensure that the `sub` method supports broadcasting if `axis` is not null.
+     * 
+     * 
+     * @param {number|null} [axis=null] - The axis to reduce.
+     * @returns {NDArray|number}
+     */
+    var(axis = null) {
+        const mu = this.mean(axis);
+        if (axis === null || this.ndim <= 1) {
+            const diff = this.sub(mu);
+            return diff.mul(diff).mean();
+        }
+
+        // Step 1: Compute the mean along the axis
+        const newShape = new Int32Array(this.shape);
+        newShape[axis] = 1;
+        const muReshaped = mu.reshape(newShape); 
+
+        // Step 2: Compute (x - mu)^2. 
+        const diff = this.sub(muReshaped);
+
+        return diff.mul(diff).mean(axis);
+    }
+    
+    /**
+     * Computes the standard deviation along the specified axis.
+     * 
+     * 
+     * @param {number|null} [axis=null] - The axis to reduce.
+     * @returns {NDArray|number}
+     */
+    std(axis = null) {
+        const v = this.var(axis);
+        // If the result is an NDArray (axis reduction), return the element-wise square root.
+        // Otherwise, return the square root of the scalar number.
+        return v instanceof NDArray ? v.sqrt() : Math.sqrt(v);
+    }
+
+   /**
+     * Internal generic reduction engine with optimizations for different memory layouts.
+     * 
+     * @param {number|null} axis - The axis to reduce. If null, a global reduction is performed.
+     * @param {Function} initFn - Returns the initial value for the accumulator (e.g., () => 0).
+     * @param {Function} reducer - The binary reduction function (e.g., (acc, val) => acc + val).
+     * @param {Function} [finalFn] - Applied to the final result (e.g., (sum, count) => sum / count).
+     * @returns {NDArray|number} A scalar number for global reduction, or an NDArray for axis reduction.
+     * @private
+     */
+     _reduce(axis, initFn, reducer, finalFn = undefined) {
+        const ndim = this.ndim;
+        if (ndim === 0) {
+            const val = this.data[this.offset];
+            return finalFn ? finalFn(val, 1) : val;
+        }
+
+        // 1. Determine which axes to iterate over and which to reduce
+        let reduceAxes = [];
+        if (axis === null || axis === undefined) {
+            // Global reduction: reduce all axes
+            reduceAxes = Array.from({ length: ndim }, (_, i) => i);
+        } else {
+            // Single axis reduction
+            let a = axis < 0 ? axis + ndim : axis;
+            reduceAxes = [a];
+        }
+
+        const iterAxes = Array.from({ length: ndim }, (_, i) => i).filter(ax => !reduceAxes.includes(ax));
+        
+        // 2. Cache management
+        const opStr = reducer.toString() + (finalFn ? finalFn.toString() : '');
+        const cacheKey = `red|${this.dtype}|${opStr}|${this.shape}|${this.strides}|${reduceAxes}`;
+        
+        let kernel = Jit._createReduceKernel(cacheKey, this.shape, this.strides, iterAxes, reduceAxes, reducer, finalFn);
+
+        // 3. Prepare buffers and initial context
+        let reduceCount = reduceAxes.reduce((a, b) => a * this.shape[b], 1);
+        if(reduceCount == 0) { reduceCount = 1; }
+        let outSize = this.size / reduceCount;
+        if(outSize == 0) { outSize = 1; }
+        const outData = new DTYPE_MAP[this.dtype](outSize);
+        const initVal = initFn();
+
+        // 4. Run the zero-dependency JIT kernel
+        kernel(this.data, outData, this.offset, initVal, reduceCount);
+
+        // Return scalar for global reduction, otherwise return NDArray
+        if (axis === null || axis === undefined) return outData[0];
+        
+        const newShape = this.shape.filter((_, i) => !reduceAxes.includes(i));
+        return new NDArray(outData, { shape: newShape, dtype: this.dtype });
+    }
+
+
+    // --- Index Operators ---
+    /**
+     * Returns the index of the maximum value in a flattened array.
+     * @returns {number}
+     * 
+     */
+    argmax() {
+        let maxV = -Infinity, maxIdx = -1;
+        this.iterate((v, i) => { if (v > maxV) { maxV = v; maxIdx = i; } });
+        return maxIdx;
+    }
+    /**
+     * Returns the index of the minimum value in a flattened array.
+     * @returns {number}
+     * 
+     */
+    argmin() {
+        let minV = Infinity, minIdx = -1;
+        this.iterate((v, i) => { if (v < minV) { minV = v; minIdx = i; } });
+        return minIdx;
+    }
+
+    // --- Logical tools ---
+    /**
+     * Checks if all elements in the array are truthy.
+     * @returns {boolean}
+     * 
+     */
+    all() {
+        let result = true;
+        this.iterate(v => { if (!v) { result = false; } }); // Cannot break early
+        return result;
+    }
+    /**
+     * Checks if any element in the array is truthy.
+     * @returns {boolean}
+     * 
+     */
+    any() {
+        let result = false;
+        this.iterate(v => { if (v) { result = true; } }); // Cannot break early
+        return result;
+    }
+
+
+
+
+
+
+
+
+
+
+
+    //------------view functions------------- 
+    /**
+     * Returns a new array with a new shape, without changing data. O(1) operation.
+     * This only works for contiguous arrays. If the array is not contiguous,
+     * you must call .copy() first.
+     * 
+     * @param {...number} newShape - The new shape.
+     * @returns {NDArray} NDArray view.
+     */
+    reshape(...newShape) {
+        if (Array.isArray(newShape[0]) || ArrayBuffer.isView(newShape[0])) newShape = newShape[0];
+
+        const newSize = newShape.reduce((a, b) => a * b, 1);
+        if (newSize !== this.size) {
+            throw new Error(`Cannot reshape array of size ${this.size} into shape [${newShape}] = ${newSize}`);
+        }
+
+        if (this.isContiguous) {
+            // For a contiguous array, reshaping is just a matter of creating a new
+            // view. The NDArray constructor will compute the new strides automatically.
+            return new NDArray(this.data, {
+                shape: newShape,
+                offset: this.offset,
+                dtype: this.dtype
+            });
+        }
+
+        // Reshaping a non-contiguous view is ambiguous as it would break spatial locality.
+        throw new Error("Reshape of non-contiguous view is ambiguous. Use .copy().reshape() first.");
+    }
+
+    /**
+     * Returns a new view of the array with axes transposed. O(1) operation.
+     * 
+     * @param {...number} axes - The new order of axes, e.g., [1, 0] for a matrix transpose. If not specified, reverses the order of the axes.
+     * @returns {NDArray} NDArray view.
+     */
+    transpose(...axes) {
+        if (axes.length === 0) {
+            // Default: reverse all dimensions
+            axes = Array.from({ length: this.ndim }, (_, i) => this.ndim - 1 - i);
+        } else if (Array.isArray(axes[0])) {
+            axes = axes[0];
+        }
+
+        const newShape = new Int32Array(this.ndim);
+        const newStrides = new Int32Array(this.ndim);
+
+        for (let i = 0; i < this.ndim; i++) {
+            const axis = axes[i];
+            newShape[i] = this.shape[axis];
+            newStrides[i] = this.strides[axis];
+        }
+
+        return new NDArray(this.data, {
+            shape: newShape,
+            strides: newStrides,
+            offset: this.offset,
+            dtype: this.dtype
+        });
+    }
+
+   /**
+     * Returns a new view of the array sliced along each dimension.
+     * This implementation strictly follows NumPy's basic slicing logic.
+     * 
+     * 
+     * @param {...(Array|number|null|undefined)} specs - Slice parameters for each dimension.
+     * - number: Scalar indexing. Picks a single element and reduces dimensionality (e.g., arr[0]).
+     * - [start, end, step]: Range slicing (e.g., arr[start:end:step]).
+     * - []/null/undefined: Selects the entire dimension (e.g., arr[:]).
+     * 
+     * @returns {NDArray} A new O(1) view of the underlying data.
+     * @throws {Error} If a scalar index is out of bounds or step is zero.
+     */
+    slice(...specs) {
+        let newOffset = this.offset;
+        const newShape = [];
+        const newStrides = [];
+
+        for (let i = 0; i < this.ndim; i++) {
+            const spec = i < specs.length ? specs[i] : null;
+            const size_i = this.shape[i];
+            const stride_i = this.strides[i];
+
+            if (typeof spec === 'number') {
+                // --- Scalar Indexing (Dimension Reduction) ---
+                let idx = spec < 0 ? size_i + spec : spec;
+                
+                // NumPy throws error for out-of-bounds scalar indexing
+                if (idx < 0 || idx >= size_i) {
+                    throw new Error(`Index ${spec} is out of bounds for axis ${i} with size ${size_i}`);
+                }
+                newOffset += idx * stride_i;
+            } else {
+                // --- Range Slicing (Dimension Preserved) ---
+                let start, end, step;
+
+                if (Array.isArray(spec)) {
+                    [start = null, end = null, step = 1] = spec;
+                } else {
+                    // Handles null, undefined, or missing specs
+                    start = end = null;
+                    step = 1;
+                }
+
+                if (step === null || step === undefined) step = 1;
+                if (step === 0) throw new Error("Slice step cannot be zero");
+
+                // 1. Convert negative indices
+                if (start !== null) start = start < 0 ? size_i + start : start;
+                if (end !== null) end = end < 0 ? size_i + end : end;
+
+                // 2. Determine defaults and clamp boundaries based on step direction
+                if (step > 0) {
+                    // Positive step: default range [0, size], clamped to [0, size]
+                    start = start === null ? 0 : Math.max(0, Math.min(start, size_i));
+                    end = end === null ? size_i : Math.max(0, Math.min(end, size_i));
+                } else {
+                    // Negative step: default range [size-1, -1], clamped to [-1, size-1]
+                    start = start === null ? size_i - 1 : Math.max(-1, Math.min(start, size_i - 1));
+                    end = end === null ? -1 : Math.max(-1, Math.min(end, size_i - 1));
+                }
+
+                // 3. Calculate the number of elements in this slice
+                // Formula: max(0, ceil((end - start) / step))
+                const sliceLen = Math.max(0, Math.ceil((end - start) / step));
+
+                // 4. Update offset for the first element of this slice
+                newOffset += start * stride_i;
+
+                newShape.push(sliceLen);
+                newStrides.push(stride_i * step);
+            }
+        }
+
+        return new NDArray(this.data, {
+            shape: newShape,
+            strides: newStrides,
+            offset: newOffset,
+            dtype: this.dtype
+        });
+    }
+
+    /**
+     * Returns a 1D view of the i-th row.
+     * Only applicable to 2D arrays.
+     * 
+     * @param {number} i - The row index.
+     * @returns {NDArray} A 1D NDArray view.
+     */
+    rowview(i) {
+        if (this.ndim !== 2) {
+            throw new Error(`rowview requires 2D array, but got ${this.ndim}D`);
+        }
+        return this.slice(i, null);
+    }
+
+    /**
+     * Returns a 1D view of the j-th column.
+     * Only applicable to 2D arrays.
+     * 
+     * @param {number} j - The column index.
+     * @returns {NDArray} A 1D NDArray view.
+     */
+    colview(j) {
+        if (this.ndim !== 2) {
+            throw new Error(`colview requires 2D array, but got ${this.ndim}D`);
+        }
+        return this.slice(null, j);
+    }
+
+    /**
+     * Remove axes of length one from the shape. O(1) operation.
+     * 
+     * @param {number|null} axis - The axis to squeeze. If null, all axes of length 1 are removed.
+     * @returns {NDArray} NDArray view.
+     */
+    squeeze(axis = null) {
+        const newShape = [];
+        const newStrides = [];
+        for (let i = 0; i < this.ndim; i++) {
+            const isTargetAxis = (axis !== null && i === axis) || (axis === null && this.shape[i] === 1);
+            if (this.shape[i] === 1 && isTargetAxis) {
+                // This axis is squeezed out.
+            } else {
+                newShape.push(this.shape[i]);
+                newStrides.push(this.strides[i]);
+            }
+        }
+
+        return new NDArray(this.data, {
+            shape: newShape,
+            strides: newStrides,
+            offset: this.offset,
+            dtype: this.dtype
+        });
+    }
+
+    /**
+     * Returns a new, contiguous array with the same data. O(n) operation.
+     * This converts any view (transposed, sliced) into a new array with a standard C-style memory layout.
+     * 
+     * @param {string | undefined} the target dtype
+     * @returns {NDArray} NDArray view.
+     */
+    copy(dtype = undefined) {
+        // We use the string '${val}' as the operation for the kernel
+        return this.map('(${val})', dtype || this.dtype);
+    }
+
+
+    /**
+     * Ensures the returned array has a contiguous memory layout.
+     * If the array is already contiguous, it returns itself. Otherwise, it returns a copy.
+     * Often used as a pre-processing step before calling WASM or other libraries.
+     * 
+     * @returns {NDArray} NDArray view.
+     */
+    asContiguous() {
+        return this.isContiguous ? this : this.copy();
+    }
+
+    /**
+     * Gets a single element from the array.
+     * Note: This has higher overhead than batch operations. Use with care in performance-critical code.
+     * 
+     * @param {...number} indices - The indices of the element to get.
+     * @returns {number}
+     */
+    get(...indices) {
+        if (Array.isArray(indices[0])) indices = indices[0];
+        return this.data[this._getOffset(indices)];
+    }
+
+
+     /**
+     * Sets value(s) in the array using a unified, JIT-optimized engine.
+     * Supports scalar indexing, fancy (array) indexing, and NumPy-style broadcasting.
+     * 
+     * @param {number|Array|NDArray} value - The source data to assign.
+     * @param {...(number|Array|null)} indices - Indices for each dimension.
+     * @returns {NDArray}
+     */
+    set(value, ...indices) {
+        if(this.size === 0) {//no op for empty array
+            return this;
+        }
+        const indexPickSets = []; 
+        const targetShape = [];   
+        const isDimReduced = new Array(this.ndim); 
+        const hasPSet = new Uint8Array(this.ndim);
+
+        // 1. Normalize indices into pick-sets and compute target logical shape
+        for (let i = 0; i < this.ndim; i++) {
+            let spec = i < indices.length ? indices[i] : null;
+
+            if (spec === null || spec === undefined) {
+                indexPickSets.push(null);
+                targetShape.push(this.shape[i]);
+                isDimReduced[i] = false;
+                hasPSet[i] = 0;
+            } else if (typeof spec === 'number') {
+                let idx = spec < 0 ? this.shape[i] + spec : spec;
+                if (idx < 0 || idx >= this.shape[i]) {
+                    throw new Error(`Index ${idx} out of bounds for axis ${i}`);
+                }
+                indexPickSets.push(new Int32Array([idx]));
+                isDimReduced[i] = true;
+                hasPSet[i] = 1;
+            } else {
+                const pSet = spec instanceof Int32Array ? spec : Int32Array.from(spec);
+                for (let k = 0; k < pSet.length; k++) {
+                    if (pSet[k] < 0) pSet[k] += this.shape[i];
+                    if (pSet[k] < 0 || pSet[k] >= this.shape[i]) {
+                        throw new Error(`Index ${pSet[k]} out of bounds for axis ${i}`);
+                    }
+                }
+                indexPickSets.push(pSet);
+                targetShape.push(pSet.length);
+                isDimReduced[i] = false;
+                hasPSet[i] = 1;
+            }
+        }
+
+        // 2. Standardize source NDArray
+        const src = value instanceof NDArray ? value : array(value, this.dtype);
+        
+        // 3. Align source strides with target's physical axes (NumPy-style Broadcasting)
+        const alignedSrcStrides = new Int32Array(this.ndim);
+        let targetDimIdx = targetShape.length - 1;
+        let srcDimIdx = src.ndim - 1;
+
+        for (let i = this.ndim - 1; i >= 0; i--) {
+            if (isDimReduced[i]) {
+                alignedSrcStrides[i] = 0;
+            } else {
+                if (srcDimIdx >= 0) {
+                    const sDim = src.shape[srcDimIdx];
+                    const tDim = targetShape[targetDimIdx];
+                    if (sDim !== tDim && sDim !== 1) {
+                        throw new Error(`Incompatible broadcast: src [${src.shape}] -> [${targetShape}]`);
+                    }
+                    alignedSrcStrides[i] = (sDim === 1) ? 0 : src.strides[srcDimIdx];
+                    srcDimIdx--;
+                } else {
+                    alignedSrcStrides[i] = 0;
+                }
+                targetDimIdx--;
+            }
+        }
+
+        // 4. Handle empty selections
+        const totalSize = targetShape.reduce((a, b) => a * b, 1);
+        if (totalSize === 0) return this;
+
+        // 5. JIT Dispatch
+        const cacheKey = `set|${this.ndim}|${hasPSet}|${isDimReduced}|${this.strides}|${alignedSrcStrides}|${targetShape}`;
+        const kernel = Jit._createSetKernel(
+            cacheKey, 
+            this.ndim, 
+            targetShape, 
+            this.strides, 
+            alignedSrcStrides, 
+            hasPSet, 
+            isDimReduced
+        );
+
+        kernel(this.data, src.data, this.offset, src.offset, indexPickSets);
+
+        return this;
+    };
+
+
+    /**
+     * Advanced Indexing (Fancy Indexing).
+     * Returns a physical COPY of the selected data using a JIT-compiled engine.
+     * Picks elements along each dimension.
+     * Note: unlike numpy, for advanced (fancy) indexing, output shape won't be reordered. 
+     * Dim for 1-element advanced indexing won't be removed, either.
+     * 
+     * @param {...(number[]|TypedArray|number|null|undefined)} specs - Index selectors. null/undefined means select all
+     */
+    pick(...specs) {
+        const indexPickSets = [];
+        const resultShape = [];
+        const isDimReduced = new Array(this.ndim);
+        const isFullSlice = new Uint8Array(this.ndim); 
+        const odometerShape = new Int32Array(this.ndim);
+        
+        // 1. Normalize specs and calculate output metadata
+        for (let i = 0; i < this.ndim; i++) {
+            let spec = i < specs.length ? specs[i] : null;
+
+            if (spec === null || spec === undefined) {
+                // Wildcard ":"
+                const indices = new Int32Array(this.shape[i]);
+                for (let k = 0; k < this.shape[i]; k++) indices[k] = k;
+                indexPickSets.push(indices);
+                resultShape.push(this.shape[i]);
+                isFullSlice[i] = 1;
+                isDimReduced[i] = false;
+            } else if (typeof spec === 'number') {
+                // Scalar index: reduces dimensionality
+                let idx = spec < 0 ? this.shape[i] + spec : spec;
+                if (idx < 0 || idx >= this.shape[i]) {
+                    throw new Error(`Index ${spec} out of bounds for axis ${i}`);
+                }
+                indexPickSets.push(new Int32Array([idx]));
+                isFullSlice[i] = 0;
+                isDimReduced[i] = true;
+            } else {
+                // Fancy Indexing: preserves dimension
+                const indices = spec instanceof Int32Array ? spec : Int32Array.from(spec);
+                for (let k = 0; k < indices.length; k++) {
+                    if (indices[k] < 0) indices[k] += this.shape[i];
+                    if (indices[k] < 0 || indices[k] >= this.shape[i]) {
+                        throw new Error(`Index ${indices[k]} out of bounds for axis ${i}`);
+                    }
+                }
+                indexPickSets.push(indices);
+                resultShape.push(indices.length);
+                isFullSlice[i] = 0;
+                isDimReduced[i] = false;
+            }
+            odometerShape[i] = indexPickSets[i].length;
+        }
+
+        // 2. Prepare output buffer
+        const resultSize = resultShape.reduce((a, b) => a * b, 1);
+        const Constructor = DTYPE_MAP[this.dtype];
+        const newData = new Constructor(resultSize);
+        if (resultSize === 0) {
+            return new NDArray(newData, { shape: resultShape, dtype: this.dtype });
+        }
+
+        // 3. JIT Dispatch
+        // Cache key includes structure, strides, and the specific selection pattern
+        const cacheKey = `pick|${this.ndim}|${isFullSlice}|${isDimReduced}|${this.strides}|${odometerShape}`;
+        
+        const kernel = Jit._createPickKernel(
+            cacheKey,
+            this.ndim,
+            this.strides,
+            isFullSlice,
+            isDimReduced,
+            odometerShape
+        );
+
+        // 4. Execute kernel
+        kernel(this.data, newData, this.offset, indexPickSets);
+
+        return new NDArray(newData, {
+            shape: resultShape,
+            dtype: this.dtype
+        });
+    }
+
+
+
+    /**
+     * Responsibility: Implements element-wise filtering.
+     * Returns a NEW 1D contiguous NDArray (Copy).
+     * Filters elements based on a predicate function or a boolean mask.
+     * 
+     * 
+     * @param {Function|Array|NDArray} predicateOrMask - A function returning boolean, 
+     *        or an array/NDArray of the same shape/size containing truthy/falsy values.
+     * @returns {NDArray} A new 1D NDArray containing the matched elements.
+     */
+    filter(predicateOrMask) {
+        const results = [];
+        const shape = this.shape;
+        const strides = this.strides;
+        const ndim = this.ndim;
+
+        // --- Preparation: Determine if we are using a callback or a mask ---
+        const isCallback = typeof predicateOrMask === 'function';
+        let maskData = null;
+        let maskOffset = 0;
+        let maskStrides = null;
+
+        if (!isCallback) {
+            // If it's an Array/NDArray, ensure we can iterate it alongside 'this'
+            if (predicateOrMask instanceof NDArray) {
+                if (predicateOrMask.size !== this.size) {
+                    throw new Error("Mask size must match array size");
+                }
+                // If it's an NDArray, we'll use its internal data and strides
+                maskData = predicateOrMask.data;
+                maskOffset = predicateOrMask.offset;
+                maskStrides = predicateOrMask.strides;
+                // Note: We assume the mask has a broadcastable or identical shape.
+                // For simplicity, we assume same shape or flattened match.
+            } else if (Array.isArray(predicateOrMask)) {
+                if (predicateOrMask.length !== this.size) {
+                    throw new Error("Mask length must match array size");
+                }
+                maskData = predicateOrMask;
+            }
+        }
+
+        // --- Optimized Traversal ---
+        const currentIdx = new Int32Array(ndim);
+        let currPos = this.offset;
+        let currMaskPos = maskOffset;
+
+        for (let n = 0; n < this.size; n++) {
+            const val = this.data[currPos];
+            let keep = false;
+
+            if (isCallback) {
+                // Callback receives: value, current multi-dim index, and the array itself
+                keep = predicateOrMask(val, currentIdx, this);
+            } else {
+                // Mask lookup
+                keep = maskStrides 
+                    ? maskData[currMaskPos] 
+                    : maskData[n]; // Plain array is assumed flattened
+            }
+
+            if (keep) {
+                results.push(val);
+            }
+
+            // Incremental pointer update for the source array
+            for (let d = ndim - 1; d >= 0; d--) {
+                if (++currentIdx[d] < shape[d]) {
+                    currPos += strides[d];
+                    if (maskStrides) currMaskPos += maskStrides[d];
+                    break;
+                } else {
+                    currentIdx[d] = 0;
+                    currPos -= (shape[d] - 1) * strides[d];
+                    if (maskStrides) currMaskPos -= (shape[d] - 1) * maskStrides[d];
+                }
+            }
+        }
+
+        // Return as a 1D NDArray
+        const Constructor = DTYPE_MAP[this.dtype];
+        return new NDArray(new Constructor(results), {
+            shape: [results.length],
+            dtype: this.dtype
+        });
+    }
+
+    /**
+     * @return {NDArray} - new flatten view to the array
+     */
+    flatten(){
+        return this.slice().reshape(this.size);
+    }
+
+    
+
+
+
+
+    //--------------------NDWasm---------------------
+    /**
+     * Projects the current ndarray to a WASM proxy (WasmBuffer).
+     * 
+     * @param {WasmRuntime} runtime 
+     * @returns {WasmBuffer} A WasmBuffer instance representing the NDArray in WASM memory.
+     */
+    toWasm(runtime) {
+        const bridge = runtime.createBuffer(this.size, this.dtype);
+        
+        if (this.isContiguous) {
+            // Fast path for contiguous data
+            bridge.push(this.data.subarray(this.offset, this.offset + this.size));
+        } else {
+            // High-speed flattening path for non-contiguous views
+            const target = bridge.view;
+            
+            // Re-use or create a "Flatten" kernel (Identity Unary Kernel)
+            const cacheKey = `toWasm|${this.dtype}|${this.shape}|${this.strides}`;
+            // '${val}' tells the kernel to copy the value as-is
+            let kernel = Jit._createUnaryKernel(cacheKey, this.shape, this.strides, '${val}');
+
+            // Execute the JIT kernel: copies from this.data (non-contiguous) 
+            // to target (contiguous) starting at target index 0.
+            kernel(this.data, target, this.offset, 0);            
+        }
+        return bridge;
+    }
+
+    /**
+     * push to wasm
+     * @returns {NDWasmArray}
+     */
+    push() {
+        if (!NDWasm.runtime?.isLoaded) throw new Error("WasmRuntime not bound.");
+        const buffer = this.toWasm(NDWasm.runtime);
+        return new NDWasmArray(buffer, this.shape, this.dtype);
+    }
+
+
+    /**
+     * Calculates the trace of a 2D square matrix (sum of diagonal elements).
+     * Complexity: O(n)
+     * 
+     * @returns {number} The sum of the diagonal elements.
+     * @throws {Error} If the array is not 2D or not a square matrix.
+     */
+    trace() {
+        return NDWasmBlas.trace(this);
+    }
+
+    /**
+     * Performs matrix multiplication. This is a wrapper around `NDWasmBlas.matmul`.
+     * @param {NDArray} other The right-hand side matrix.
+     * @returns {NDArray} The result of the matrix multiplication.
+     * @see NDWasmBlas.matmul
+     * 
+     */
+    matmul(other) { return NDWasmBlas.matmul(this, other); }
+    /**
+     * Computes the matrix power. This is a wrapper around `NDWasmBlas.matPow`.
+     * @param {number} k The exponent.
+     * @returns {NDArray} The result of the matrix power.
+     * @see NDWasmBlas.matPow
+     * 
+     */
+    matPow(k) { return NDWasmBlas.matPow(this, k); }
+    /**
+     * Performs batched matrix multiplication. This is a wrapper around `NDWasmBlas.matmulBatch`.
+     * @param {NDArray} other The right-hand side batch of matrices.
+     * @returns {NDArray} The result of the batched matrix multiplication.
+     * @see NDWasmBlas.matmulBatch
+     * 
+     */
+    matmulBatch(other) { return NDWasmBlas.matmulBatch(this, other); }
+    /**
+     * Performs matrix-vector multiplication. This is a wrapper around `NDWasmBlas.matVecMul`.
+     * @param {NDArray} vec The vector to multiply by.
+     * @returns {NDArray} The resulting vector.
+     * @see NDWasmBlas.matVecMul
+     * 
+     */
+    matVecMul(vec) { return NDWasmBlas.matVecMul(this, vec); }
+    /**
+     * Performs a symmetric rank-k update. This is a wrapper around `NDWasmBlas.syrk`.
+     * @returns {NDArray} The resulting symmetric matrix.
+     * @see NDWasmBlas.syrk
+     * 
+     */
+    syrk() { return NDWasmBlas.syrk(this); }
+    /**
+     * Computes the vector outer product. This is a wrapper around `NDWasmBlas.ger`.
+     * @param {NDArray} other The other vector.
+     * @returns {NDArray} The resulting matrix.
+     * @see NDWasmBlas.ger
+     * 
+     */
+    ger(other) { return NDWasmBlas.ger(this, other); }
+    /**
+     * Computes the Kronecker product. This is a wrapper around `NDWasmAnalysis.kronecker`.
+     * @param {NDArray} other The other matrix.
+     * @returns {NDArray} The result of the Kronecker product.
+     * @see NDWasmAnalysis.kronecker
+     * 
+     */
+    kronecker(other) { return NDWasmAnalysis.kronecker(this, other); }
+
+    // 2. Decompositions & Solvers
+    /**
+     * Solves a system of linear equations. This is a wrapper around `NDWasmDecomp.solve`.
+     * @param {NDArray} b The right-hand side matrix or vector.
+     * @returns {NDArray} The solution matrix.
+     * @see NDWasmDecomp.solve
+     * 
+     */
+    solve(b) { return NDWasmDecomp.solve(this, b); }
+    /**
+     * Computes the multiplicative inverse of the matrix. This is a wrapper around `NDWasmDecomp.inv`.
+     * @returns {NDArray} The inverted matrix.
+     * @see NDWasmDecomp.inv
+     * 
+     */
+    inv() { return NDWasmDecomp.inv(this); }
+    /**
+     * Computes the Moore-Penrose pseudo-inverse of the matrix. This is a wrapper around `NDWasmDecomp.pinv`.
+     * @returns {NDArray} The pseudo-inverted matrix.
+     * @see NDWasmDecomp.pinv
+     * 
+     */
+    pinv() { return NDWasmDecomp.pinv(this); }
+    /**
+     * Computes the Singular Value Decomposition (SVD). This is a wrapper around `NDWasmDecomp.svd`.
+     * @returns {{{q: NDArray, r: NDArray}}} An object containing the U, S, and V matrices.
+     * @see NDWasmDecomp.svd
+     * 
+     */
+    svd() { return NDWasmDecomp.svd(this); }
+    /**
+     * Computes the QR decomposition. This is a wrapper around `NDWasmDecomp.qr`.
+     * @returns {Object} An object containing the Q and R matrices.
+     * @see NDWasmDecomp.qr
+     * 
+     */
+    qr() { return NDWasmDecomp.qr(this); }
+    /**
+     * Computes the Cholesky decomposition. This is a wrapper around `NDWasmDecomp.cholesky`.
+     * @returns {NDArray} The lower triangular matrix L.
+     * @see NDWasmDecomp.cholesky
+     * 
+     */
+    cholesky() { return NDWasmDecomp.cholesky(this); }
+    /**
+     * Computes the determinant of the matrix. This is a wrapper around `NDWasmDecomp.det`.
+     * @returns {number} The determinant.
+     * @see NDWasmDecomp.det
+     * @memberof NDWasmDecomp.prototype
+     */
+    det() { return NDWasmDecomp.det(this); }
+    /**
+     * Computes the log-determinant of the matrix. This is a wrapper around `NDWasmDecomp.logDet`.
+     * @returns {{{sign: number, logAbsDet: number}}} An object containing the sign and log-absolute-determinant.
+     * @see NDWasmDecomp.logDet
+     * @memberof NDWasmDecomp.prototype
+     */
+    logDet() { return NDWasmDecomp.logDet(this); }
+    /**
+     * Computes the LU decomposition. This is a wrapper around `NDWasmDecomp.lu`.
+     * @returns {NDArray} The LU matrix.
+     * @see NDWasmDecomp.lu
+     * 
+     */
+    lu() { return NDWasmDecomp.lu(this); }
+
+    /**
+     * Computes the eigenvalues and eigenvectors of a general square matrix.
+     * @returns {{values: NDArray, vectors: NDArray}} An object containing eigenvalues and eigenvectors.
+     * @see NDWasmDecomp.eigen
+     */
+    eigen() { return NDWasmDecomp.eigen(this); }
+
+    // 3. Signal Processing
+    /**
+     * Computes the 1D Fast Fourier Transform. This is a wrapper around `NDWasmSignal.fft`.
+     * @this {{NDArray}} Complex array with shape [..., 2].
+     * @returns {{NDArray}} Complex result with shape [..., 2].
+     * @see NDWasmSignal.fft
+     * 
+     */
+    fft() { return NDWasmSignal.fft(this); }
+    /**
+     * Computes the 1D Inverse Fast Fourier Transform. This is a wrapper around `NDWasmSignal.ifft`.
+     * @this {{NDArray}} Complex array with shape [..., 2].
+     * @returns {{NDArray}} Complex result with shape [..., 2].
+     * @see NDWasmSignal.ifft
+     * 
+     */
+    ifft() { return NDWasmSignal.ifft(this, imag); }
+    /**
+     * Computes the 1D Real-to-Complex Fast Fourier Transform. This is a wrapper around `NDWasmSignal.rfft`.
+     * @this {{NDArray}} real input array.
+     * @returns {{NDArray}} Complex result with shape [..., 2].
+     * @see NDWasmSignal.rfft
+     * 
+     */
+    rfft() { return NDWasmSignal.rfft(this); }
+    /**
+     * 1D Complex-to-Real Inverse Fast Fourier Transform.
+     * The input must be a complex array of shape [k, 2], where k is n/2 + 1. This is a wrapper around `NDWasmSignal.rifft`.
+    *  @returns {NDArray} Real-valued time domain signal.
+     * @this {NDArray} Complex frequency signal of shape [n/2 + 1, 2]
+     * @param {number} n - Length of the original real signal.
+     * @see NDWasmSignal.rifft
+     * 
+     */
+    rifft(n) { return NDWasmSignal.rifft(this, n); }
+    /**
+     * Computes the 2D Fast Fourier Transform. The input array must be 3D with shape [rows, cols, 2].
+     * This is a wrapper around `NDWasmSignal.fft2`.
+     * @returns {NDArray} 2D Complex result, with the same shape as input.
+     * @see NDWasmSignal.fft2
+     * 
+     */
+    fft2() { return NDWasmSignal.fft2(this); }
+    /**
+     * 2D Inverse Complex-to-Complex Fast Fourier Transform.
+     * The input array must be 3D with shape [rows, cols, 2].
+     * The transform is performed in-place.
+     * This is a wrapper around `NDWasmSignal.ifft2`.
+     * @returns {NDArray} 2D Complex result, with the same shape as input.
+     * @see NDWasmSignal.ifft2
+     * 
+     */
+    ifft2() { return NDWasmSignal.ifft2(this); }
+    /**
+     * Computes the 1D Discrete Cosine Transform. This is a wrapper around `NDWasmSignal.dct`.
+     * @returns {NDArray} The result of the DCT.
+     * @see NDWasmSignal.dct
+     * 
+     */
+    dct() { return NDWasmSignal.dct(this); }
+    /**
+     * Performs 2D spatial convolution. This is a wrapper around `NDWasmSignal.conv2d`.
+     * @param {NDArray} kernel The convolution kernel.
+     * @param {number} stride The stride.
+     * @param {number} padding The padding.
+     * @returns {NDArray} The convolved array.
+     * @see NDWasmSignal.conv2d
+     * 
+     */
+    conv2d(kernel, stride, padding) { return NDWasmSignal.conv2d(this, kernel, stride, padding); }
+    /**
+     * Performs 2D spatial cross-correlation. This is a wrapper around `NDWasmSignal.correlate2d`.
+     * @param {NDArray} kernel The correlation kernel.
+     * @param {number} stride The stride.
+     * @param {number} padding The padding.
+     * @returns {NDArray} The correlated array.
+     * @see NDWasmSignal.correlate2d
+     * 
+     */
+    correlate2d(kernel, stride, padding) { return NDWasmSignal.correlate2d(this, kernel, stride, padding); }
+
+    // 4. Analysis & Stats
+    /**
+     * Returns the indices that would sort the array. This is a wrapper around `NDWasmAnalysis.argsort`.
+     * @returns {NDArray} An array of indices.
+     * @see NDWasmAnalysis.argsort
+     * 
+     */
+    argsort() { return NDWasmAnalysis.argsort(this); }
+    /**
+     * Finds the top K largest or smallest elements. This is a wrapper around `NDWasmAnalysis.topk`.
+     * @param {number} k The number of elements to find.
+     * @param {boolean} largest Whether to find the largest or smallest elements.
+     * @returns {{values: NDArray, indices: NDArray}} An object containing the values and indices of the top K elements.
+     * @see NDWasmAnalysis.topk
+     * 
+     */
+    topk(k, largest) { return NDWasmAnalysis.topk(this, k, largest); }
+    /**
+     * Computes the covariance matrix. This is a wrapper around `NDWasmAnalysis.cov`.
+     * @returns {NDArray} The covariance matrix.
+     * @see NDWasmAnalysis.cov
+     * 
+     */
+    cov() { return NDWasmAnalysis.cov(this); }
+    /**
+     * Computes the matrix norm. This is a wrapper around `NDWasmAnalysis.norm`.
+     * @param {number} type The type of norm to compute.
+     * @returns {number} The norm of the matrix.
+     * @see NDWasmAnalysis.norm
+     * 
+     */
+    norm(type) { return NDWasmAnalysis.norm(this, type); }
+    /**
+     * Computes the rank of the matrix. This is a wrapper around `NDWasmAnalysis.rank`.
+     * @param {number} tol The tolerance for singular values.
+     * @returns {number} The rank of the matrix.
+     * @see NDWasmAnalysis.rank
+     * 
+     */
+    rank(tol) { return NDWasmAnalysis.rank(this, tol); }
+    /**
+     * Computes the eigenvalue decomposition for a symmetric matrix. This is a wrapper around `NDWasmAnalysis.eigenSym`.
+     * @param {boolean} vectors Whether to compute the eigenvectors.
+     * @returns {{values: NDArray, vectors: NDArray|null}} An object containing the eigenvalues and eigenvectors.
+     * @see NDWasmAnalysis.eigenSym
+     * 
+     */
+    eigenSym(vectors) { return NDWasmAnalysis.eigenSym(this, vectors); }
+    /**
+     * Estimates the reciprocal condition number of the matrix. This is a wrapper around `NDWasmAnalysis.cond`.
+     * @param {number} norm The norm type.
+     * @returns {number} The reciprocal condition number.
+     * @see NDWasmAnalysis.cond
+     * 
+     */
+    cond(norm=1) { return NDWasmAnalysis.cond(this, norm); }
+    
+    // 5. Spatial
+    /**
+     * Computes the pairwise distances between two sets of vectors. This is a wrapper around `NDWasmAnalysis.pairwiseDist`.
+     * @param {NDArray} other The other set of vectors.
+     * @returns {NDArray} The distance matrix.
+     * @see NDWasmAnalysis.pairwiseDist
+     * 
+     */
+    pairwiseDist(other) { return NDWasmAnalysis.pairwiseDist(this, other); }
+    /**
+     * Performs K-Means clustering. This is a wrapper around `NDWasmAnalysis.kmeans`.
+     * @param {number} k The number of clusters.
+     * @param {number} maxIter The maximum number of iterations.
+     * @returns {{centroids: NDArray,labels: NDArray,iterations: number}} An object containing the centroids, labels, and number of iterations.
+     * @see NDWasmAnalysis.kmeans
+     * 
+     */
+    kmeans(k, maxIter) { return NDWasmAnalysis.kmeans(this, k, maxIter); }
+
+
+
+
+
+
+    _binaryOp(other, opFn, isInplace = false) {
+        // Unify scalars by wrapping them into a 1D/0D NDArray.
+        // broadcastShapes will naturally assign a stride of 0 to broadcasted dimensions.
+        const b = (typeof other === 'number') ? array([other]) : other;
+        const { outShape, strideA, strideB } = broadcastShapes(this, b);
+        const result = isInplace ? this : zeros(outShape, this.dtype);
+        
+        const strideOut = result.strides;
+        const opStr = opFn.toString();
+
+        // Unique key for the specific memory layout and operation
+        const cacheKey = `bin|${this.dtype}|${result.dtype}|${opStr}|${outShape}|${strideA}|${strideB}|${strideOut}`;
+        
+        let kernel = Jit._createBinKernel(cacheKey, outShape, strideA, strideB, strideOut, opStr, false);
+
+        // Execute the JIT-compiled kernel
+        kernel(this.data, b.data, result.data, this.offset, b.offset, result.offset);
+        return result;
+    }
+
+    _comparisonOp(other, compFn) {
+        const b = (typeof other === 'number') ? array([other]) : other;
+        const { outShape, strideA, strideB } = broadcastShapes(this, b);
+        const result = zeros(outShape, 'uint8');
+        
+        const strideOut = result.strides;
+        const opStr = compFn.toString();
+
+        const cacheKey = `comp|${this.dtype}|${opStr}|${outShape}|${strideA}|${strideB}|${strideOut}`;
+        
+        let kernel = Jit._createBinKernel(cacheKey, outShape, strideA, strideB, strideOut, opStr, true);
+
+        kernel(this.data, b.data, result.data, this.offset, b.offset, result.offset);
+        return result;
+    }
+
+
+}
+
+
+
+
+// --- Broadcasting Helper ---
+
+/**
+ * Calculates the resulting shape from broadcasting two shapes and returns the
+ * corresponding strides for each input array to match that new shape.
+ * @private
+ * @param {NDArray} a - First array.
+ * @param {NDArray} b - Second array.
+ * @returns {{outShape: Int32Array, strideA: Int32Array, strideB: Int32Array}}
+ */
+function broadcastShapes(a, b) {
+    const ndim = Math.max(a.ndim, b.ndim);
+    const outShape = new Int32Array(ndim);
+    const strideA = new Int32Array(ndim);
+    const strideB = new Int32Array(ndim);
+
+    for (let i = 1; i <= ndim; i++) {
+        const dimA = a.shape[a.ndim - i] || 1;
+        const dimB = b.shape[b.ndim - i] || 1;
+        const sA = a.strides[a.ndim - i] || 0;
+        const sB = b.strides[b.ndim - i] || 0;
+
+        const outDimI = ndim - i;
+
+        if (dimA === dimB) {
+            outShape[outDimI] = dimA;
+            strideA[outDimI] = sA;
+            strideB[outDimI] = sB;
+        } else if (dimA === 1) {
+            outShape[outDimI] = dimB;
+            strideA[outDimI] = 0; // Stride is 0 for broadcasted dimension
+            strideB[outDimI] = sB;
+        } else if (dimB === 1) {
+            outShape[outDimI] = dimA;
+            strideA[outDimI] = sA;
+            strideB[outDimI] = 0; // Stride is 0 for broadcasted dimension
+        } else {
+            throw new Error(`Incompatible shapes for broadcasting: [${a.shape}] and [${b.shape}]`);
+        }
+    }
+    return { outShape, strideA, strideB };
+}

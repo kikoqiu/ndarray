@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>ndwasm_analysis.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="NDArray.html">NDArray</a><ul class='methods'><li data-type='method'><a href="NDArray.html#abs">abs</a></li><li data-type='method'><a href="NDArray.html#add">add</a></li><li data-type='method'><a href="NDArray.html#all">all</a></li><li data-type='method'><a href="NDArray.html#any">any</a></li><li data-type='method'><a href="NDArray.html#argmax">argmax</a></li><li data-type='method'><a href="NDArray.html#argmin">argmin</a></li><li data-type='method'><a href="NDArray.html#argsort">argsort</a></li><li data-type='method'><a href="NDArray.html#asContiguous">asContiguous</a></li><li data-type='method'><a href="NDArray.html#bitwise_and">bitwise_and</a></li><li data-type='method'><a href="NDArray.html#bitwise_lshift">bitwise_lshift</a></li><li data-type='method'><a href="NDArray.html#bitwise_not">bitwise_not</a></li><li data-type='method'><a href="NDArray.html#bitwise_or">bitwise_or</a></li><li data-type='method'><a href="NDArray.html#bitwise_rshift">bitwise_rshift</a></li><li data-type='method'><a href="NDArray.html#bitwise_xor">bitwise_xor</a></li><li data-type='method'><a href="NDArray.html#ceil">ceil</a></li><li data-type='method'><a href="NDArray.html#cholesky">cholesky</a></li><li data-type='method'><a href="NDArray.html#colview">colview</a></li><li data-type='method'><a href="NDArray.html#cond">cond</a></li><li data-type='method'><a href="NDArray.html#conv2d">conv2d</a></li><li data-type='method'><a href="NDArray.html#copy">copy</a></li><li data-type='method'><a href="NDArray.html#correlate2d">correlate2d</a></li><li data-type='method'><a href="NDArray.html#cos">cos</a></li><li data-type='method'><a href="NDArray.html#cov">cov</a></li><li data-type='method'><a href="NDArray.html#cumprod">cumprod</a></li><li data-type='method'><a href="NDArray.html#dct">dct</a></li><li data-type='method'><a href="NDArray.html#div">div</a></li><li data-type='method'><a href="NDArray.html#eigen">eigen</a></li><li data-type='method'><a href="NDArray.html#eigenSym">eigenSym</a></li><li data-type='method'><a href="NDArray.html#eq">eq</a></li><li data-type='method'><a href="NDArray.html#exp">exp</a></li><li data-type='method'><a href="NDArray.html#fft">fft</a></li><li data-type='method'><a href="NDArray.html#fft2">fft2</a></li><li data-type='method'><a href="NDArray.html#filter">filter</a></li><li data-type='method'><a href="NDArray.html#flatten">flatten</a></li><li data-type='method'><a href="NDArray.html#floor">floor</a></li><li data-type='method'><a href="NDArray.html#ger">ger</a></li><li data-type='method'><a href="NDArray.html#get">get</a></li><li data-type='method'><a href="NDArray.html#gt">gt</a></li><li data-type='method'><a href="NDArray.html#gte">gte</a></li><li data-type='method'><a href="NDArray.html#iadd">iadd</a></li><li data-type='method'><a href="NDArray.html#idiv">idiv</a></li><li data-type='method'><a href="NDArray.html#ifft">ifft</a></li><li data-type='method'><a href="NDArray.html#ifft2">ifft2</a></li><li data-type='method'><a href="NDArray.html#imod">imod</a></li><li data-type='method'><a href="NDArray.html#imul">imul</a></li><li data-type='method'><a href="NDArray.html#inv">inv</a></li><li data-type='method'><a href="NDArray.html#ipow">ipow</a></li><li data-type='method'><a href="NDArray.html#isub">isub</a></li><li data-type='method'><a href="NDArray.html#iterate">iterate</a></li><li data-type='method'><a href="NDArray.html#kmeans">kmeans</a></li><li data-type='method'><a href="NDArray.html#kronecker">kronecker</a></li><li data-type='method'><a href="NDArray.html#log">log</a></li><li data-type='method'><a href="NDArray.html#logical_and">logical_and</a></li><li data-type='method'><a href="NDArray.html#logical_not">logical_not</a></li><li data-type='method'><a href="NDArray.html#logical_or">logical_or</a></li><li data-type='method'><a href="NDArray.html#lt">lt</a></li><li data-type='method'><a href="NDArray.html#lte">lte</a></li><li data-type='method'><a href="NDArray.html#lu">lu</a></li><li data-type='method'><a href="NDArray.html#map">map</a></li><li data-type='method'><a href="NDArray.html#matPow">matPow</a></li><li data-type='method'><a href="NDArray.html#matVecMul">matVecMul</a></li><li data-type='method'><a href="NDArray.html#matmul">matmul</a></li><li data-type='method'><a href="NDArray.html#matmulBatch">matmulBatch</a></li><li data-type='method'><a href="NDArray.html#max">max</a></li><li data-type='method'><a href="NDArray.html#mean">mean</a></li><li data-type='method'><a href="NDArray.html#min">min</a></li><li data-type='method'><a href="NDArray.html#mod">mod</a></li><li data-type='method'><a href="NDArray.html#mul">mul</a></li><li data-type='method'><a href="NDArray.html#neg">neg</a></li><li data-type='method'><a href="NDArray.html#neq">neq</a></li><li data-type='method'><a href="NDArray.html#norm">norm</a></li><li data-type='method'><a href="NDArray.html#pairwiseDist">pairwiseDist</a></li><li data-type='method'><a href="NDArray.html#pick">pick</a></li><li data-type='method'><a href="NDArray.html#pinv">pinv</a></li><li data-type='method'><a href="NDArray.html#pow">pow</a></li><li data-type='method'><a href="NDArray.html#push">push</a></li><li data-type='method'><a href="NDArray.html#qr">qr</a></li><li data-type='method'><a href="NDArray.html#rank">rank</a></li><li data-type='method'><a href="NDArray.html#reshape">reshape</a></li><li data-type='method'><a href="NDArray.html#rfft">rfft</a></li><li data-type='method'><a href="NDArray.html#rifft">rifft</a></li><li data-type='method'><a href="NDArray.html#round">round</a></li><li data-type='method'><a href="NDArray.html#rowview">rowview</a></li><li data-type='method'><a href="NDArray.html#set">set</a></li><li data-type='method'><a href="NDArray.html#sin">sin</a></li><li data-type='method'><a href="NDArray.html#slice">slice</a></li><li data-type='method'><a href="NDArray.html#solve">solve</a></li><li data-type='method'><a href="NDArray.html#sqrt">sqrt</a></li><li data-type='method'><a href="NDArray.html#squeeze">squeeze</a></li><li data-type='method'><a href="NDArray.html#std">std</a></li><li data-type='method'><a href="NDArray.html#sub">sub</a></li><li data-type='method'><a href="NDArray.html#sum">sum</a></li><li data-type='method'><a href="NDArray.html#svd">svd</a></li><li data-type='method'><a href="NDArray.html#syrk">syrk</a></li><li data-type='method'><a href="NDArray.html#tan">tan</a></li><li data-type='method'><a href="NDArray.html#toArray">toArray</a></li><li data-type='method'><a href="NDArray.html#toString">toString</a></li><li data-type='method'><a href="NDArray.html#toWasm">toWasm</a></li><li data-type='method'><a href="NDArray.html#topk">topk</a></li><li data-type='method'><a href="NDArray.html#trace">trace</a></li><li data-type='method'><a href="NDArray.html#transpose">transpose</a></li><li data-type='method'><a href="NDArray.html#var">var</a></li></ul></li><li><a href="NDWasmArray.html">NDWasmArray</a><ul class='methods'><li data-type='method'><a href="NDWasmArray.html#dispose">dispose</a></li><li data-type='method'><a href="NDWasmArray.html#matmul">matmul</a></li><li data-type='method'><a href="NDWasmArray.html#matmulBatch">matmulBatch</a></li><li data-type='method'><a href="NDWasmArray.html#pull">pull</a></li><li data-type='method'><a href="NDWasmArray.html#.fromArray">fromArray</a></li></ul></li><li><a href="WasmBuffer.html">WasmBuffer</a><ul class='methods'><li data-type='method'><a href="WasmBuffer.html#dispose">dispose</a></li><li data-type='method'><a href="WasmBuffer.html#pull">pull</a></li><li data-type='method'><a href="WasmBuffer.html#push">push</a></li><li data-type='method'><a href="WasmBuffer.html#refresh">refresh</a></li></ul></li><li><a href="WasmRuntime.html">WasmRuntime</a><ul class='methods'><li data-type='method'><a href="WasmRuntime.html#createBuffer">createBuffer</a></li><li data-type='method'><a href="WasmRuntime.html#init">init</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="NDProb.html">NDProb</a><ul class='methods'><li data-type='method'><a href="NDProb.html#.bernoulli">bernoulli</a></li><li data-type='method'><a href="NDProb.html#.exponential">exponential</a></li><li data-type='method'><a href="NDProb.html#.normal">normal</a></li><li data-type='method'><a href="NDProb.html#.poisson">poisson</a></li><li data-type='method'><a href="NDProb.html#.random">random</a></li></ul></li><li><a href="NDWasm.html">NDWasm</a><ul class='methods'><li data-type='method'><a href="NDWasm.html#._compute">_compute</a></li><li data-type='method'><a href="NDWasm.html#.bind">bind</a></li><li data-type='method'><a href="NDWasm.html#.init">init</a></li></ul></li><li><a href="NDWasmAnalysis.html">NDWasmAnalysis</a><ul class='methods'><li data-type='method'><a href="NDWasmAnalysis.html#.argsort">argsort</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.cond">cond</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.corr">corr</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.cov">cov</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.eigenSym">eigenSym</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.kmeans">kmeans</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.kronecker">kronecker</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.norm">norm</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.pairwiseDist">pairwiseDist</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.rank">rank</a></li><li data-type='method'><a href="NDWasmAnalysis.html#.topk">topk</a></li></ul></li><li><a href="NDWasmBlas.html">NDWasmBlas</a><ul class='methods'><li data-type='method'><a href="NDWasmBlas.html#.ger">ger</a></li><li data-type='method'><a href="NDWasmBlas.html#.matPow">matPow</a></li><li data-type='method'><a href="NDWasmBlas.html#.matVecMul">matVecMul</a></li><li data-type='method'><a href="NDWasmBlas.html#.matmul">matmul</a></li><li data-type='method'><a href="NDWasmBlas.html#.matmulBatch">matmulBatch</a></li><li data-type='method'><a href="NDWasmBlas.html#.syrk">syrk</a></li><li data-type='method'><a href="NDWasmBlas.html#.trace">trace</a></li><li data-type='method'><a href="NDWasmBlas.html#.trsm">trsm</a></li></ul></li><li><a href="NDWasmDecomp.html">NDWasmDecomp</a><ul class='methods'><li data-type='method'><a href="NDWasmDecomp.html#.cholesky">cholesky</a></li><li data-type='method'><a href="NDWasmDecomp.html#.det">det</a></li><li data-type='method'><a href="NDWasmDecomp.html#.eigen">eigen</a></li><li data-type='method'><a href="NDWasmDecomp.html#.inv">inv</a></li><li data-type='method'><a href="NDWasmDecomp.html#.logDet">logDet</a></li><li data-type='method'><a href="NDWasmDecomp.html#.lu">lu</a></li><li data-type='method'><a href="NDWasmDecomp.html#.pinv">pinv</a></li><li data-type='method'><a href="NDWasmDecomp.html#.qr">qr</a></li><li data-type='method'><a href="NDWasmDecomp.html#.solve">solve</a></li><li data-type='method'><a href="NDWasmDecomp.html#.svd">svd</a></li></ul></li><li><a href="NDWasmImage.html">NDWasmImage</a><ul class='methods'><li data-type='method'><a href="NDWasmImage.html#.convertUint8ArrrayToDataurl">convertUint8ArrrayToDataurl</a></li><li data-type='method'><a href="NDWasmImage.html#.decode">decode</a></li><li data-type='method'><a href="NDWasmImage.html#.encode">encode</a></li><li data-type='method'><a href="NDWasmImage.html#.encodeJpeg">encodeJpeg</a></li><li data-type='method'><a href="NDWasmImage.html#.encodePng">encodePng</a></li></ul></li><li><a href="NDWasmOptimize.html">NDWasmOptimize</a><ul class='methods'><li data-type='method'><a href="NDWasmOptimize.html#.linearRegression">linearRegression</a></li><li data-type='method'><a href="NDWasmOptimize.html#.linprog">linprog</a></li><li data-type='method'><a href="NDWasmOptimize.html#.minimize">minimize</a></li></ul></li><li><a href="NDWasmSignal.html">NDWasmSignal</a><ul class='methods'><li data-type='method'><a href="NDWasmSignal.html#.conv2d">conv2d</a></li><li data-type='method'><a href="NDWasmSignal.html#.correlate2d">correlate2d</a></li><li data-type='method'><a href="NDWasmSignal.html#.dct">dct</a></li><li data-type='method'><a href="NDWasmSignal.html#.fft">fft</a></li><li data-type='method'><a href="NDWasmSignal.html#.fft2">fft2</a></li><li data-type='method'><a href="NDWasmSignal.html#.ifft">ifft</a></li><li data-type='method'><a href="NDWasmSignal.html#.ifft2">ifft2</a></li><li data-type='method'><a href="NDWasmSignal.html#.rfft">rfft</a></li><li data-type='method'><a href="NDWasmSignal.html#.rifft">rifft</a></li></ul></li><li><a href="help.html">help</a><ul class='methods'><li data-type='method'><a href="help.html#.getHelpDoc">getHelpDoc</a></li><li data-type='method'><a href="help.html#.helpdoc">helpdoc</a></li><li data-type='method'><a href="help.html#.helphtml">helphtml</a></li></ul></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-1-creation.html">1-creation</a></li><li><a href="tutorial-2-basic-operations.html">2-basic-operations</a></li><li><a href="tutorial-3-basic-indexing-slicing.html">3-basic-indexing-slicing</a></li><li><a href="tutorial-4-advanced-indexing-setting.html">4-advanced-indexing-setting</a></li><li><a href="tutorial-5-data-management.html">5-data-management</a></li><li><a href="tutorial-6-wasm-integration.html">6-wasm-integration</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DTYPE_MAP">DTYPE_MAP</a></li><li><a href="global.html#arange">arange</a></li><li><a href="global.html#array">array</a></li><li><a href="global.html#concat">concat</a></li><li><a href="global.html#eye">eye</a></li><li><a href="global.html#float32">float32</a></li><li><a href="global.html#float64">float64</a></li><li><a href="global.html#fromWasm">fromWasm</a></li><li><a href="global.html#full">full</a></li><li><a href="global.html#int16">int16</a></li><li><a href="global.html#int32">int32</a></li><li><a href="global.html#int8">int8</a></li><li><a href="global.html#linspace">linspace</a></li><li><a href="global.html#ones">ones</a></li><li><a href="global.html#stack">stack</a></li><li><a href="global.html#uint16">uint16</a></li><li><a href="global.html#uint32">uint32</a></li><li><a href="global.html#uint8">uint8</a></li><li><a href="global.html#uint8c">uint8c</a></li><li><a href="global.html#where">where</a></li><li><a href="global.html#zeros">zeros</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">ndwasm_analysis.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { NDArray } from './ndarray_core.js';
+import { NDWasm, fromWasm } from './ndwasm.js';
+/**
+ * NDWasmAnalysis: Advanced Analysis, Stats, Spatial &amp; Random
+ * Handles O(n log n) sorting, O(n*d^2) statistics, O(n^3) matrix properties,
+ * spatial clustering, and high-performance random sampling.
+ * @namespace NDWasmAnalysis
+ */
+export const NDWasmAnalysis = {
+    // --- 1. Sorting &amp; Searching (O(n log n)) ---
+
+    /**
+     * Returns the indices that would sort an array.
+     * @memberof NDWasmAnalysis
+     * @param {NDArray} a - Input array.
+     * @returns {NDArray} Indices as Int32 NDArray.
+     */
+    argsort(a) {
+        const wa = a.toWasm(NDWasm.runtime);
+        const wi = NDWasm.runtime.createBuffer(a.size, 'int32');
+        try {
+            const suffix = NDWasm.runtime._getSuffix(a.dtype);
+            NDWasm.runtime.exports[`ArgSort${suffix}`](wa.ptr, wi.ptr, a.size);
+            return fromWasm(wi, a.shape, 'int32');
+        } finally {
+            wa.dispose();
+            wi.dispose();
+        }
+    },
+
+    /**
+     * Finds the largest or smallest K elements and their indices.
+     * Complexity: O(n log k)
+     * @memberof NDWasmAnalysis
+     * @param {NDArray} a - Input array.
+     * @param {number} k - Number of elements to return.
+     * @param {boolean} largest - If true, find max elements; else min.
+     * @returns {{values: NDArray, indices: NDArray}}
+     */
+    topk(a, k, largest = true) {
+        const wa = a.toWasm(NDWasm.runtime);
+        const wv = NDWasm.runtime.createBuffer(k, a.dtype);
+        const wi = NDWasm.runtime.createBuffer(k, 'int32');
+        try {
+            const suffix = NDWasm.runtime._getSuffix(a.dtype);
+            NDWasm.runtime.exports[`TopK${suffix}`](wa.ptr, wv.ptr, wi.ptr, a.size, k, largest ? 1 : 0);
+            return {
+                values: fromWasm(wv, [k], a.dtype),
+                indices: fromWasm(wi, [k], 'int32')
+            };
+        } finally {
+            [wa, wv, wi].forEach(b => b.dispose());
+        }
+    },
+
+    // --- 2. Statistics &amp; Matrix Properties (O(n^2) to O(n^3)) ---
+
+    /**
+     * Computes the covariance matrix for a dataset of shape [n_samples, n_features].
+     * @memberof NDWasmAnalysis
+     * @param {NDArray} a - Data matrix.
+     * @returns {NDArray} Covariance matrix of shape [d, d].
+     */
+    cov(a) {
+        const [n, d] = a.shape;
+        const suffix = NDWasm.runtime._getSuffix(a.dtype);
+        return NDWasm._compute([a], [d, d], a.dtype, (aP, oP) => {
+            return NDWasm.runtime.exports[`Covariance${suffix}`](aP, oP, n, d);
+        });
+    },
+
+    /**
+     * Computes the Pearson correlation matrix for a dataset of shape [n_samples, n_features].
+     * @memberof NDWasmAnalysis
+     * @param {NDArray} a - Data matrix.
+     * @returns {NDArray} Correlation matrix of shape [d, d].
+     */
+    corr(a) {
+        const [n, d] = a.shape;
+        const suffix = NDWasm.runtime._getSuffix(a.dtype);
+        return NDWasm._compute([a], [d, d], a.dtype, (aP, oP) => {
+            return NDWasm.runtime.exports[`Correlation${suffix}`](aP, oP, n, d);
+        });
+    },
+
+    /**
+     * Computes the matrix norm.
+     * @memberof NDWasmAnalysis
+     * @param {NDArray} a - Input matrix.
+     * @param {number} type - 1 (The maximum absolute column sum), 2 (Frobenius), Infinity (The maximum absolute row sum)
+     * @returns {number} The norm value.
+     */
+    norm(a, type = 2) {
+        const suffix = NDWasm.runtime._getSuffix(a.dtype);
+        const wa = a.toWasm(NDWasm.runtime);
+        try {
+            return NDWasm.runtime.exports[`MatrixNorm${suffix}`](wa.ptr, a.shape[0], a.ndim ==1 ? 1 : a.shape[1], type);
+        } finally {
+            wa.dispose();
+        }
+    },
+
+    /**
+     * Computes the rank of a matrix using SVD.
+     * @memberof NDWasmAnalysis
+     * @param {NDArray} a - Input matrix.
+     * @param {number} tol - Tolerance for singular values (0 for 1e-14).
+     * @returns {number} Integer rank of the matrix.
+     */
+    rank(a, tol = 0) {
+        const wa = a.toWasm(NDWasm.runtime);
+        try {
+            const suffix = NDWasm.runtime._getSuffix(a.dtype);
+            return NDWasm.runtime.exports[`Rank${suffix}`](wa.ptr, a.shape[0], a.shape[1], tol);
+        } finally {
+            wa.dispose();
+        }
+    },
+    
+    /**
+     * estimates the reciprocal condition number of matrix a.
+     * @memberof NDWasmAnalysis
+     * @param {NDArray} a - Input matrix.
+     * @param {number} norm - norm: 1 (1-norm) or Infinity (Infinity norm).
+     * @returns {number} result.
+    */
+    cond(a, norm = 1) {
+        const wa = a.toWasm(NDWasm.runtime);
+        try {
+            const suffix = NDWasm.runtime._getSuffix(a.dtype);
+            return NDWasm.runtime.exports[`Cond${suffix}`](wa.ptr, a.shape[0], norm);
+        } finally {
+            wa.dispose();
+        }
+    },
+
+    /**
+     * Eigenvalue decomposition for symmetric matrices.
+     * @memberof NDWasmAnalysis
+     * @param {NDArray} a - Symmetric square matrix.
+     * @param {boolean} computeVectors - Whether to return eigenvectors.
+     * @returns {{values: NDArray, vectors: NDArray|null}}
+     */
+    eigenSym(a, computeVectors = true) {
+        const n = a.shape[0];
+        const suffix = NDWasm.runtime._getSuffix(a.dtype);
+        const wa = a.toWasm(NDWasm.runtime);
+        const wv = NDWasm.runtime.createBuffer(n, a.dtype);
+        const we = computeVectors ? NDWasm.runtime.createBuffer(n * n, a.dtype) : { ptr: 0, dispose: () => {} };
+        try {
+            NDWasm.runtime.exports[`EigenSym${suffix}`](wa.ptr, n, wv.ptr, we.ptr);
+            return {
+                values: fromWasm(wv, [n], a.dtype),
+                vectors: computeVectors ? fromWasm(we, [n, n], a.dtype) : null
+            };
+        } finally {
+            [wa, wv, we].forEach(b => b.dispose());
+        }
+    },
+
+    // --- 3. Spatial &amp; Iterative (O(m*n*d)) ---
+
+    /**
+     * Computes pairwise Euclidean distances between two sets of vectors.
+     * @memberof NDWasmAnalysis
+     * @param {NDArray} a - Matrix of shape [m, d].
+     * @param {NDArray} b - Matrix of shape [n, d].
+     * @returns {NDArray} Distance matrix of shape [m, n].
+     */
+    pairwiseDist(a, b) {
+        const [m, d] = a.shape;
+        const n = b.shape[0];
+        const suffix = NDWasm.runtime._getSuffix(a.dtype);
+        return NDWasm._compute([a, b], [m, n], a.dtype, (aP, bP, oP) => {
+            return NDWasm.runtime.exports[`PairwiseDist${suffix}`](aP, bP, oP, m, n, d);
+        });
+    },
+
+    /**
+     * Performs K-Means clustering in WASM memory.
+     * @memberof NDWasmAnalysis
+     * @param {NDArray} data - Data of shape [n_samples, d_features].
+     * @param {number} k - Number of clusters.
+     * @param {number} maxIter - Maximum iterations.
+     * @returns {{centroids: NDArray, labels: NDArray, iterations: number}}
+     */
+    kmeans(data, k, maxIter = 100) {
+        const [n, d] = data.shape;
+        const suffix = NDWasm.runtime._getSuffix(data.dtype);
+        const wd = data.toWasm(NDWasm.runtime);
+        const wc = NDWasm.runtime.createBuffer(k * d, data.dtype); // Initial centroids
+        const wl = NDWasm.runtime.createBuffer(n, 'int32');
+        try {
+            const actualIters = NDWasm.runtime.exports[`KMeans${suffix}`](wd.ptr, wc.ptr, wl.ptr, n, d, k, maxIter);
+            return {
+                centroids: fromWasm(wc, [k, d], data.dtype),
+                labels: fromWasm(wl, [n], 'int32'),
+                iterations: actualIters
+            };
+        } finally {
+            [wd, wc, wl].forEach(b => b.dispose());
+        }
+    },
+
+    // --- 4. Advanced Structural (O(n^2 * m^2)) ---
+
+    /**
+     * Computes the Kronecker product C = A ⊗ B.
+     * @memberof NDWasmAnalysis
+     */
+    kronecker(a, b) {
+        const outShape = [a.shape[0] * b.shape[0], a.shape[1] * b.shape[1]];
+        const suffix = NDWasm.runtime._getSuffix(a.dtype);
+        return NDWasm._compute([a, b], outShape, a.dtype, (aP, bP, oP) => {
+            return NDWasm.runtime.exports[`Kronecker${suffix}`](aP, bP, oP, a.shape[0], a.shape[1], b.shape[0], b.shape[1]);
+        });
+    },
+
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Sat Jan 10 2026 22:03:26 GMT+0800 (中国标准时间) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
