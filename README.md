@@ -211,7 +211,7 @@ For more advanced and comprehensive usage examples, please refer to the files in
 ## API Documentation
 
 A live, searchable version of the API documentation can be found here:
-[**Full API Documentation**](./docs/index.html)
+[**Full API Documentation**](https://kikoqiu.github.io/ndarray/)
 
 This library is also self-documenting. You can get help on any class or function at runtime.
 
