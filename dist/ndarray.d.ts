@@ -1997,7 +1997,7 @@ declare module "ndarray_core" {
     import { WasmRuntime } from "ndwasm";
     import { NDWasmArray } from "ndwasmarray";
 }
-declare module "index" {
+declare module "ndarray" {
     export function init(baseDir?: string): Promise<void>;
     export const random: {
         _cryptoUniform01(size: any): Float64Array<any>;

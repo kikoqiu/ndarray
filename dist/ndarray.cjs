@@ -17,9 +17,9 @@ var __copyProps = (to, from, except, desc) => {
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// src/index.js
-var index_exports = {};
-__export(index_exports, {
+// src/ndarray.js
+var ndarray_exports = {};
+__export(ndarray_exports, {
   DTYPE_MAP: () => DTYPE_MAP,
   Jit: () => Jit,
   NDArray: () => NDArray,
@@ -40,7 +40,7 @@ __export(index_exports, {
   blas: () => blas2,
   concat: () => concat,
   decomp: () => decomp2,
-  default: () => index_default,
+  default: () => ndarray_default,
   eye: () => eye,
   float32: () => float32,
   float64: () => float64,
@@ -65,7 +65,7 @@ __export(index_exports, {
   where: () => where,
   zeros: () => zeros
 });
-module.exports = __toCommonJS(index_exports);
+module.exports = __toCommonJS(ndarray_exports);
 
 // src/ndarray_prob.js
 var NDProb = {
@@ -9925,7 +9925,7 @@ var help = {
   }
 };
 
-// src/index.js
+// src/ndarray.js
 function registerAll() {
   const rootObjects = {
     NDArray,
@@ -9965,7 +9965,7 @@ var signal2 = NDWasmSignal;
 function init(baseDir = ".") {
   return NDWasm.init(baseDir);
 }
-var index_default = NDArray;
+var ndarray_default = NDArray;
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   DTYPE_MAP,

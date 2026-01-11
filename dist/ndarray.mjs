@@ -9868,7 +9868,7 @@ var help = {
   }
 };
 
-// src/index.js
+// src/ndarray.js
 function registerAll() {
   const rootObjects = {
     NDArray,
@@ -9908,7 +9908,7 @@ var signal2 = NDWasmSignal;
 function init(baseDir = ".") {
   return NDWasm.init(baseDir);
 }
-var index_default = NDArray;
+var ndarray_default = NDArray;
 export {
   DTYPE_MAP,
   Jit,
@@ -9930,7 +9930,7 @@ export {
   blas2 as blas,
   concat,
   decomp2 as decomp,
-  index_default as default,
+  ndarray_default as default,
   eye,
   float32,
   float64,

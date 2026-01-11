@@ -24,9 +24,9 @@ var ndarray = (() => {
   };
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // src/index.js
-  var index_exports = {};
-  __export(index_exports, {
+  // src/ndarray.js
+  var ndarray_exports = {};
+  __export(ndarray_exports, {
     DTYPE_MAP: () => DTYPE_MAP,
     Jit: () => Jit,
     NDArray: () => NDArray,
@@ -47,7 +47,7 @@ var ndarray = (() => {
     blas: () => blas2,
     concat: () => concat,
     decomp: () => decomp2,
-    default: () => index_default,
+    default: () => ndarray_default,
     eye: () => eye,
     float32: () => float32,
     float64: () => float64,
@@ -9931,7 +9931,7 @@ var ndarray = (() => {
     }
   };
 
-  // src/index.js
+  // src/ndarray.js
   function registerAll() {
     const rootObjects = {
       NDArray,
@@ -9971,6 +9971,6 @@ var ndarray = (() => {
   function init(baseDir = ".") {
     return NDWasm.init(baseDir);
   }
-  var index_default = NDArray;
-  return __toCommonJS(index_exports);
+  var ndarray_default = NDArray;
+  return __toCommonJS(ndarray_exports);
 })();

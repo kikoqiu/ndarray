@@ -8,13 +8,13 @@ import { NDArray, DTYPE_MAP } from './ndarray_core.js';
 import { NDWasmArray } from './ndwasmarray.js';
 import * as ndwasm from './ndwasm.js';
 
-import { NDProb } from "./ndarray_prob";
-import { NDWasmDecomp } from "./ndwasm_decomp";
-import { NDWasmAnalysis } from "./ndwasm_analysis";
-import { NDWasmBlas } from "./ndwasm_blas";
-import { NDWasmSignal } from "./ndwasm_signal";
-import { NDWasmImage } from "./ndwasm_image";
-import { NDWasmOptimize } from './ndwasm_optimize';
+import { NDProb } from "./ndarray_prob.js";
+import { NDWasmDecomp } from "./ndwasm_decomp.js";
+import { NDWasmAnalysis } from "./ndwasm_analysis.js";
+import { NDWasmBlas } from "./ndwasm_blas.js";
+import { NDWasmSignal } from "./ndwasm_signal.js";
+import { NDWasmImage } from "./ndwasm_image.js";
+import { NDWasmOptimize } from './ndwasm_optimize.js';
 
 import * as factory from "./ndarray_factory.js"
 
