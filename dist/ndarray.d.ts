@@ -103,7 +103,7 @@ declare module "ndwasm_blas" {
          * @param {NDArray} b - Right matrix of shape [n, k].
          * @returns {NDArray} Result matrix of shape [m, k].
          */
-        function matmul(a: NDArray, b: NDArray): NDArray;
+        function matMul(a: NDArray, b: NDArray): NDArray;
         /**
          * matPow computes A^k (Matrix Power).
          * Matrix Functions (O(n^3))
@@ -121,7 +121,7 @@ declare module "ndwasm_blas" {
          * @param {NDArray} b - Batch of matrices of shape [batch, n, k].
          * @returns {NDArray} Result batch of shape [batch, m, k].
          */
-        function matmulBatch(a: NDArray, b: NDArray): NDArray;
+        function matMulBatch(a: NDArray, b: NDArray): NDArray;
         /**
          * Symmetric Rank-K Update: C = alpha * A * A^T + beta * C.
          * Used for efficiently computing covariance matrices or Gram matrices.
@@ -471,9 +471,9 @@ declare module "ndwasm" {
     export function fromWasm(bridge: WasmBuffer, shape: Array<number>, dtype?: string): NDArray;
     export const blas: {
         trace(a: NDArray): number;
-        matmul(a: NDArray, b: NDArray): NDArray;
+        matMul(a: NDArray, b: NDArray): NDArray;
         matPow(a: NDArray, k: any): NDArray;
-        matmulBatch(a: NDArray, b: NDArray): NDArray;
+        matMulBatch(a: NDArray, b: NDArray): NDArray;
         syrk(a: NDArray): NDArray;
         trsm(a: NDArray, b: NDArray, lower?: boolean): NDArray;
         matVecMul(a: NDArray, x: NDArray): NDArray;
@@ -788,18 +788,19 @@ declare module "ndarray_factory" {
     export function full(shape: Array<number>, value: any, dtype?: string): NDArray;
     /**
      * Like Python's arange: [start, stop)
-     * @param {number} start
-     * @param {number | null} stop
-     * @param {number | null} step
-     * @param {string} dtype
+     * @param {number} start the starting value of the sequence.
+     * @param {number | null} stop the end value of the sequence.
+     * @param {number | null} [step=1] the spacing between values.
+     * @param {string} [dtype='float64'] the data type of the resulting array.
+     * @returns {NDArray}
      */
     export function arange(start: number, stop?: number | null, step?: number | null, dtype?: string): NDArray;
     /**
      * Linearly spaced points.
-     * @param {number} start
-     * @param {number | null} stop
-     * @param {number} num
-     * @param {string} dtype
+     * @param {number} start the starting value of the sequence.
+     * @param {number | null} stop the end value of the sequence.
+     * @param {number} [num=50] the number of samples to generate.
+     * @param {string} [dtype='float64'] the data type of the resulting array.
      * @returns {NDArray}
      */
     export function linspace(start: number, stop: number | null, num?: number, dtype?: string): NDArray;
@@ -936,13 +937,13 @@ declare module "ndwasmarray" {
          * @param {NDWasmArray | NDArray} other
          * @returns {NDWasmArray}
          */
-        matmul(other: NDWasmArray | NDArray): NDWasmArray;
+        matMul(other: NDWasmArray | NDArray): NDWasmArray;
         /**
          * Batched Matrix Multiplication: C[i] = this[i] * other[i]
          * @param {NDWasmArray | NDArray}
          * @returns {NDWasmArray}
          */
-        matmulBatch(other: any): NDWasmArray;
+        matMulBatch(other: any): NDWasmArray;
     }
     import { NDArray } from "ndarray_core";
 }
@@ -1021,9 +1022,9 @@ declare module "ndarray_core" {
         };
         static blas: {
             trace(a: NDArray): number;
-            matmul(a: NDArray, b: NDArray): NDArray;
+            matMul(a: NDArray, b: NDArray): NDArray;
             matPow(a: NDArray, k: any): NDArray;
-            matmulBatch(a: NDArray, b: NDArray): NDArray;
+            matMulBatch(a: NDArray, b: NDArray): NDArray;
             syrk(a: NDArray): NDArray;
             trsm(a: NDArray, b: NDArray, lower?: boolean): NDArray;
             matVecMul(a: NDArray, x: NDArray): NDArray;
@@ -1671,6 +1672,34 @@ declare module "ndarray_core" {
          */
         flatten(): NDArray;
         /**
+         * Dot Product (Scalar Inner Product).
+         * Supports 1D arrays (vectors) only.
+         * @param {NDArray} other
+         * @returns {number} Scalar result.
+         */
+        dotProduct(other: NDArray): number;
+        /**
+         * Cross Product.
+         * Only valid for 1D vectors of length 3.
+         * @param {NDArray} other
+         * @returns {NDArray} New NDArray of size 3.
+         */
+        crossProduct(other: NDArray): NDArray;
+        /**
+         * Matrix Multiplication in js.
+         * Operations: (M, K) @ (K, N) -> (M, N)
+         * @param {NDArray} other
+         * @returns {NDArray} New NDArray.
+         */
+        jsMatMul(other: NDArray): NDArray;
+        /**
+         * Matrix-Vector Multiplication in js.
+         * Operation: (M, K) @ (K,) -> (M,)
+         * @param {NDArray} vec
+         * @returns {NDArray} New NDArray (Vector).
+         */
+        jsMatVecMul(vec: NDArray): NDArray;
+        /**
          * Projects the current ndarray to a WASM proxy (WasmBuffer).
          *
          * @param {WasmRuntime} runtime
@@ -1691,13 +1720,13 @@ declare module "ndarray_core" {
          */
         trace(): number;
         /**
-         * Performs matrix multiplication. This is a wrapper around `NDWasmBlas.matmul`.
+         * Performs matrix multiplication. This is a wrapper around `NDWasmBlas.matMul`.
          * @param {NDArray} other The right-hand side matrix.
          * @returns {NDArray} The result of the matrix multiplication.
-         * @see NDWasmBlas.matmul
+         * @see NDWasmBlas.matMul
          *
          */
-        matmul(other: NDArray): NDArray;
+        matMul(other: NDArray): NDArray;
         /**
          * Computes the matrix power. This is a wrapper around `NDWasmBlas.matPow`.
          * @param {number} k The exponent.
@@ -1707,13 +1736,13 @@ declare module "ndarray_core" {
          */
         matPow(k: number): NDArray;
         /**
-         * Performs batched matrix multiplication. This is a wrapper around `NDWasmBlas.matmulBatch`.
+         * Performs batched matrix multiplication. This is a wrapper around `NDWasmBlas.matMulBatch`.
          * @param {NDArray} other The right-hand side batch of matrices.
          * @returns {NDArray} The result of the batched matrix multiplication.
-         * @see NDWasmBlas.matmulBatch
+         * @see NDWasmBlas.matMulBatch
          *
          */
-        matmulBatch(other: NDArray): NDArray;
+        matMulBatch(other: NDArray): NDArray;
         /**
          * Performs matrix-vector multiplication. This is a wrapper around `NDWasmBlas.matVecMul`.
          * @param {NDArray} vec The vector to multiply by.
@@ -1769,11 +1798,14 @@ declare module "ndarray_core" {
         pinv(): NDArray;
         /**
          * Computes the Singular Value Decomposition (SVD). This is a wrapper around `NDWasmDecomp.svd`.
-         * @returns {{{q: NDArray, r: NDArray}}} An object containing the U, S, and V matrices.
+         * @returns {{q: NDArray, r: NDArray}} An object containing the U, S, and V matrices.
          * @see NDWasmDecomp.svd
          *
          */
-        svd(): {};
+        svd(): {
+            q: NDArray;
+            r: NDArray;
+        };
         /**
          * Computes the QR decomposition. This is a wrapper around `NDWasmDecomp.qr`.
          * @returns {Object} An object containing the Q and R matrices.
@@ -1797,11 +1829,14 @@ declare module "ndarray_core" {
         det(): number;
         /**
          * Computes the log-determinant of the matrix. This is a wrapper around `NDWasmDecomp.logDet`.
-         * @returns {{{sign: number, logAbsDet: number}}} An object containing the sign and log-absolute-determinant.
+         * @returns {{sign: number, logAbsDet: number}} An object containing the sign and log-absolute-determinant.
          * @see NDWasmDecomp.logDet
          * @memberof NDWasmDecomp.prototype
          */
-        logDet(): {};
+        logDet(): {
+            sign: number;
+            logAbsDet: number;
+        };
         /**
          * Computes the LU decomposition. This is a wrapper around `NDWasmDecomp.lu`.
          * @returns {NDArray} The LU matrix.
@@ -1820,40 +1855,28 @@ declare module "ndarray_core" {
         };
         /**
          * Computes the 1D Fast Fourier Transform. This is a wrapper around `NDWasmSignal.fft`.
-         * @this {{NDArray}} Complex array with shape [..., 2].
-         * @returns {{NDArray}} Complex result with shape [..., 2].
+         * @this {NDArray} Complex array with shape [..., 2].
+         * @returns {NDArray} Complex result with shape [..., 2].
          * @see NDWasmSignal.fft
          *
          */
-        fft(this: {
-            NDArray: any;
-        }): {
-            NDArray: any;
-        };
+        fft(this: NDArray): NDArray;
         /**
          * Computes the 1D Inverse Fast Fourier Transform. This is a wrapper around `NDWasmSignal.ifft`.
-         * @this {{NDArray}} Complex array with shape [..., 2].
-         * @returns {{NDArray}} Complex result with shape [..., 2].
+         * @this {NDArray} Complex array with shape [..., 2].
+         * @returns {NDArray} Complex result with shape [..., 2].
          * @see NDWasmSignal.ifft
          *
          */
-        ifft(this: {
-            NDArray: any;
-        }): {
-            NDArray: any;
-        };
+        ifft(this: NDArray): NDArray;
         /**
          * Computes the 1D Real-to-Complex Fast Fourier Transform. This is a wrapper around `NDWasmSignal.rfft`.
-         * @this {{NDArray}} real input array.
-         * @returns {{NDArray}} Complex result with shape [..., 2].
+         * @this {NDArray} real input array.
+         * @returns {NDArray} Complex result with shape [..., 2].
          * @see NDWasmSignal.rfft
          *
          */
-        rfft(this: {
-            NDArray: any;
-        }): {
-            NDArray: any;
-        };
+        rfft(this: NDArray): NDArray;
         /**
          * 1D Complex-to-Real Inverse Fast Fourier Transform.
          * The input must be a complex array of shape [k, 2], where k is n/2 + 1. This is a wrapper around `NDWasmSignal.rifft`.
@@ -2089,9 +2112,9 @@ declare module "ndarray" {
     };
     export const blas: {
         trace(a: NDArray): number;
-        matmul(a: NDArray, b: NDArray): NDArray;
+        matMul(a: NDArray, b: NDArray): NDArray;
         matPow(a: NDArray, k: any): NDArray;
-        matmulBatch(a: NDArray, b: NDArray): NDArray;
+        matMulBatch(a: NDArray, b: NDArray): NDArray;
         syrk(a: NDArray): NDArray;
         trsm(a: NDArray, b: NDArray, lower?: boolean): NDArray;
         matVecMul(a: NDArray, x: NDArray): NDArray;

@@ -60,13 +60,13 @@ describe('Performance Benchmarks', () => {
         await runtime.init({ execUrl: 'dist/wasm_exec.js', wasmUrl: 'dist/ndarray_plugin.wasm' });
         NDWasm.bind(runtime);
 
-        console.time('matmul() (WASM)');
-        matA.matmul(matB);
-        console.timeEnd('matmul() (WASM)');
+        console.time('matMul() (WASM)');
+        matA.matMul(matB);
+        console.timeEnd('matMul() (WASM)');
         
-        console.time('matmul() (naive JS)');
+        console.time('matMul() (naive JS)');
         naiveMatMul(matA, matB);
-        console.timeEnd('matmul() (naive JS)');
+        console.timeEnd('matMul() (naive JS)');
 
         console.log('\n--------------------------------\n');
         

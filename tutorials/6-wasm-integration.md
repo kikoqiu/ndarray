@@ -27,13 +27,13 @@ Once initialized, you can call WASM-powered functions directly from the `ndarray
 The `ndarray.blas` module (Basic Linear Algebra Subprograms) provides highly optimized routines for matrix and vector operations.
 
 ```javascript
-// Example: Matrix Multiplication (matmul)
+// Example: Matrix Multiplication (matMul)
 const m1 = ndarray.array([[1, 2], [3, 4]]);
 const m2 = ndarray.array([[5, 6], [7, 8]]);
 
-// The .matmul() method (among others like .matVecMul())
+// The .matMul() method (among others like .matVecMul())
 // automatically uses the underlying WASM BLAS implementation.
-const result = m1.matmul(m2);
+const result = m1.matMul(m2);
 
 console.log(result.toString());
 // => array([[19, 22],

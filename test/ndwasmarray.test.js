@@ -48,17 +48,17 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
             expect(() => wa.pull()).toThrow(/disposed/);
         });
 
-        test('6. Exception: Use after dispose (matmul caller)', () => {
+        test('6. Exception: Use after dispose (matMul caller)', () => {
             const wa = NDWasmArray.fromArray([[1]]);
             wa.dispose();
-            expect(() => wa.matmul([[1]])).toThrow(/Cannot read properties of null/);
+            expect(() => wa.matMul([[1]])).toThrow(/Cannot read properties of null/);
         });
 
-        test('7. Exception: Use after dispose (matmul operand)', () => {
+        test('7. Exception: Use after dispose (matMul operand)', () => {
             const a = NDWasmArray.fromArray([[1]]);
             const b = NDWasmArray.fromArray([[1]]);
             b.dispose();
-            expect(() => a.matmul(b)).toThrow(/Cannot read properties of null/);
+            expect(() => a.matMul(b)).toThrow(/Cannot read properties of null/);
             a.dispose();
         });
 
@@ -149,7 +149,7 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
         test('21. Basic MatMul (NDWasmArray * JS Array)', () => {
             const a = NDWasmArray.fromArray([[1, 2], [3, 4]]);
             const b = [[1, 0], [0, 1]]; // Identity
-            const resWa = a.matmul(b);
+            const resWa = a.matMul(b);
             expect(resWa.pull(true).data).toEqual(new Float64Array([1, 2, 3, 4]));
             a.dispose();
         });
@@ -157,7 +157,7 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
         test('22. MatMul (NDWasmArray * NDArray)', () => {
             const a = NDWasmArray.fromArray([[2, 0], [0, 2]]);
             const b = ndarray.array([[1, 2], [3, 4]]);
-            const res = a.matmul(b).pull(true);
+            const res = a.matMul(b).pull(true);
             expect(res.data).toEqual(new Float64Array([2, 4, 6, 8]));
             a.dispose();
         });
@@ -167,8 +167,8 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
             const b = [[0.5, 0], [0, 0.5]];
             const c = [[1, 2], [3, 4]];
 
-            const tmp = a.matmul(b); // result is identity
-            const finalWa = tmp.matmul(c);
+            const tmp = a.matMul(b); // result is identity
+            const finalWa = tmp.matMul(c);
             
             expect(finalWa.pull(true).data).toEqual(new Float64Array([1, 2, 3, 4]));
             a.dispose();
@@ -177,14 +177,14 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
 
         test('24. Dimension mismatch throws', () => {
             const a = NDWasmArray.fromArray([[1, 2, 3]]); // [1, 3]
-            expect(() => a.matmul([[1, 2], [3, 4]])).toThrow(/mismatch/);
+            expect(() => a.matMul([[1, 2], [3, 4]])).toThrow(/mismatch/);
             a.dispose();
         });
 
         test('25. 1x3 * 3x1 = 1x1 result', () => {
             const a = NDWasmArray.fromArray([[1, 2, 3]]);
             const b = [[1], [1], [1]];
-            const res = a.matmul(b).pull(true);
+            const res = a.matMul(b).pull(true);
             expect(res.shape).toEqual(new Int32Array([1, 1]));
             expect(res.data[0]).toBe(6);
             a.dispose();
@@ -193,7 +193,7 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
         test('26. Zero Matrix', () => {
             const a = NDWasmArray.fromArray([[1, 2], [3, 4]]);
             const b = [[0, 0], [0, 0]];
-            const res = a.matmul(b).pull(true);
+            const res = a.matMul(b).pull(true);
             expect(res.data).toEqual(new Float64Array([0, 0, 0, 0]));
             a.dispose();
         });
@@ -201,7 +201,7 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
         test('27. Multiplication with negatives', () => {
             const a = NDWasmArray.fromArray([[-1, 2]]);
             const b = [[-3], [4]];
-            const res = a.matmul(b).pull(true); // (-1*-3) + (2*4) = 11
+            const res = a.matMul(b).pull(true); // (-1*-3) + (2*4) = 11
             expect(res.data[0]).toBe(11);
             a.dispose();
         });
@@ -209,7 +209,7 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
         test('28. Vector scaling via matrix', () => {
             const a = NDWasmArray.fromArray([[10, 20]]);
             const b = [[2, 0], [0, 2]];
-            expect(a.matmul(b).pull(true).data).toEqual(new Float64Array([20, 40]));
+            expect(a.matMul(b).pull(true).data).toEqual(new Float64Array([20, 40]));
             a.dispose();
         });
 
@@ -218,7 +218,7 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
             const step = [[1, 1], [0, 1]];
             for(let i = 0; i < 4; i++) {
                 const old = res;
-                res = res.matmul(step);
+                res = res.matMul(step);
                 old.dispose();
             }
             // Matrix [[1, 1], [0, 1]]^5 = [[1, 5], [0, 1]]
@@ -229,7 +229,7 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
         test('30. Float32 MatMul', () => {
             const a = NDWasmArray.fromArray([[1, 2]], 'float32');
             const b = [[2], [2]];
-            const res = a.matmul(b);
+            const res = a.matMul(b);
             expect(res.dtype).toBe('float32');
             expect(res.pull(true).data[0]).toBe(6);
             a.dispose();
@@ -237,36 +237,36 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
 
         test('31. Rectangular 3x2 * 2x1', () => {
             const a = NDWasmArray.fromArray([[1, 1], [2, 2], [3, 3]]);
-            const res = a.matmul([[10], [10]]).pull(true);
+            const res = a.matMul([[10], [10]]).pull(true);
             expect(res.shape).toEqual(new Int32Array([3, 1]));
             expect(res.data).toEqual(new Float64Array([20, 40, 60]));
             a.dispose();
         });
 
-        test('32. matmul with itself (square)', () => {
+        test('32. matMul with itself (square)', () => {
             const a = NDWasmArray.fromArray([[1, 2], [3, 4]]);
-            const res = a.matmul(a).pull(true);
+            const res = a.matMul(a).pull(true);
             expect(res.data).toEqual(new Float64Array([7, 10, 15, 22]));
             a.dispose();
         });
 
-        test('33. matmul(NDArray) non-contiguous', () => {
+        test('33. matMul(NDArray) non-contiguous', () => {
             const a = NDWasmArray.fromArray([[1, 0], [0, 1]]);
             const b = new NDArray(new Float64Array([1, 2, 3, 4]), { shape: [2, 2], strides: [1, 2] }); // Transposed view
-            const res = a.matmul(b).pull(true);
+            const res = a.matMul(b).pull(true);
             expect(res.data).toEqual(new Float64Array([1, 3, 2, 4]));
             a.dispose();
         });
 
         test('34. Error: MatMul rank 1', () => {
             const a = NDWasmArray.fromArray([1, 2, 3]);
-            expect(() => a.matmul([1, 2, 3])).toThrow();
+            expect(() => a.matMul([1, 2, 3])).toThrow();
             a.dispose();
         });
 
         test('35. Very small floats', () => {
             const a = NDWasmArray.fromArray([[1e-8]]);
-            const res = a.matmul([[1e-8]]).pull(true);
+            const res = a.matMul([[1e-8]]).pull(true);
             expect(res.data[0]).toBeCloseTo(1e-16, 20);
             a.dispose();
         });
@@ -276,14 +276,14 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
                 Array.from({length: 100}, (_, j) => i === j ? 1 : 0)
             );
             const a = NDWasmArray.fromArray(identity);
-            const res = a.matmul(identity).pull(true);
+            const res = a.matMul(identity).pull(true);
             expect(res.size).toBe(10000);
             a.dispose();
         });
 
-        test('37. Mixed Types: push() then matmul(JS)', () => {
+        test('37. Mixed Types: push() then matMul(JS)', () => {
             const a = ndarray.array([[1, 2], [3, 4]]).push();
-            const res = a.matmul([[1, 1], [1, 1]]).pull(true);
+            const res = a.matMul([[1, 1], [1, 1]]).pull(true);
             expect(res.data).toEqual(new Float64Array([3, 3, 7, 7]));
             a.dispose();
         });
@@ -291,17 +291,17 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
         test('38. finally block check (operand disposal)', () => {
             const a = NDWasmArray.fromArray([[1, 2]]);
             const b = ndarray.zeros([2, 2]);
-            // If matmul fails, the temp pushed 'b' should be disposed.
+            // If matMul fails, the temp pushed 'b' should be disposed.
             // (Dimension mismatch)
             const c = ndarray.zeros([5, 5]); 
-            expect(() => a.matmul(c)).toThrow();
+            expect(() => a.matMul(c)).toThrow();
             a.dispose();
         });
 
         test('39. Rectangular 1x1 * 1x10', () => {
             const a = NDWasmArray.fromArray([[2]]);
             const b = [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]];
-            const res = a.matmul(b).pull(true);
+            const res = a.matMul(b).pull(true);
             expect(res.shape).toEqual(new Int32Array([1, 10]));
             expect(res.data[9]).toBe(20);
             a.dispose();
@@ -309,9 +309,9 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
 
         test('40. Deeply nested chained memory', () => {
             const a = NDWasmArray.fromArray([[1, 0], [0, 1]]);
-            const b = a.matmul([[2, 0], [0, 2]]);
-            const c = b.matmul([[3, 0], [0, 3]]);
-            const d = c.matmul([[4, 0], [0, 4]]);
+            const b = a.matMul([[2, 0], [0, 2]]);
+            const c = b.matMul([[3, 0], [0, 3]]);
+            const d = c.matMul([[4, 0], [0, 4]]);
             expect(d.pull(true).data[0]).toBe(24);
             [a, b, c].forEach(x => x.dispose());
         });
@@ -322,7 +322,7 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
         test('41. Batch [2, 2, 2] Identity', () => {
             const a = NDWasmArray.fromArray([[[1, 0], [0, 1]], [[1, 0], [0, 1]]]);
             const b = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]];
-            const res = a.matmulBatch(b).pull(true);
+            const res = a.matMulBatch(b).pull(true);
             expect(res.data).toEqual(new Float64Array([1, 2, 3, 4, 5, 6, 7, 8]));
             a.dispose();
         });
@@ -330,7 +330,7 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
         test('42. Batch scaling [2, 2, 2]', () => {
             const a = NDWasmArray.fromArray([[[2, 0], [0, 2]], [[3, 0], [0, 3]]]);
             const b = [[[1, 1], [1, 1]], [[1, 1], [1, 1]]];
-            const res = a.matmulBatch(b).pull(true);
+            const res = a.matMulBatch(b).pull(true);
             expect(res.data).toEqual(new Float64Array([2, 2, 2, 2, 3, 3, 3, 3]));
             a.dispose();
         });
@@ -340,20 +340,20 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
             // We need proper 3D to even enter the logic
             const a3d = NDWasmArray.fromArray([[[1]]]); // [1, 1, 1]
             const b3d = [[[1]], [[1]]]; // [2, 1, 1]
-            expect(() => a3d.matmulBatch(b3d)).toThrow(/dimensions mismatch/);
+            expect(() => a3d.matMulBatch(b3d)).toThrow(/dimensions mismatch/);
             a3d.dispose();
         });
 
         test('44. Batch MatMul rank check', () => {
             const a = NDWasmArray.fromArray([[1, 2], [3, 4]]);
-            expect(() => a.matmulBatch(a)).toThrow(/mismatch/);
+            expect(() => a.matMulBatch(a)).toThrow(/mismatch/);
             a.dispose();
         });
 
         test('45. [2, 1, 3] * [2, 3, 2]', () => {
             const a = NDWasmArray.fromArray([ [[1, 1, 1]], [[2, 2, 2]] ]);
             const b = [ [[1, 1], [1, 1], [1, 1]], [[1, 1], [1, 1], [1, 1]] ];
-            const res = a.matmulBatch(b).pull(true);
+            const res = a.matMulBatch(b).pull(true);
             expect(res.shape).toEqual(new Int32Array([2, 1, 2]));
             expect(res.data).toEqual(new Float64Array([3, 3, 6, 6]));
             a.dispose();
@@ -361,7 +361,7 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
 
         test('46. Batch result disposal', () => {
             const a = NDWasmArray.fromArray([[[1]]]);
-            const res = a.matmulBatch([[[1]]]);
+            const res = a.matMulBatch([[[1]]]);
             res.dispose();
             expect(res.buffer).toBeNull();
             a.dispose();
@@ -370,7 +370,7 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
         test('47. Mixed Batch operands (NDWasm + NDArray)', () => {
             const a = NDWasmArray.fromArray([[[1, 0], [0, 1]]]);
             const b = ndarray.zeros([1, 2, 2]);
-            const res = a.matmulBatch(b).pull(true);
+            const res = a.matMulBatch(b).pull(true);
             expect(res.data[0]).toBe(0);
             a.dispose();
         });
@@ -378,7 +378,7 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
         test('48. Large batch stress (100 batches)', () => {
             const data = Array.from({length: 100}, () => [[1, 0], [0, 1]]);
             const a = NDWasmArray.fromArray(data);
-            const res = a.matmulBatch(data).pull(true);
+            const res = a.matMulBatch(data).pull(true);
             expect(res.shape[0]).toBe(100);
             a.dispose();
         });
@@ -393,8 +393,8 @@ describe('NDWasmArray Comprehensive Test Suite', () => {
 
         test('50. Chained Batch MatMul', () => {
             const a = NDWasmArray.fromArray([[[2]]]);
-            const b = a.matmulBatch([[[2]]]);
-            const c = b.matmulBatch([[[2]]]);
+            const b = a.matMulBatch([[[2]]]);
+            const c = b.matMulBatch([[[2]]]);
             expect(c.pull(true).data[0]).toBe(8);
             a.dispose(); b.dispose();
         });

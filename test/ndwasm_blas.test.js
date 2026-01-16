@@ -5,6 +5,109 @@
 const ndarray = require('../dist/ndarray.cjs');
 const { NDArray, NDWasm, blas, WasmRuntime } = ndarray;
 
+
+// --- blas ---
+describe('blas', () => {
+    test('case 1: dotProduct', () => {
+        const a = ndarray.array([1, 2, 3, 4]);
+        const b = ndarray.array([1, 2, 3, 4]);
+        const c = a.dot(b);
+        expect(c.data).toEqual(new Float64Array([30]));
+    });
+
+   test('case 1: crossProduct', () => {
+        const a = ndarray.array([1, 1, 0]);
+        const b = ndarray.array([1, 0, 1]);
+        const c = a.cross(b);
+        expect(c.data).toEqual(new Float64Array([1, -1, -1]));
+    });
+
+});
+
+// --- 1. jsMatMul (GEMM) ---
+describe('jsMatMul', () => {
+    test('case 1: identity multiplication', () => {
+        const a = ndarray.array([[1, 2], [3, 4]]);
+        const b = ndarray.eye(2);
+        const c = a.jsMatMul(b);
+        expect(c.data).toEqual(new Float64Array([1, 2, 3, 4]));
+    });
+
+    test('case 2: non-square matrices (2x3 * 3x2)', () => {
+        const a = ndarray.array([[1, 2, 3], [4, 5, 6]]);
+        const b = ndarray.array([[7, 8], [9, 10], [11, 12]]);
+        const c = a.jsMatMul(b);
+        // [[1*7+2*9+3*11, 1*8+2*10+3*12], [4*7+5*9+6*11, 4*8+5*10+6*12]]
+        expect(c.shape).toEqual(new Int32Array([2, 2]));
+        expect(c.get(0, 0)).toBe(58);
+        expect(c.get(1, 1)).toBe(154);
+    });
+
+    test('case 3: error on dimension mismatch', () => {
+        const a = ndarray.zeros([2, 3]);
+        const b = ndarray.zeros([2, 2]);
+        expect(() => a.jsMatMul(b)).toThrow(/inner dimensions must match/);
+    });
+
+    test('case 4: floating point precision', () => {
+        const a = ndarray.array([[0.1, 0.2]]);
+        const b = ndarray.array([[0.3], [0.4]]);
+        const c = a.jsMatMul(b); // [[0.1*0.3 + 0.2*0.4]] = [[0.11]]
+        expect(c.get(0, 0)).toBeCloseTo(0.11);
+    });
+
+    test('case 5: large zeros matrix', () => {
+        const a = ndarray.zeros([10, 10]);
+        const b = ndarray.zeros([10, 10]);
+        const c = a.jsMatMul(b);
+        c.data.forEach(v => expect(v).toBe(0));
+    });
+});
+
+describe('jsMatVecMul', () => {
+    test('case 1: matrix * vector projection', () => {
+        const a = ndarray.array([[1, 2], [3, 4]]);
+        const x = ndarray.array([1, 0]);
+        const y = a.jsMatVecMul(x);
+        expect(y.data).toEqual(new Float64Array([1, 3]));
+    });
+
+    test('case 2: identity matVecMul', () => {
+        const a = ndarray.eye(3);
+        const x = ndarray.array([10, 20, 30]);
+        const y = a.jsMatVecMul(x);
+        expect(y.data).toEqual(x.data);
+    });
+
+    test('case 3: shape [3, 2] * [2]', () => {
+        const a = ndarray.zeros([3, 2]);
+        const x = ndarray.zeros([2]);
+        const y = a.jsMatVecMul(x);
+        expect(y.shape).toEqual(new Int32Array([3]));
+    });
+
+    test('case 4: dimension mismatch', () => {
+        const a = ndarray.zeros([2, 2]);
+        const x = ndarray.zeros([3]);
+        expect(() => a.jsMatVecMul(x)).toThrow();
+    });
+
+    test('case 5: scaling vector', () => {
+        const a = ndarray.eye(2).mul(5);
+        const x = ndarray.array([1, 2]);
+        const y = a.jsMatVecMul(x);
+        expect(y.data).toEqual(new Float64Array([5, 10]));
+    });
+
+    test('case 6: float32 data', () => {
+        const a = ndarray.array([[1, 2], [3, 4]], 'float32' );
+        const x = ndarray.array([1, 0], 'float32' );
+        const y = a.jsMatVecMul(x);
+        expect(y.dtype).toBe('float32');
+        expect(y.get(0)).toBeCloseTo(1);
+    });
+});
+
 describe('NDWasmBlas (WASM)', () => {
     
     beforeAll(async () => {
@@ -16,19 +119,19 @@ describe('NDWasmBlas (WASM)', () => {
         NDWasm.bind(runtime);
     }, 30000);
 
-    // --- 1. matmul (GEMM) ---
-    describe('matmul', () => {
+    // --- 1. matMul (GEMM) ---
+    describe('matMul', () => {
         test('case 1: identity multiplication', () => {
             const a = ndarray.array([[1, 2], [3, 4]]);
             const b = ndarray.eye(2);
-            const c = a.matmul(b);
+            const c = a.matMul(b);
             expect(c.data).toEqual(new Float64Array([1, 2, 3, 4]));
         });
 
         test('case 2: non-square matrices (2x3 * 3x2)', () => {
             const a = ndarray.array([[1, 2, 3], [4, 5, 6]]);
             const b = ndarray.array([[7, 8], [9, 10], [11, 12]]);
-            const c = a.matmul(b);
+            const c = a.matMul(b);
             // [[1*7+2*9+3*11, 1*8+2*10+3*12], [4*7+5*9+6*11, 4*8+5*10+6*12]]
             expect(c.shape).toEqual(new Int32Array([2, 2]));
             expect(c.get(0, 0)).toBe(58);
@@ -38,20 +141,20 @@ describe('NDWasmBlas (WASM)', () => {
         test('case 3: error on dimension mismatch', () => {
             const a = ndarray.zeros([2, 3]);
             const b = ndarray.zeros([2, 2]);
-            expect(() => a.matmul(b)).toThrow(/inner dimensions must match/);
+            expect(() => a.matMul(b)).toThrow(/inner dimensions must match/);
         });
 
         test('case 4: floating point precision', () => {
             const a = ndarray.array([[0.1, 0.2]]);
             const b = ndarray.array([[0.3], [0.4]]);
-            const c = a.matmul(b); // [[0.1*0.3 + 0.2*0.4]] = [[0.11]]
+            const c = a.matMul(b); // [[0.1*0.3 + 0.2*0.4]] = [[0.11]]
             expect(c.get(0, 0)).toBeCloseTo(0.11);
         });
 
         test('case 5: large zeros matrix', () => {
             const a = ndarray.zeros([10, 10]);
             const b = ndarray.zeros([10, 10]);
-            const c = a.matmul(b);
+            const c = a.matMul(b);
             c.data.forEach(v => expect(v).toBe(0));
         });
     });
@@ -92,19 +195,19 @@ describe('NDWasmBlas (WASM)', () => {
             let k=5;
             let b=a;
             for(let i=0;i<k-1;++i){
-                b=b.matmul(a);
+                b=b.matMul(a);
             }            
             const c = blas.matPow(a, k);
             expect(b.data).toEqual(c.data);
         });
     });
 
-    // --- 3. matmulBatch ---
-    describe('matmulBatch', () => {
+    // --- 3. matMulBatch ---
+    describe('matMulBatch', () => {
         test('case 1: simple 3D batch multiplication', () => {
             const a = new NDArray(new Float64Array([1,0,0,1, 2,0,0,2]), {shape: [2, 2, 2]}); // Two Identity-like
             const b = new NDArray(new Float64Array([1,2,3,4, 5,6,7,8]), {shape: [2, 2, 2]});
-            const c = a.matmulBatch(b);
+            const c = a.matMulBatch(b);
             expect(c.shape).toEqual(new Int32Array([2, 2, 2]));
             // Batch 0: I * [1,2,3,4] = [1,2,3,4]
             // Batch 1: 2I * [5,6,7,8] = [10,12,14,16]
@@ -114,26 +217,26 @@ describe('NDWasmBlas (WASM)', () => {
         test('case 2: dimension mismatch in batch', () => {
             const a = ndarray.zeros([2, 2, 3]);
             const b = ndarray.zeros([2, 2, 2]);
-            expect(() => a.matmulBatch(b)).toThrow();
+            expect(() => a.matMulBatch(b)).toThrow();
         });
 
         test('case 3: batch size mismatch', () => {
             const a = ndarray.zeros([3, 2, 2]);
             const b = ndarray.zeros([2, 2, 2]);
-            expect(() => a.matmulBatch(b)).toThrow();
+            expect(() => a.matMulBatch(b)).toThrow();
         });
 
         test('case 4: check shape [2, 1, 3] * [2, 3, 1]', () => {
             const a = ndarray.zeros([2, 1, 3]);
             const b = ndarray.zeros([2, 3, 1]);
-            const c = a.matmulBatch(b);
+            const c = a.matMulBatch(b);
             expect(c.shape).toEqual(new Int32Array([2, 1, 1]));
         });
 
         test('case 5: error on non-3D input', () => {
             const a = ndarray.zeros([2, 2]);
             const b = ndarray.zeros([2, 2]);
-            expect(() => blas.matmulBatch(a, b)).toThrow();
+            expect(() => blas.matMulBatch(a, b)).toThrow();
         });
     });
 

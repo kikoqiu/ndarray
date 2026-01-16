@@ -53,7 +53,7 @@ export const NDWasmBlas = {
      * @param {NDArray} b - Right matrix of shape [n, k].
      * @returns {NDArray} Result matrix of shape [m, k].
      */
-    matmul(a, b) {
+    matMul(a, b) {
         if (a.shape[1] !== b.shape[0]) {
             throw new Error(`Matrix inner dimensions must match: ${a.shape[1]} != ${b.shape[0]}`);
         }
@@ -101,7 +101,7 @@ export const NDWasmBlas = {
      * @param {NDArray} b - Batch of matrices of shape [batch, n, k].
      * @returns {NDArray} Result batch of shape [batch, m, k].
      */
-    matmulBatch(a, b) {
+    matMulBatch(a, b) {
         if (a.ndim !== 3 || b.ndim !== 3 || a.shape[0] !== b.shape[0]) {
             throw new Error("Input must be 3D batches with same batch size.");
         }

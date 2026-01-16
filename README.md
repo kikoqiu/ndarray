@@ -80,7 +80,7 @@ For algorithms where raw computational power is paramount, the library calls its
 
 This approach is reserved for complex operations where the overhead of the memory copy is small compared to the computational savings. Key WASM-powered modules include:
 
--   `NDArray.blas`: Matrix multiplication (`matmul`), matrix-vector products (`matVecMul`), rank-updates (`syrk`), and more.
+-   `NDArray.blas`: Matrix multiplication (`matMul`), matrix-vector products (`matVecMul`), rank-updates (`syrk`), and more.
 -   `NDArray.decomp`: Linear equation solving (`solve`), matrix inversion (`inv`), and decompositions (`svd`, `qr`, `lu`, `cholesky`, `eigen`).
 -   `NDArray.signal`: Fourier analysis (`fft`, `ifft`), convolutions (`conv2d`), and correlations.
 -   `NDArray.analysis`: Sorting (`argsort`), statistical functions (`cov`), and more.
@@ -92,7 +92,7 @@ This approach is reserved for complex operations where the overhead of the memor
 // Perform matrix multiplication in WebAssembly
 const m1 = ndarray.arange(0, 4).reshape(2, 2);
 const m2 = ndarray.eye(2);
-const m3 = m1.matmul(m2); // Dispatches to WASM
+const m3 = m1.matMul(m2); // Dispatches to WASM
 ```
 
 ## Installation
@@ -196,7 +196,7 @@ const m1 = ndarray.array([[1, 2], [3, 4]]);
 const m2 = ndarray.array([[5, 6], [7, 8]]);
 
 // This operation is dispatched to the Go WASM core
-const result = m1.matmul(m2);
+const result = m1.matMul(m2);
 
 console.log(result.toString());
 // => array([[19, 22],
@@ -223,11 +223,11 @@ Use the `help()` function to get formatted documentation. You can pass either a 
 import { zeros, help } from 'ndarray';
 
 // Get help by name
-help.helpdoc('NDArray.prototype.matmul');
+help.helpdoc('NDArray.prototype.matMul');
 
 // Get help by object reference
 const a = zeros([2, 2]);
-help.helpdoc(a.matmul);
+help.helpdoc(a.matMul);
 ```
 
 ### HTML Help

@@ -1,0 +1,6040 @@
+{
+  "formatDoc": {
+    "longname": "formatDoc",
+    "kind": "function",
+    "description": "Formats a JSDoc object into a human-readable string.",
+    "params": [
+      {
+        "name": "doc",
+        "description": "The JSDoc object for a single symbol.",
+        "type": {
+          "names": [
+            "object"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "description": "A formatted string representing the documentation."
+      }
+    ]
+  },
+  "formatDocHTML": {
+    "longname": "formatDocHTML",
+    "kind": "function",
+    "description": "Formats a JSDoc object into an HTML string.",
+    "params": [
+      {
+        "name": "doc",
+        "description": "The JSDoc object for a single symbol.",
+        "type": {
+          "names": [
+            "object"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "description": "A formatted HTML string representing the documentation."
+      }
+    ]
+  },
+  "help": {
+    "longname": "help",
+    "kind": "namespace"
+  },
+  "help.helpmap": {
+    "longname": "help.helpmap",
+    "kind": "member",
+    "description": "A WeakMap that maps live function/class objects back to their documentation names.\nThis map is populated by the registration logic in `index.js`."
+  },
+  "help.getHelpDoc": {
+    "longname": "help.getHelpDoc",
+    "kind": "function",
+    "description": "Returns help doc object",
+    "params": [
+      {
+        "name": "target",
+        "description": "The name of the function/class, or the object itself.",
+        "type": {
+          "names": [
+            "string",
+            "object"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "object",
+            "undefined"
+          ]
+        },
+        "description": "The documentation obj, or undefined if not found."
+      }
+    ]
+  },
+  "help.helpdoc": {
+    "longname": "help.helpdoc",
+    "kind": "function",
+    "description": "Provides help for a given class/function name or a live object.\nLogs the formatted documentation to the console.",
+    "params": [
+      {
+        "name": "target",
+        "description": "The name of the function/class, or the object itself.",
+        "type": {
+          "names": [
+            "string",
+            "object"
+          ]
+        }
+      }
+    ]
+  },
+  "help.helphtml": {
+    "longname": "help.helphtml",
+    "kind": "function",
+    "description": "Returns help content as a styled HTML string for a given class/function name or a live object.",
+    "params": [
+      {
+        "name": "target",
+        "description": "The name of the function/class, or the object itself.",
+        "type": {
+          "names": [
+            "string",
+            "object"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "string",
+            "undefined"
+          ]
+        },
+        "description": "The documentation as an HTML string, or undefined if not found."
+      }
+    ]
+  },
+  "DTYPE_MAP": {
+    "longname": "DTYPE_MAP",
+    "kind": "constant",
+    "description": "The TypedArray map"
+  },
+  "NDArray": {
+    "longname": "NDArray",
+    "kind": "class",
+    "params": [
+      {
+        "name": "data",
+        "description": "The underlying physical storage.",
+        "type": {
+          "names": [
+            "TypedArray"
+          ]
+        }
+      },
+      {
+        "name": "options",
+        "type": {
+          "names": [
+            "Object"
+          ]
+        }
+      },
+      {
+        "name": "options.shape",
+        "description": "The dimensions of the array.",
+        "type": {
+          "names": [
+            "Array",
+            "Int32Array"
+          ]
+        }
+      },
+      {
+        "name": "options.strides",
+        "description": "The strides, defaults to C-style.",
+        "type": {
+          "names": [
+            "Array",
+            "Int32Array"
+          ]
+        },
+        "optional": true
+      },
+      {
+        "name": "options.offset",
+        "description": "The view offset.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": 0
+      },
+      {
+        "name": "options.dtype",
+        "description": "The data type.",
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "optional": true
+      }
+    ]
+  },
+  "NDArray.prototype.NDArray": {
+    "longname": "NDArray#NDArray",
+    "kind": "class",
+    "params": [
+      {
+        "name": "data",
+        "description": "The underlying physical storage.",
+        "type": {
+          "names": [
+            "TypedArray"
+          ]
+        }
+      },
+      {
+        "name": "options",
+        "type": {
+          "names": [
+            "Object"
+          ]
+        }
+      },
+      {
+        "name": "options.shape",
+        "description": "The dimensions of the array.",
+        "type": {
+          "names": [
+            "Array",
+            "Int32Array"
+          ]
+        }
+      },
+      {
+        "name": "options.strides",
+        "description": "The strides, defaults to C-style.",
+        "type": {
+          "names": [
+            "Array",
+            "Int32Array"
+          ]
+        },
+        "optional": true
+      },
+      {
+        "name": "options.offset",
+        "description": "The view offset.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": 0
+      },
+      {
+        "name": "options.dtype",
+        "description": "The data type.",
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "optional": true
+      }
+    ]
+  },
+  "NDArray.optimize": {
+    "longname": "NDArray.optimize",
+    "kind": "member",
+    "description": "Optimization module for linear programming, non-linear minimization, and linear regression."
+  },
+  "NDArray.prototype._getOffset": {
+    "longname": "NDArray#_getOffset",
+    "kind": "function",
+    "description": "High-performance addressing: converts multidimensional indices to a physical offset.",
+    "params": [
+      {
+        "name": "indices",
+        "type": {
+          "names": [
+            "Array",
+            "Int32Array"
+          ]
+        }
+      },
+      {
+        "name": "",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.toArray": {
+    "longname": "NDArray#toArray",
+    "kind": "function",
+    "description": "To JavaScript Array",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Array",
+            "number"
+          ]
+        },
+        "description": "the array"
+      }
+    ]
+  },
+  "<anonymous>~recurse": {
+    "longname": "<anonymous>~recurse",
+    "kind": "function",
+    "params": [
+      {
+        "name": "dimIdx",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "currentOffset",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.toString": {
+    "longname": "NDArray#toString",
+    "kind": "function",
+    "description": "Returns a string representation of the ndarray.\rFormats high-dimensional data with proper indentation and line breaks.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "String"
+          ]
+        }
+      }
+    ]
+  },
+  "<anonymous>~format": {
+    "longname": "<anonymous>~format",
+    "kind": "function",
+    "description": "Recursive helper to format array dimensions.",
+    "params": [
+      {
+        "name": "dimIdx",
+        "description": "Current dimension index being processed.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "currentOffset",
+        "description": "Current absolute memory offset in the data buffer.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "indent",
+        "description": "String used for vertical alignment.",
+        "type": {
+          "names": [
+            "string"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.map": {
+    "longname": "NDArray#map",
+    "kind": "function",
+    "description": "High-performance element-wise mapping with jit compilation.",
+    "params": [
+      {
+        "name": "fnOrStr",
+        "description": "The function string to apply to each element, like 'Math.sqrt(${val})', or a lambda expression",
+        "type": {
+          "names": [
+            "string",
+            "function"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "A new array with the results."
+      }
+    ]
+  },
+  "NDArray.prototype.iterate": {
+    "longname": "NDArray#iterate",
+    "kind": "function",
+    "description": "Generic iterator that handles stride logic. It's slow. use map if you want to use jit.",
+    "params": [
+      {
+        "name": "callback",
+        "description": "A function called with `(value, index, flatPhysicalIndex)`.",
+        "type": {
+          "names": [
+            "function"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.add": {
+    "longname": "NDArray#add",
+    "kind": "function",
+    "description": "Element-wise addition. Supports broadcasting.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to add.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "A new array containing the results."
+      }
+    ]
+  },
+  "NDArray.prototype.sub": {
+    "longname": "NDArray#sub",
+    "kind": "function",
+    "description": "Element-wise subtraction. Supports broadcasting.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to subtract.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "A new array containing the results."
+      }
+    ]
+  },
+  "NDArray.prototype.mul": {
+    "longname": "NDArray#mul",
+    "kind": "function",
+    "description": "Element-wise multiplication. Supports broadcasting.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to multiply by.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "A new array containing the results."
+      }
+    ]
+  },
+  "NDArray.prototype.div": {
+    "longname": "NDArray#div",
+    "kind": "function",
+    "description": "Element-wise division. Supports broadcasting.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to divide by.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "A new array containing the results."
+      }
+    ]
+  },
+  "NDArray.prototype.pow": {
+    "longname": "NDArray#pow",
+    "kind": "function",
+    "description": "Element-wise exponentiation. Supports broadcasting.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar exponent.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "A new array containing the results."
+      }
+    ]
+  },
+  "NDArray.prototype.mod": {
+    "longname": "NDArray#mod",
+    "kind": "function",
+    "description": "Element-wise modulo. Supports broadcasting.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar divisor.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "A new array containing the results."
+      }
+    ]
+  },
+  "NDArray.prototype.iadd": {
+    "longname": "NDArray#iadd",
+    "kind": "function",
+    "description": "In-place element-wise addition.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to add.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The modified array (`this`)."
+      }
+    ]
+  },
+  "NDArray.prototype.isub": {
+    "longname": "NDArray#isub",
+    "kind": "function",
+    "description": "In-place element-wise subtraction.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to subtract.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The modified array (`this`)."
+      }
+    ]
+  },
+  "NDArray.prototype.imul": {
+    "longname": "NDArray#imul",
+    "kind": "function",
+    "description": "In-place element-wise multiplication.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to multiply by.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The modified array (`this`)."
+      }
+    ]
+  },
+  "NDArray.prototype.idiv": {
+    "longname": "NDArray#idiv",
+    "kind": "function",
+    "description": "In-place element-wise division.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to divide by.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The modified array (`this`)."
+      }
+    ]
+  },
+  "NDArray.prototype.ipow": {
+    "longname": "NDArray#ipow",
+    "kind": "function",
+    "description": "In-place element-wise exponentiation.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar exponent.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The modified array (`this`)."
+      }
+    ]
+  },
+  "NDArray.prototype.imod": {
+    "longname": "NDArray#imod",
+    "kind": "function",
+    "description": "In-place element-wise modulo.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar divisor.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The modified array (`this`)."
+      }
+    ]
+  },
+  "NDArray.prototype.bitwise_and": {
+    "longname": "NDArray#bitwise_and",
+    "kind": "function",
+    "description": "bitwise AND. Returns a new array.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to perform the operation with.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.bitwise_or": {
+    "longname": "NDArray#bitwise_or",
+    "kind": "function",
+    "description": "bitwise OR. Returns a new array.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to perform the operation with.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.bitwise_xor": {
+    "longname": "NDArray#bitwise_xor",
+    "kind": "function",
+    "description": "bitwise XOR. Returns a new array.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to perform the operation with.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.bitwise_lshift": {
+    "longname": "NDArray#bitwise_lshift",
+    "kind": "function",
+    "description": "bitwise lshift. Returns a new array.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to perform the operation with.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.bitwise_rshift": {
+    "longname": "NDArray#bitwise_rshift",
+    "kind": "function",
+    "description": "bitwise (logical) rshift. Returns a new array.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to perform the operation with.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.bitwise_not": {
+    "longname": "NDArray#bitwise_not",
+    "kind": "function",
+    "description": "bitwise NOT. Returns a new array.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.neg": {
+    "longname": "NDArray#neg",
+    "kind": "function",
+    "description": "Returns a new array with the numeric negation of each element.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.abs": {
+    "longname": "NDArray#abs",
+    "kind": "function",
+    "description": "Returns a new array with the absolute value of each element.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.exp": {
+    "longname": "NDArray#exp",
+    "kind": "function",
+    "description": "Returns a new array with `e` raised to the power of each element.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.sqrt": {
+    "longname": "NDArray#sqrt",
+    "kind": "function",
+    "description": "Returns a new array with the square root of each element.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.sin": {
+    "longname": "NDArray#sin",
+    "kind": "function",
+    "description": "Returns a new array with the sine of each element.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.cos": {
+    "longname": "NDArray#cos",
+    "kind": "function",
+    "description": "Returns a new array with the cosine of each element.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.tan": {
+    "longname": "NDArray#tan",
+    "kind": "function",
+    "description": "Returns a new array with the tangent of each element.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.log": {
+    "longname": "NDArray#log",
+    "kind": "function",
+    "description": "Returns a new array with the natural logarithm (base e) of each element.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.ceil": {
+    "longname": "NDArray#ceil",
+    "kind": "function",
+    "description": "Returns a new array with the smallest integer greater than or equal to each element.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.floor": {
+    "longname": "NDArray#floor",
+    "kind": "function",
+    "description": "Returns a new array with the largest integer less than or equal to each element.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.round": {
+    "longname": "NDArray#round",
+    "kind": "function",
+    "description": "Returns a new array with the value of each element rounded to the nearest integer.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.eq": {
+    "longname": "NDArray#eq",
+    "kind": "function",
+    "description": "Element-wise equality comparison. Returns a new boolean (uint8) array.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to compare with.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.neq": {
+    "longname": "NDArray#neq",
+    "kind": "function",
+    "description": "Element-wise inequality comparison. Returns a new boolean (uint8) array.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to compare with.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.gt": {
+    "longname": "NDArray#gt",
+    "kind": "function",
+    "description": "Element-wise greater-than comparison. Returns a new boolean (uint8) array.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to compare with.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.gte": {
+    "longname": "NDArray#gte",
+    "kind": "function",
+    "description": "Element-wise greater-than-or-equal comparison. Returns a new boolean (uint8) array.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to compare with.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.lt": {
+    "longname": "NDArray#lt",
+    "kind": "function",
+    "description": "Element-wise less-than comparison. Returns a new boolean (uint8) array.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to compare with.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.lte": {
+    "longname": "NDArray#lte",
+    "kind": "function",
+    "description": "Element-wise less-than-or-equal comparison. Returns a new boolean (uint8) array.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to compare with.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.logical_and": {
+    "longname": "NDArray#logical_and",
+    "kind": "function",
+    "description": "Element-wise logical AND. Returns a new boolean (uint8) array.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to perform the operation with.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.logical_or": {
+    "longname": "NDArray#logical_or",
+    "kind": "function",
+    "description": "Element-wise logical OR. Returns a new boolean (uint8) array.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The array or scalar to perform the operation with.",
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.logical_not": {
+    "longname": "NDArray#logical_not",
+    "kind": "function",
+    "description": "Element-wise logical NOT. Returns a new boolean (uint8) array.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.sum": {
+    "longname": "NDArray#sum",
+    "kind": "function",
+    "description": "Computes the sum of elements along the specified axis.",
+    "params": [
+      {
+        "name": "axis",
+        "type": {
+          "names": [
+            "number",
+            "null"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": null
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.cumprod": {
+    "longname": "NDArray#cumprod",
+    "kind": "function",
+    "description": "Computes the cumprod of elements along the specified axis.",
+    "params": [
+      {
+        "name": "axis",
+        "type": {
+          "names": [
+            "number",
+            "null"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": null
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.mean": {
+    "longname": "NDArray#mean",
+    "kind": "function",
+    "description": "Computes the arithmetic mean along the specified axis.",
+    "params": [
+      {
+        "name": "axis",
+        "type": {
+          "names": [
+            "number",
+            "null"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": null
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.max": {
+    "longname": "NDArray#max",
+    "kind": "function",
+    "description": "Returns the maximum value along the specified axis.",
+    "params": [
+      {
+        "name": "axis",
+        "type": {
+          "names": [
+            "number",
+            "null"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": null
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.min": {
+    "longname": "NDArray#min",
+    "kind": "function",
+    "description": "Returns the minimum value along the specified axis.",
+    "params": [
+      {
+        "name": "axis",
+        "type": {
+          "names": [
+            "number",
+            "null"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": null
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.var": {
+    "longname": "NDArray#var",
+    "kind": "function",
+    "description": "Computes the variance along the specified axis.\rNote: This implementation uses a two-pass approach (mean first, then squared differences).\rEnsure that the `sub` method supports broadcasting if `axis` is not null.",
+    "params": [
+      {
+        "name": "axis",
+        "description": "The axis to reduce.",
+        "type": {
+          "names": [
+            "number",
+            "null"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": null
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.std": {
+    "longname": "NDArray#std",
+    "kind": "function",
+    "description": "Computes the standard deviation along the specified axis.",
+    "params": [
+      {
+        "name": "axis",
+        "description": "The axis to reduce.",
+        "type": {
+          "names": [
+            "number",
+            "null"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": null
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype._reduce": {
+    "longname": "NDArray#_reduce",
+    "kind": "function",
+    "description": "Internal generic reduction engine with optimizations for different memory layouts.",
+    "params": [
+      {
+        "name": "axis",
+        "description": "The axis to reduce. If null, a global reduction is performed.",
+        "type": {
+          "names": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      {
+        "name": "initFn",
+        "description": "Returns the initial value for the accumulator (e.g., () => 0).",
+        "type": {
+          "names": [
+            "function"
+          ]
+        }
+      },
+      {
+        "name": "reducer",
+        "description": "The binary reduction function (e.g., (acc, val) => acc + val).",
+        "type": {
+          "names": [
+            "function"
+          ]
+        }
+      },
+      {
+        "name": "finalFn",
+        "description": "Applied to the final result (e.g., (sum, count) => sum / count).",
+        "type": {
+          "names": [
+            "function"
+          ]
+        },
+        "optional": true
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray",
+            "number"
+          ]
+        },
+        "description": "A scalar number for global reduction, or an NDArray for axis reduction."
+      }
+    ]
+  },
+  "NDArray.prototype.argmax": {
+    "longname": "NDArray#argmax",
+    "kind": "function",
+    "description": "Returns the index of the maximum value in a flattened array.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.argmin": {
+    "longname": "NDArray#argmin",
+    "kind": "function",
+    "description": "Returns the index of the minimum value in a flattened array.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.all": {
+    "longname": "NDArray#all",
+    "kind": "function",
+    "description": "Checks if all elements in the array are truthy.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "boolean"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.any": {
+    "longname": "NDArray#any",
+    "kind": "function",
+    "description": "Checks if any element in the array is truthy.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "boolean"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.reshape": {
+    "longname": "NDArray#reshape",
+    "kind": "function",
+    "description": "Returns a new array with a new shape, without changing data. O(1) operation.\rThis only works for contiguous arrays. If the array is not contiguous,\ryou must call .copy() first.",
+    "params": [
+      {
+        "name": "newShape",
+        "description": "The new shape.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "NDArray view."
+      }
+    ]
+  },
+  "NDArray.prototype.transpose": {
+    "longname": "NDArray#transpose",
+    "kind": "function",
+    "description": "Returns a new view of the array with axes transposed. O(1) operation.",
+    "params": [
+      {
+        "name": "axes",
+        "description": "The new order of axes, e.g., [1, 0] for a matrix transpose. If not specified, reverses the order of the axes.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "NDArray view."
+      }
+    ]
+  },
+  "NDArray.prototype.slice": {
+    "longname": "NDArray#slice",
+    "kind": "function",
+    "description": "Returns a new view of the array sliced along each dimension.\rThis implementation strictly follows NumPy's basic slicing logic.",
+    "params": [
+      {
+        "name": "specs",
+        "description": "Slice parameters for each dimension.\r- number: Scalar indexing. Picks a single element and reduces dimensionality (e.g., arr[0]).\r- [start, end, step]: Range slicing (e.g., arr[start:end:step]).\r- []/null/undefined: Selects the entire dimension (e.g., arr[:]).",
+        "type": {
+          "names": [
+            "Array",
+            "number",
+            "null",
+            "undefined"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "A new O(1) view of the underlying data."
+      }
+    ]
+  },
+  "NDArray.prototype.rowview": {
+    "longname": "NDArray#rowview",
+    "kind": "function",
+    "description": "Returns a 1D view of the i-th row.\rOnly applicable to 2D arrays.",
+    "params": [
+      {
+        "name": "i",
+        "description": "The row index.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "A 1D NDArray view."
+      }
+    ]
+  },
+  "NDArray.prototype.colview": {
+    "longname": "NDArray#colview",
+    "kind": "function",
+    "description": "Returns a 1D view of the j-th column.\rOnly applicable to 2D arrays.",
+    "params": [
+      {
+        "name": "j",
+        "description": "The column index.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "A 1D NDArray view."
+      }
+    ]
+  },
+  "NDArray.prototype.squeeze": {
+    "longname": "NDArray#squeeze",
+    "kind": "function",
+    "description": "Remove axes of length one from the shape. O(1) operation.",
+    "params": [
+      {
+        "name": "axis",
+        "description": "The axis to squeeze. If null, all axes of length 1 are removed.",
+        "type": {
+          "names": [
+            "number",
+            "null"
+          ]
+        },
+        "defaultvalue": null
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "NDArray view."
+      }
+    ]
+  },
+  "NDArray.prototype.copy": {
+    "longname": "NDArray#copy",
+    "kind": "function",
+    "description": "Returns a new, contiguous array with the same data. O(n) operation.\rThis converts any view (transposed, sliced) into a new array with a standard C-style memory layout.",
+    "params": [
+      {
+        "name": "the",
+        "description": "target dtype",
+        "type": {
+          "names": [
+            "string",
+            "undefined"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "NDArray view."
+      }
+    ]
+  },
+  "NDArray.prototype.asContiguous": {
+    "longname": "NDArray#asContiguous",
+    "kind": "function",
+    "description": "Ensures the returned array has a contiguous memory layout.\rIf the array is already contiguous, it returns itself. Otherwise, it returns a copy.\rOften used as a pre-processing step before calling WASM or other libraries.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "NDArray view."
+      }
+    ]
+  },
+  "NDArray.prototype.get": {
+    "longname": "NDArray#get",
+    "kind": "function",
+    "description": "Gets a single element from the array.\rNote: This has higher overhead than batch operations. Use with care in performance-critical code.",
+    "params": [
+      {
+        "name": "indices",
+        "description": "The indices of the element to get.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.set": {
+    "longname": "NDArray#set",
+    "kind": "function",
+    "description": "Sets value(s) in the array using a unified, JIT-optimized engine.\rSupports scalar indexing, fancy (array) indexing, and NumPy-style broadcasting.",
+    "params": [
+      {
+        "name": "value",
+        "description": "The source data to assign.",
+        "type": {
+          "names": [
+            "number",
+            "Array",
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "indices",
+        "description": "Indices for each dimension.",
+        "type": {
+          "names": [
+            "number",
+            "Array",
+            "null"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.pick": {
+    "longname": "NDArray#pick",
+    "kind": "function",
+    "description": "Advanced Indexing (Fancy Indexing).\rReturns a physical COPY of the selected data using a JIT-compiled engine.\rPicks elements along each dimension.\rNote: unlike numpy, for advanced (fancy) indexing, output shape won't be reordered. \rDim for 1-element advanced indexing won't be removed, either.",
+    "params": [
+      {
+        "name": "specs",
+        "description": "Index selectors. null/undefined means select all",
+        "type": {
+          "names": [
+            "Array.<number>",
+            "TypedArray",
+            "number",
+            "null",
+            "undefined"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.filter": {
+    "longname": "NDArray#filter",
+    "kind": "function",
+    "description": "Responsibility: Implements element-wise filtering.\rReturns a NEW 1D contiguous NDArray (Copy).\rFilters elements based on a predicate function or a boolean mask.",
+    "params": [
+      {
+        "name": "predicateOrMask",
+        "description": "A function returning boolean, \r       or an array/NDArray of the same shape/size containing truthy/falsy values.",
+        "type": {
+          "names": [
+            "function",
+            "Array",
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "A new 1D NDArray containing the matched elements."
+      }
+    ]
+  },
+  "NDArray.prototype.flatten": {
+    "longname": "NDArray#flatten",
+    "kind": "function",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "- new flatten view to the array"
+      }
+    ]
+  },
+  "NDArray.prototype.dotProduct": {
+    "longname": "NDArray#dotProduct",
+    "kind": "function",
+    "description": "Dot Product (Scalar Inner Product).\rSupports 1D arrays (vectors) only.",
+    "params": [
+      {
+        "name": "other",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "description": "Scalar result."
+      }
+    ]
+  },
+  "NDArray.prototype.crossProduct": {
+    "longname": "NDArray#crossProduct",
+    "kind": "function",
+    "description": "Cross Product.\rOnly valid for 1D vectors of length 3.",
+    "params": [
+      {
+        "name": "other",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "New NDArray of size 3."
+      }
+    ]
+  },
+  "NDArray.prototype.jsMatMul": {
+    "longname": "NDArray#jsMatMul",
+    "kind": "function",
+    "description": "Matrix Multiplication in js.\rOperations: (M, K) @ (K, N) -> (M, N)",
+    "params": [
+      {
+        "name": "other",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "New NDArray."
+      }
+    ]
+  },
+  "NDArray.prototype.jsMatVecMul": {
+    "longname": "NDArray#jsMatVecMul",
+    "kind": "function",
+    "description": "Matrix-Vector Multiplication in js.\rOperation: (M, K) @ (K,) -> (M,)",
+    "params": [
+      {
+        "name": "vec",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "New NDArray (Vector)."
+      }
+    ]
+  },
+  "NDArray.prototype.toWasm": {
+    "longname": "NDArray#toWasm",
+    "kind": "function",
+    "description": "Projects the current ndarray to a WASM proxy (WasmBuffer).",
+    "params": [
+      {
+        "name": "runtime",
+        "type": {
+          "names": [
+            "WasmRuntime"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "WasmBuffer"
+          ]
+        },
+        "description": "A WasmBuffer instance representing the NDArray in WASM memory."
+      }
+    ]
+  },
+  "NDArray.prototype.push": {
+    "longname": "NDArray#push",
+    "kind": "function",
+    "description": "push to wasm",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDWasmArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDArray.prototype.trace": {
+    "longname": "NDArray#trace",
+    "kind": "function",
+    "description": "Calculates the trace of a 2D square matrix (sum of diagonal elements).\rComplexity: O(n)",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "description": "The sum of the diagonal elements."
+      }
+    ]
+  },
+  "NDArray.prototype.matMul": {
+    "longname": "NDArray#matMul",
+    "kind": "function",
+    "description": "Performs matrix multiplication. This is a wrapper around `NDWasmBlas.matMul`.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The right-hand side matrix.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The result of the matrix multiplication."
+      }
+    ]
+  },
+  "NDArray.prototype.matPow": {
+    "longname": "NDArray#matPow",
+    "kind": "function",
+    "description": "Computes the matrix power. This is a wrapper around `NDWasmBlas.matPow`.",
+    "params": [
+      {
+        "name": "k",
+        "description": "The exponent.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The result of the matrix power."
+      }
+    ]
+  },
+  "NDArray.prototype.matMulBatch": {
+    "longname": "NDArray#matMulBatch",
+    "kind": "function",
+    "description": "Performs batched matrix multiplication. This is a wrapper around `NDWasmBlas.matMulBatch`.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The right-hand side batch of matrices.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The result of the batched matrix multiplication."
+      }
+    ]
+  },
+  "NDArray.prototype.matVecMul": {
+    "longname": "NDArray#matVecMul",
+    "kind": "function",
+    "description": "Performs matrix-vector multiplication. This is a wrapper around `NDWasmBlas.matVecMul`.",
+    "params": [
+      {
+        "name": "vec",
+        "description": "The vector to multiply by.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The resulting vector."
+      }
+    ]
+  },
+  "NDArray.prototype.syrk": {
+    "longname": "NDArray#syrk",
+    "kind": "function",
+    "description": "Performs a symmetric rank-k update. This is a wrapper around `NDWasmBlas.syrk`.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The resulting symmetric matrix."
+      }
+    ]
+  },
+  "NDArray.prototype.ger": {
+    "longname": "NDArray#ger",
+    "kind": "function",
+    "description": "Computes the vector outer product. This is a wrapper around `NDWasmBlas.ger`.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The other vector.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The resulting matrix."
+      }
+    ]
+  },
+  "NDArray.prototype.kronecker": {
+    "longname": "NDArray#kronecker",
+    "kind": "function",
+    "description": "Computes the Kronecker product. This is a wrapper around `NDWasmAnalysis.kronecker`.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The other matrix.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The result of the Kronecker product."
+      }
+    ]
+  },
+  "NDArray.prototype.solve": {
+    "longname": "NDArray#solve",
+    "kind": "function",
+    "description": "Solves a system of linear equations. This is a wrapper around `NDWasmDecomp.solve`.",
+    "params": [
+      {
+        "name": "b",
+        "description": "The right-hand side matrix or vector.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The solution matrix."
+      }
+    ]
+  },
+  "NDArray.prototype.inv": {
+    "longname": "NDArray#inv",
+    "kind": "function",
+    "description": "Computes the multiplicative inverse of the matrix. This is a wrapper around `NDWasmDecomp.inv`.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The inverted matrix."
+      }
+    ]
+  },
+  "NDArray.prototype.pinv": {
+    "longname": "NDArray#pinv",
+    "kind": "function",
+    "description": "Computes the Moore-Penrose pseudo-inverse of the matrix. This is a wrapper around `NDWasmDecomp.pinv`.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The pseudo-inverted matrix."
+      }
+    ]
+  },
+  "NDArray.prototype.svd": {
+    "longname": "NDArray#svd",
+    "kind": "function",
+    "description": "Computes the Singular Value Decomposition (SVD). This is a wrapper around `NDWasmDecomp.svd`.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "An object containing the U, S, and V matrices."
+      }
+    ]
+  },
+  "NDArray.prototype.qr": {
+    "longname": "NDArray#qr",
+    "kind": "function",
+    "description": "Computes the QR decomposition. This is a wrapper around `NDWasmDecomp.qr`.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "An object containing the Q and R matrices."
+      }
+    ]
+  },
+  "NDArray.prototype.cholesky": {
+    "longname": "NDArray#cholesky",
+    "kind": "function",
+    "description": "Computes the Cholesky decomposition. This is a wrapper around `NDWasmDecomp.cholesky`.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The lower triangular matrix L."
+      }
+    ]
+  },
+  "NDWasmDecomp.prototype.NDArray.prototype.det": {
+    "longname": "NDWasmDecomp#NDArray#det",
+    "kind": "function",
+    "description": "Computes the determinant of the matrix. This is a wrapper around `NDWasmDecomp.det`.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "description": "The determinant."
+      }
+    ]
+  },
+  "NDWasmDecomp.prototype.NDArray.prototype.logDet": {
+    "longname": "NDWasmDecomp#NDArray#logDet",
+    "kind": "function",
+    "description": "Computes the log-determinant of the matrix. This is a wrapper around `NDWasmDecomp.logDet`.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "An object containing the sign and log-absolute-determinant."
+      }
+    ]
+  },
+  "NDArray.prototype.lu": {
+    "longname": "NDArray#lu",
+    "kind": "function",
+    "description": "Computes the LU decomposition. This is a wrapper around `NDWasmDecomp.lu`.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The LU matrix."
+      }
+    ]
+  },
+  "NDArray.prototype.eigen": {
+    "longname": "NDArray#eigen",
+    "kind": "function",
+    "description": "Computes the eigenvalues and eigenvectors of a general square matrix.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "An object containing eigenvalues and eigenvectors."
+      }
+    ]
+  },
+  "NDArray.prototype.fft": {
+    "longname": "NDArray#fft",
+    "kind": "function",
+    "description": "Computes the 1D Fast Fourier Transform. This is a wrapper around `NDWasmSignal.fft`.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Complex result with shape [..., 2]."
+      }
+    ]
+  },
+  "NDArray.prototype.ifft": {
+    "longname": "NDArray#ifft",
+    "kind": "function",
+    "description": "Computes the 1D Inverse Fast Fourier Transform. This is a wrapper around `NDWasmSignal.ifft`.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Complex result with shape [..., 2]."
+      }
+    ]
+  },
+  "NDArray.prototype.rfft": {
+    "longname": "NDArray#rfft",
+    "kind": "function",
+    "description": "Computes the 1D Real-to-Complex Fast Fourier Transform. This is a wrapper around `NDWasmSignal.rfft`.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Complex result with shape [..., 2]."
+      }
+    ]
+  },
+  "NDArray.prototype.rifft": {
+    "longname": "NDArray#rifft",
+    "kind": "function",
+    "description": "1D Complex-to-Real Inverse Fast Fourier Transform.\rThe input must be a complex array of shape [k, 2], where k is n/2 + 1. This is a wrapper around `NDWasmSignal.rifft`.",
+    "params": [
+      {
+        "name": "n",
+        "description": "Length of the original real signal.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Real-valued time domain signal."
+      }
+    ]
+  },
+  "NDArray.prototype.fft2": {
+    "longname": "NDArray#fft2",
+    "kind": "function",
+    "description": "Computes the 2D Fast Fourier Transform. The input array must be 3D with shape [rows, cols, 2].\rThis is a wrapper around `NDWasmSignal.fft2`.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "2D Complex result, with the same shape as input."
+      }
+    ]
+  },
+  "NDArray.prototype.ifft2": {
+    "longname": "NDArray#ifft2",
+    "kind": "function",
+    "description": "2D Inverse Complex-to-Complex Fast Fourier Transform.\rThe input array must be 3D with shape [rows, cols, 2].\rThe transform is performed in-place.\rThis is a wrapper around `NDWasmSignal.ifft2`.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "2D Complex result, with the same shape as input."
+      }
+    ]
+  },
+  "NDArray.prototype.dct": {
+    "longname": "NDArray#dct",
+    "kind": "function",
+    "description": "Computes the 1D Discrete Cosine Transform. This is a wrapper around `NDWasmSignal.dct`.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The result of the DCT."
+      }
+    ]
+  },
+  "NDArray.prototype.conv2d": {
+    "longname": "NDArray#conv2d",
+    "kind": "function",
+    "description": "Performs 2D spatial convolution. This is a wrapper around `NDWasmSignal.conv2d`.",
+    "params": [
+      {
+        "name": "kernel",
+        "description": "The convolution kernel.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "stride",
+        "description": "The stride.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "padding",
+        "description": "The padding.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The convolved array."
+      }
+    ]
+  },
+  "NDArray.prototype.correlate2d": {
+    "longname": "NDArray#correlate2d",
+    "kind": "function",
+    "description": "Performs 2D spatial cross-correlation. This is a wrapper around `NDWasmSignal.correlate2d`.",
+    "params": [
+      {
+        "name": "kernel",
+        "description": "The correlation kernel.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "stride",
+        "description": "The stride.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "padding",
+        "description": "The padding.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The correlated array."
+      }
+    ]
+  },
+  "NDArray.prototype.argsort": {
+    "longname": "NDArray#argsort",
+    "kind": "function",
+    "description": "Returns the indices that would sort the array. This is a wrapper around `NDWasmAnalysis.argsort`.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "An array of indices."
+      }
+    ]
+  },
+  "NDArray.prototype.topk": {
+    "longname": "NDArray#topk",
+    "kind": "function",
+    "description": "Finds the top K largest or smallest elements. This is a wrapper around `NDWasmAnalysis.topk`.",
+    "params": [
+      {
+        "name": "k",
+        "description": "The number of elements to find.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "largest",
+        "description": "Whether to find the largest or smallest elements.",
+        "type": {
+          "names": [
+            "boolean"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "An object containing the values and indices of the top K elements."
+      }
+    ]
+  },
+  "NDArray.prototype.cov": {
+    "longname": "NDArray#cov",
+    "kind": "function",
+    "description": "Computes the covariance matrix. This is a wrapper around `NDWasmAnalysis.cov`.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The covariance matrix."
+      }
+    ]
+  },
+  "NDArray.prototype.norm": {
+    "longname": "NDArray#norm",
+    "kind": "function",
+    "description": "Computes the matrix norm. This is a wrapper around `NDWasmAnalysis.norm`.",
+    "params": [
+      {
+        "name": "type",
+        "description": "The type of norm to compute.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "description": "The norm of the matrix."
+      }
+    ]
+  },
+  "NDArray.prototype.rank": {
+    "longname": "NDArray#rank",
+    "kind": "function",
+    "description": "Computes the rank of the matrix. This is a wrapper around `NDWasmAnalysis.rank`.",
+    "params": [
+      {
+        "name": "tol",
+        "description": "The tolerance for singular values.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "description": "The rank of the matrix."
+      }
+    ]
+  },
+  "NDArray.prototype.eigenSym": {
+    "longname": "NDArray#eigenSym",
+    "kind": "function",
+    "description": "Computes the eigenvalue decomposition for a symmetric matrix. This is a wrapper around `NDWasmAnalysis.eigenSym`.",
+    "params": [
+      {
+        "name": "vectors",
+        "description": "Whether to compute the eigenvectors.",
+        "type": {
+          "names": [
+            "boolean"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "An object containing the eigenvalues and eigenvectors."
+      }
+    ]
+  },
+  "NDArray.prototype.cond": {
+    "longname": "NDArray#cond",
+    "kind": "function",
+    "description": "Estimates the reciprocal condition number of the matrix. This is a wrapper around `NDWasmAnalysis.cond`.",
+    "params": [
+      {
+        "name": "norm",
+        "description": "The norm type.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "defaultvalue": 1
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "description": "The reciprocal condition number."
+      }
+    ]
+  },
+  "NDArray.prototype.pairwiseDist": {
+    "longname": "NDArray#pairwiseDist",
+    "kind": "function",
+    "description": "Computes the pairwise distances between two sets of vectors. This is a wrapper around `NDWasmAnalysis.pairwiseDist`.",
+    "params": [
+      {
+        "name": "other",
+        "description": "The other set of vectors.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The distance matrix."
+      }
+    ]
+  },
+  "NDArray.prototype.kmeans": {
+    "longname": "NDArray#kmeans",
+    "kind": "function",
+    "description": "Performs K-Means clustering. This is a wrapper around `NDWasmAnalysis.kmeans`.",
+    "params": [
+      {
+        "name": "k",
+        "description": "The number of clusters.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "maxIter",
+        "description": "The maximum number of iterations.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "An object containing the centroids, labels, and number of iterations."
+      }
+    ]
+  },
+  "broadcastShapes": {
+    "longname": "broadcastShapes",
+    "kind": "function",
+    "description": "Calculates the resulting shape from broadcasting two shapes and returns the\rcorresponding strides for each input array to match that new shape.",
+    "params": [
+      {
+        "name": "a",
+        "description": "First array.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "b",
+        "description": "Second array.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        }
+      }
+    ]
+  },
+  "array": {
+    "longname": "array",
+    "kind": "function",
+    "description": "Creates an NDArray from a regular array or TypedArray.",
+    "params": [
+      {
+        "name": "source",
+        "description": "The source data.",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      },
+      {
+        "name": "dtype",
+        "description": "The desired data type.",
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "'float64'"
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "float64": {
+    "longname": "float64",
+    "kind": "function",
+    "description": "Creates an NDArray from a regular array or TypedArray.",
+    "params": [
+      {
+        "name": "source",
+        "description": "The source data.",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "float32": {
+    "longname": "float32",
+    "kind": "function",
+    "description": "Creates an NDArray from a regular array or TypedArray.",
+    "params": [
+      {
+        "name": "source",
+        "description": "The source data.",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "uint32": {
+    "longname": "uint32",
+    "kind": "function",
+    "description": "Creates an NDArray from a regular array or TypedArray.",
+    "params": [
+      {
+        "name": "source",
+        "description": "The source data.",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "int32": {
+    "longname": "int32",
+    "kind": "function",
+    "description": "Creates an NDArray from a regular array or TypedArray.",
+    "params": [
+      {
+        "name": "source",
+        "description": "The source data.",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "int16": {
+    "longname": "int16",
+    "kind": "function",
+    "description": "Creates an NDArray from a regular array or TypedArray.",
+    "params": [
+      {
+        "name": "source",
+        "description": "The source data.",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "uint16": {
+    "longname": "uint16",
+    "kind": "function",
+    "description": "Creates an NDArray from a regular array or TypedArray.",
+    "params": [
+      {
+        "name": "source",
+        "description": "The source data.",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "int8": {
+    "longname": "int8",
+    "kind": "function",
+    "description": "Creates an NDArray from a regular array or TypedArray.",
+    "params": [
+      {
+        "name": "source",
+        "description": "The source data.",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "uint8": {
+    "longname": "uint8",
+    "kind": "function",
+    "description": "Creates an NDArray from a regular array or TypedArray.",
+    "params": [
+      {
+        "name": "source",
+        "description": "The source data.",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "uint8c": {
+    "longname": "uint8c",
+    "kind": "function",
+    "description": "Creates an NDArray from a regular array or TypedArray.",
+    "params": [
+      {
+        "name": "source",
+        "description": "The source data.",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "zeros": {
+    "longname": "zeros",
+    "kind": "function",
+    "description": "Creates a new NDArray of the given shape, filled with zeros.",
+    "params": [
+      {
+        "name": "shape",
+        "description": "The shape of the new array.",
+        "type": {
+          "names": [
+            "Array.<number>"
+          ]
+        }
+      },
+      {
+        "name": "dtype",
+        "description": "The data type of the new array.",
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "'float64'"
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "ones": {
+    "longname": "ones",
+    "kind": "function",
+    "description": "Creates a new NDArray of the given shape, filled with ones.",
+    "params": [
+      {
+        "name": "shape",
+        "description": "The shape of the new array.",
+        "type": {
+          "names": [
+            "Array.<number>"
+          ]
+        }
+      },
+      {
+        "name": "dtype",
+        "description": "The data type of the new array.",
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "'float64'"
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "full": {
+    "longname": "full",
+    "kind": "function",
+    "description": "Creates a new NDArray of the given shape, filled with a specified value.",
+    "params": [
+      {
+        "name": "shape",
+        "description": "The shape of the new array.",
+        "type": {
+          "names": [
+            "Array.<number>"
+          ]
+        }
+      },
+      {
+        "name": "value",
+        "description": "The value to fill the array with.",
+        "type": {
+          "names": [
+            "*"
+          ]
+        }
+      },
+      {
+        "name": "dtype",
+        "description": "The data type of the new array.",
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "'float64'"
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "arange": {
+    "longname": "arange",
+    "kind": "function",
+    "description": "Like Python's arange: [start, stop)",
+    "params": [
+      {
+        "name": "start",
+        "description": "the starting value of the sequence.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "stop",
+        "description": "the end value of the sequence.",
+        "type": {
+          "names": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      {
+        "name": "step",
+        "description": "the spacing between values.",
+        "type": {
+          "names": [
+            "number",
+            "null"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": 1
+      },
+      {
+        "name": "dtype",
+        "description": "the data type of the resulting array.",
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "'float64'"
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "linspace": {
+    "longname": "linspace",
+    "kind": "function",
+    "description": "Linearly spaced points.",
+    "params": [
+      {
+        "name": "start",
+        "description": "the starting value of the sequence.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "stop",
+        "description": "the end value of the sequence.",
+        "type": {
+          "names": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      {
+        "name": "num",
+        "description": "the number of samples to generate.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": 50
+      },
+      {
+        "name": "dtype",
+        "description": "the data type of the resulting array.",
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "'float64'"
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "where": {
+    "longname": "where",
+    "kind": "function",
+    "description": "where(condition, x, y)\rReturns a new array with elements chosen from x or y depending on condition.\rSupports NumPy-style broadcasting across all three arguments, including 0-sized dimensions.",
+    "params": [
+      {
+        "name": "condition",
+        "description": "Where True, yield x, otherwise yield y.",
+        "type": {
+          "names": [
+            "NDArray",
+            "Array",
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "x",
+        "description": "Values from which to choose if condition is True.",
+        "type": {
+          "names": [
+            "NDArray",
+            "Array",
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "y",
+        "description": "Values from which to choose if condition is False.",
+        "type": {
+          "names": [
+            "NDArray",
+            "Array",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "A new contiguous NDArray."
+      }
+    ]
+  },
+  "concat": {
+    "longname": "concat",
+    "kind": "function",
+    "description": "Joins a sequence of arrays along an existing axis.",
+    "params": [
+      {
+        "name": "arrays",
+        "description": "The arrays must have the same shape, except in the dimension corresponding to `axis`.",
+        "type": {
+          "names": [
+            "Array.<NDArray>"
+          ]
+        }
+      },
+      {
+        "name": "axis",
+        "description": "The axis along which the arrays will be joined.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": 0
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "A new NDArray."
+      }
+    ]
+  },
+  "stack": {
+    "longname": "stack",
+    "kind": "function",
+    "description": "Joins a sequence of arrays along a new axis.\rThe `stack` function creates a new dimension, whereas `concat` joins along an existing one.\rAll input arrays must have the same shape and dtype.",
+    "params": [
+      {
+        "name": "arrays",
+        "description": "The list of arrays to stack.",
+        "type": {
+          "names": [
+            "Array.<NDArray>"
+          ]
+        }
+      },
+      {
+        "name": "axis",
+        "description": "The axis in the result array along which the input arrays are stacked.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": 0
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "A new NDArray."
+      }
+    ]
+  },
+  "<anonymous>~newShape": {
+    "longname": "<anonymous>~newShape",
+    "kind": "constant",
+    "description": "Step 2: Reshape the array to add a singleton dimension at the target axis.\rExample: If shape is [3, 4] and axis is 1, new shape becomes [3, 1, 4].",
+    "params": []
+  },
+  "eye": {
+    "longname": "eye",
+    "kind": "function",
+    "description": "Creates a 2D identity matrix.",
+    "params": [
+      {
+        "name": "n",
+        "description": "Number of rows.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "m",
+        "description": "Number of columns. Defaults to n if not provided.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true
+      },
+      {
+        "name": "dtype",
+        "description": "Data type of the array.",
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "'float64'"
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "A 2D NDArray with ones on the main diagonal."
+      }
+    ]
+  },
+  "_createUnaryKernel": {
+    "longname": "_createUnaryKernel",
+    "kind": "function",
+    "description": "Generates a JIT-compiled unary kernel.\rOutput is always contiguous, so ptrOut simply increments by 1."
+  },
+  "_createBinKernel": {
+    "longname": "_createBinKernel",
+    "kind": "function",
+    "description": "Generates a kernel with unrolled nested loops and cumulative pointer increments."
+  },
+  "_createReduceKernel": {
+    "longname": "_createReduceKernel",
+    "kind": "function",
+    "description": "Generates a JIT kernel using nested loops and pointer gaps."
+  },
+  "SET_KERNEL_CACHE": {
+    "longname": "SET_KERNEL_CACHE",
+    "kind": "constant",
+    "description": "Global cache for set JIT kernels to avoid redundant compilations.",
+    "params": []
+  },
+  "_createSetKernel": {
+    "longname": "_createSetKernel",
+    "kind": "function",
+    "description": "Generates a JIT-compiled kernel for the set operation.\rOptimized for V8 by using incremental pointer arithmetic and static nesting.",
+    "params": [
+      {
+        "name": "cacheKey",
+        "description": "Unique key for the specific array structure.",
+        "type": {
+          "names": [
+            "string"
+          ]
+        }
+      },
+      {
+        "name": "ndim",
+        "description": "Number of dimensions of the target array.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "targetShape",
+        "description": "The logical shape of the selection.",
+        "type": {
+          "names": [
+            "Array"
+          ]
+        }
+      },
+      {
+        "name": "tStrides",
+        "description": "Strides of the target NDArray.",
+        "type": {
+          "names": [
+            "Int32Array"
+          ]
+        }
+      },
+      {
+        "name": "sStrides",
+        "description": "Pre-computed broadcasting strides for the source.",
+        "type": {
+          "names": [
+            "Int32Array"
+          ]
+        }
+      },
+      {
+        "name": "hasPSet",
+        "description": "Flags indicating if a dimension uses fancy indexing or scalar.",
+        "type": {
+          "names": [
+            "Uint8Array"
+          ]
+        }
+      },
+      {
+        "name": "isDimReduced",
+        "description": "Flags indicating if a dimension is collapsed by scalar indexing.",
+        "type": {
+          "names": [
+            "Array.<boolean>"
+          ]
+        }
+      }
+    ]
+  },
+  "_createSetKernel~buildLevel": {
+    "longname": "_createSetKernel~buildLevel",
+    "kind": "function",
+    "description": "Recursively builds the nested loop string.",
+    "params": [
+      {
+        "name": "d",
+        "description": "Current dimension index.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "description": "- The generated code block for this dimension."
+      }
+    ]
+  },
+  "BIN_KERNEL_CACHE": {
+    "longname": "BIN_KERNEL_CACHE",
+    "kind": "constant",
+    "params": []
+  },
+  "extractOpBody": {
+    "longname": "extractOpBody",
+    "kind": "function",
+    "description": "Extracts the expression body from a function.\rSupports both: (a, b) => a + b  AND  function(a, b) { return a + b; }",
+    "params": []
+  },
+  "UNARY_KERNEL_CACHE": {
+    "longname": "UNARY_KERNEL_CACHE",
+    "kind": "constant",
+    "description": "Global cache for unary JIT kernels (copy/map).",
+    "params": []
+  },
+  "prepareUnaryOp": {
+    "longname": "prepareUnaryOp",
+    "kind": "function",
+    "description": "Extracts function body or processes template strings into executable JS code.",
+    "params": []
+  },
+  "REDUCE_KERNEL_CACHE": {
+    "longname": "REDUCE_KERNEL_CACHE",
+    "kind": "constant",
+    "params": []
+  },
+  "prepareReduceExpr": {
+    "longname": "prepareReduceExpr",
+    "kind": "function",
+    "description": "Normalizes the reducer and finalizer into inline expressions.",
+    "params": []
+  },
+  "PICK_KERNEL_CACHE": {
+    "longname": "PICK_KERNEL_CACHE",
+    "kind": "constant",
+    "description": "Global cache for pick JIT kernels.",
+    "params": []
+  },
+  "_createPickKernel": {
+    "longname": "_createPickKernel",
+    "kind": "function",
+    "description": "Generates a JIT-compiled kernel for the pick operation.\rOptimized for V8 with incremental pointer arithmetic and contiguous output writes.",
+    "params": [
+      {
+        "name": "cacheKey",
+        "description": "Unique key for the specific array structure.",
+        "type": {
+          "names": [
+            "string"
+          ]
+        }
+      },
+      {
+        "name": "ndim",
+        "description": "Number of dimensions of the source array.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "sStrides",
+        "description": "Strides of the source NDArray.",
+        "type": {
+          "names": [
+            "Int32Array"
+          ]
+        }
+      },
+      {
+        "name": "isFullSlice",
+        "description": "Flags indicating if a dimension is a full \":\" slice.",
+        "type": {
+          "names": [
+            "Uint8Array"
+          ]
+        }
+      },
+      {
+        "name": "isDimReduced",
+        "description": "Flags indicating if a dimension is collapsed by scalar indexing.",
+        "type": {
+          "names": [
+            "Array.<boolean>"
+          ]
+        }
+      },
+      {
+        "name": "odometerShape",
+        "description": "The lengths of the pick-sets for each dimension.",
+        "type": {
+          "names": [
+            "Int32Array"
+          ]
+        }
+      }
+    ]
+  },
+  "_createPickKernel~buildLevel": {
+    "longname": "_createPickKernel~buildLevel",
+    "kind": "function",
+    "description": "Recursively builds the nested loop string.",
+    "params": [
+      {
+        "name": "d",
+        "description": "Current source dimension index.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ]
+  },
+  "NDProb": {
+    "longname": "NDProb",
+    "kind": "namespace",
+    "description": "NDArray Probability & Random Module\rUses Cryptographically Strong Pseudo-Random Number Generator (CSPRNG).\rAll functions return a new NDArray instance."
+  },
+  "NDProb._cryptoUniform01": {
+    "longname": "NDProb._cryptoUniform01",
+    "kind": "function",
+    "description": "Internal helper to get a Float64 between [0, 1) using crypto.\rGenerates high-quality uniform random floats."
+  },
+  "NDProb.random": {
+    "longname": "NDProb.random",
+    "kind": "function",
+    "description": "Uniform distribution over [low, high).",
+    "params": [
+      {
+        "name": "shape",
+        "description": "Dimensions of the output array.",
+        "type": {
+          "names": [
+            "Array"
+          ]
+        }
+      },
+      {
+        "name": "low",
+        "description": "Lower boundary.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": 0
+      },
+      {
+        "name": "high",
+        "description": "Upper boundary.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": 1
+      },
+      {
+        "name": "dtype",
+        "description": "Data type.",
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "'float64'"
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDProb.normal": {
+    "longname": "NDProb.normal",
+    "kind": "function",
+    "description": "Normal (Gaussian) distribution using Box-Muller transform.",
+    "params": [
+      {
+        "name": "shape",
+        "description": "Dimensions of the output array.",
+        "type": {
+          "names": [
+            "Array"
+          ]
+        }
+      },
+      {
+        "name": "mean",
+        "description": "Mean of the distribution.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": 0
+      },
+      {
+        "name": "std",
+        "description": "Standard deviation.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": 1
+      },
+      {
+        "name": "dtype",
+        "description": "Data type.",
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "'float64'"
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDProb.bernoulli": {
+    "longname": "NDProb.bernoulli",
+    "kind": "function",
+    "description": "Bernoulli distribution (0 or 1 with probability p).",
+    "params": [
+      {
+        "name": "shape",
+        "type": {
+          "names": [
+            "Array"
+          ]
+        }
+      },
+      {
+        "name": "p",
+        "description": "Probability of success (1).",
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": 0.5
+      },
+      {
+        "name": "dtype",
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "'int32'"
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDProb.exponential": {
+    "longname": "NDProb.exponential",
+    "kind": "function",
+    "description": "Exponential distribution: f(x; λ) = λe^(-λx).\rInverse transform sampling: x = -ln(1-u) / λ.",
+    "params": [
+      {
+        "name": "shape",
+        "type": {
+          "names": [
+            "Array"
+          ]
+        }
+      },
+      {
+        "name": "lambda",
+        "description": "Rate parameter.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "1.0"
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDProb.poisson": {
+    "longname": "NDProb.poisson",
+    "kind": "function",
+    "description": "Poisson distribution using Knuth's algorithm.\rNote: For very large lambda, this becomes slow; but for most use cases it's fine.",
+    "params": [
+      {
+        "name": "shape",
+        "type": {
+          "names": [
+            "Array"
+          ]
+        }
+      },
+      {
+        "name": "lambda",
+        "description": "Mean of the distribution.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "1.0"
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDProb._cast": {
+    "longname": "NDProb._cast",
+    "kind": "function"
+  },
+  "WasmBuffer": {
+    "longname": "WasmBuffer",
+    "kind": "class",
+    "params": [
+      {
+        "name": "exports",
+        "description": "The exports object from Go WASM.",
+        "type": {
+          "names": [
+            "Object"
+          ]
+        }
+      },
+      {
+        "name": "size",
+        "description": "Number of elements.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "dtype",
+        "description": "Data type (float64, float32, etc.).",
+        "type": {
+          "names": [
+            "string"
+          ]
+        }
+      }
+    ]
+  },
+  "WasmBuffer.prototype.refresh": {
+    "longname": "WasmBuffer#refresh",
+    "kind": "function",
+    "description": "Refreshes the view into WASM memory.",
+    "params": []
+  },
+  "WasmBuffer.prototype.push": {
+    "longname": "WasmBuffer#push",
+    "kind": "function",
+    "description": "Synchronizes JS data into the WASM buffer.",
+    "params": []
+  },
+  "WasmBuffer.prototype.pull": {
+    "longname": "WasmBuffer#pull",
+    "kind": "function",
+    "description": "Pulls data from the WASM buffer back to JS (returns a copy).",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "WasmBuffer.prototype.dispose": {
+    "longname": "WasmBuffer#dispose",
+    "kind": "function",
+    "description": "Disposes of the temporary buffer.",
+    "params": []
+  },
+  "WasmRuntime": {
+    "longname": "WasmRuntime",
+    "kind": "class"
+  },
+  "WasmRuntime.prototype.init": {
+    "longname": "WasmRuntime#init",
+    "kind": "function",
+    "description": "Initializes the Go WASM environment.",
+    "params": [
+      {
+        "name": "options",
+        "description": "Optional configuration.",
+        "type": {
+          "names": [
+            "object"
+          ]
+        },
+        "optional": true
+      },
+      {
+        "name": "options.wasmUrl",
+        "description": "Path or URL to the wasm file.",
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "'./ndarray_plugin.wasm'"
+      },
+      {
+        "name": "options.execUrl",
+        "description": "Path to the wasm_exec.js file (Node.js only).",
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "'./wasm_exec.js'"
+      },
+      {
+        "name": "options.initialMemoryPages",
+        "description": "Initial memory size in 64KiB pages.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true
+      },
+      {
+        "name": "options.maximumMemoryPages",
+        "description": "Maximum memory size in 64KiB pages.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true
+      },
+      {
+        "name": "options.baseDir",
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "'.'"
+      }
+    ]
+  },
+  "WasmRuntime.prototype._getSuffix": {
+    "longname": "WasmRuntime#_getSuffix",
+    "kind": "function",
+    "description": "Helper method: Gets the suffix for Go export function names based on type.",
+    "params": []
+  },
+  "WasmRuntime.prototype.createBuffer": {
+    "longname": "WasmRuntime#createBuffer",
+    "kind": "function",
+    "description": "Quickly allocates a buffer.",
+    "params": [],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "WasmBuffer"
+          ]
+        }
+      }
+    ]
+  },
+  "fromWasm": {
+    "longname": "fromWasm",
+    "kind": "function",
+    "description": "Static factory: Creates a new NDArray directly from WASM computation results.",
+    "params": [
+      {
+        "name": "bridge",
+        "description": "The WasmBuffer instance containing the result from WASM.",
+        "type": {
+          "names": [
+            "WasmBuffer"
+          ]
+        }
+      },
+      {
+        "name": "shape",
+        "description": "The shape of the new NDArray.",
+        "type": {
+          "names": [
+            "Array.<number>"
+          ]
+        }
+      },
+      {
+        "name": "dtype",
+        "description": "The data type of the new NDArray. If not provided, uses bridge.dtype.",
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "optional": true
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The new NDArray."
+      }
+    ]
+  },
+  "NDWasm": {
+    "longname": "NDWasm",
+    "kind": "namespace"
+  },
+  "NDWasm.bind": {
+    "longname": "NDWasm.bind",
+    "kind": "function",
+    "description": "Binds a loaded WASM runtime to the bridge.",
+    "params": [
+      {
+        "name": "runtime",
+        "type": {
+          "names": [
+            "*"
+          ]
+        }
+      }
+    ]
+  },
+  "NDWasm.init": {
+    "longname": "NDWasm.init",
+    "kind": "function",
+    "description": "Init the NDWasm",
+    "params": [
+      {
+        "name": "baseDir",
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "'.'"
+      }
+    ]
+  },
+  "NDWasm._compute": {
+    "longname": "NDWasm._compute",
+    "kind": "function",
+    "description": "Internal helper: executes a computation in WASM and manages memory."
+  },
+  "NDWasmArray": {
+    "longname": "NDWasmArray",
+    "kind": "class",
+    "params": [
+      {
+        "name": "buffer",
+        "description": "The WASM memory bridge (contains .ptr and .view).",
+        "type": {
+          "names": [
+            "WasmBuffer"
+          ]
+        }
+      },
+      {
+        "name": "shape",
+        "description": "Dimensions of the array.",
+        "type": {
+          "names": [
+            "Int32Array",
+            "Array"
+          ]
+        }
+      },
+      {
+        "name": "dtype",
+        "description": "Data type (e.g., 'float64').",
+        "type": {
+          "names": [
+            "string"
+          ]
+        }
+      }
+    ]
+  },
+  "NDWasmArray.prototype.NDWasmArray": {
+    "longname": "NDWasmArray#NDWasmArray",
+    "kind": "class",
+    "params": [
+      {
+        "name": "buffer",
+        "description": "The WASM memory bridge (contains .ptr and .view).",
+        "type": {
+          "names": [
+            "WasmBuffer"
+          ]
+        }
+      },
+      {
+        "name": "shape",
+        "description": "Dimensions of the array.",
+        "type": {
+          "names": [
+            "Int32Array",
+            "Array"
+          ]
+        }
+      },
+      {
+        "name": "dtype",
+        "description": "Data type (e.g., 'float64').",
+        "type": {
+          "names": [
+            "string"
+          ]
+        }
+      }
+    ]
+  },
+  "NDWasmArray.fromArray": {
+    "longname": "NDWasmArray.fromArray",
+    "kind": "function",
+    "description": "Static factory: Creates a WASM-resident array.\r1. If source is an NDArray, it calls .push() to move it to WASM.\r2. If source is a JS Array, it allocates WASM memory and fills it directly \r   via recursive traversal to avoid intermediate flattening.",
+    "params": []
+  },
+  "NDWasmArray.prototype.pull": {
+    "longname": "NDWasmArray#pull",
+    "kind": "function",
+    "description": "Pulls data from WASM to a JS-managed NDArray.",
+    "params": [
+      {
+        "name": "dispose",
+        "description": "Release WASM memory after pulling.",
+        "type": {
+          "names": [
+            "boolean"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": true
+      }
+    ]
+  },
+  "NDWasmArray.prototype.dispose": {
+    "longname": "NDWasmArray#dispose",
+    "kind": "function",
+    "description": "Manually releases WASM heap memory.",
+    "params": []
+  },
+  "NDWasmArray.prototype._prepareOperand": {
+    "longname": "NDWasmArray#_prepareOperand",
+    "kind": "function",
+    "description": "Internal helper to prepare operands for WASM operations.\rEnsures input is converted to NDWasmArray and tracks if it needs auto-disposal.",
+    "params": []
+  },
+  "NDWasmArray.prototype.matMul": {
+    "longname": "NDWasmArray#matMul",
+    "kind": "function",
+    "description": "Matrix Multiplication: C = this * other",
+    "params": [
+      {
+        "name": "other",
+        "type": {
+          "names": [
+            "NDWasmArray",
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDWasmArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDWasmArray.prototype.matMulBatch": {
+    "longname": "NDWasmArray#matMulBatch",
+    "kind": "function",
+    "description": "Batched Matrix Multiplication: C[i] = this[i] * other[i]",
+    "params": [
+      {
+        "name": "other",
+        "type": {
+          "names": [
+            "NDWasmArray",
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDWasmArray"
+          ]
+        }
+      }
+    ]
+  },
+  "NDWasmAnalysis": {
+    "longname": "NDWasmAnalysis",
+    "kind": "namespace",
+    "description": "NDWasmAnalysis: Advanced Analysis, Stats, Spatial & Random\rHandles O(n log n) sorting, O(n*d^2) statistics, O(n^3) matrix properties,\rspatial clustering, and high-performance random sampling."
+  },
+  "NDWasmAnalysis.argsort": {
+    "longname": "NDWasmAnalysis.argsort",
+    "kind": "function",
+    "description": "Returns the indices that would sort an array.",
+    "params": [
+      {
+        "name": "a",
+        "description": "Input array.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Indices as Int32 NDArray."
+      }
+    ]
+  },
+  "NDWasmAnalysis.topk": {
+    "longname": "NDWasmAnalysis.topk",
+    "kind": "function",
+    "description": "Finds the largest or smallest K elements and their indices.\rComplexity: O(n log k)",
+    "params": [
+      {
+        "name": "a",
+        "description": "Input array.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "k",
+        "description": "Number of elements to return.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "largest",
+        "description": "If true, find max elements; else min.",
+        "type": {
+          "names": [
+            "boolean"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        }
+      }
+    ]
+  },
+  "NDWasmAnalysis.cov": {
+    "longname": "NDWasmAnalysis.cov",
+    "kind": "function",
+    "description": "Computes the covariance matrix for a dataset of shape [n_samples, n_features].",
+    "params": [
+      {
+        "name": "a",
+        "description": "Data matrix.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Covariance matrix of shape [d, d]."
+      }
+    ]
+  },
+  "NDWasmAnalysis.corr": {
+    "longname": "NDWasmAnalysis.corr",
+    "kind": "function",
+    "description": "Computes the Pearson correlation matrix for a dataset of shape [n_samples, n_features].",
+    "params": [
+      {
+        "name": "a",
+        "description": "Data matrix.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Correlation matrix of shape [d, d]."
+      }
+    ]
+  },
+  "NDWasmAnalysis.norm": {
+    "longname": "NDWasmAnalysis.norm",
+    "kind": "function",
+    "description": "Computes the matrix norm.",
+    "params": [
+      {
+        "name": "a",
+        "description": "Input matrix.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "type",
+        "description": "1 (The maximum absolute column sum), 2 (Frobenius), Infinity (The maximum absolute row sum)",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "description": "The norm value."
+      }
+    ]
+  },
+  "NDWasmAnalysis.rank": {
+    "longname": "NDWasmAnalysis.rank",
+    "kind": "function",
+    "description": "Computes the rank of a matrix using SVD.",
+    "params": [
+      {
+        "name": "a",
+        "description": "Input matrix.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "tol",
+        "description": "Tolerance for singular values (0 for 1e-14).",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "description": "Integer rank of the matrix."
+      }
+    ]
+  },
+  "NDWasmAnalysis.cond": {
+    "longname": "NDWasmAnalysis.cond",
+    "kind": "function",
+    "description": "estimates the reciprocal condition number of matrix a.",
+    "params": [
+      {
+        "name": "a",
+        "description": "Input matrix.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "norm",
+        "description": "norm: 1 (1-norm) or Infinity (Infinity norm).",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "description": "result."
+      }
+    ]
+  },
+  "NDWasmAnalysis.eigenSym": {
+    "longname": "NDWasmAnalysis.eigenSym",
+    "kind": "function",
+    "description": "Eigenvalue decomposition for symmetric matrices.",
+    "params": [
+      {
+        "name": "a",
+        "description": "Symmetric square matrix.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "computeVectors",
+        "description": "Whether to return eigenvectors.",
+        "type": {
+          "names": [
+            "boolean"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        }
+      }
+    ]
+  },
+  "NDWasmAnalysis.pairwiseDist": {
+    "longname": "NDWasmAnalysis.pairwiseDist",
+    "kind": "function",
+    "description": "Computes pairwise Euclidean distances between two sets of vectors.",
+    "params": [
+      {
+        "name": "a",
+        "description": "Matrix of shape [m, d].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "b",
+        "description": "Matrix of shape [n, d].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Distance matrix of shape [m, n]."
+      }
+    ]
+  },
+  "NDWasmAnalysis.kmeans": {
+    "longname": "NDWasmAnalysis.kmeans",
+    "kind": "function",
+    "description": "Performs K-Means clustering in WASM memory.",
+    "params": [
+      {
+        "name": "data",
+        "description": "Data of shape [n_samples, d_features].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "k",
+        "description": "Number of clusters.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "maxIter",
+        "description": "Maximum iterations.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        }
+      }
+    ]
+  },
+  "NDWasmAnalysis.kronecker": {
+    "longname": "NDWasmAnalysis.kronecker",
+    "kind": "function",
+    "description": "Computes the Kronecker product C = A ⊗ B."
+  },
+  "NDWasmBlas": {
+    "longname": "NDWasmBlas",
+    "kind": "namespace",
+    "description": "NDWasmBlas: BLAS (Basic Linear Algebra Subprograms)\rHandles O(n^2) and O(n^3) matrix-matrix and matrix-vector operations."
+  },
+  "NDWasmBlas.trace": {
+    "longname": "NDWasmBlas.trace",
+    "kind": "function",
+    "description": "Calculates the trace of a 2D square matrix (sum of diagonal elements).\rComplexity: O(n)",
+    "params": [
+      {
+        "name": "a",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "description": "The sum of the diagonal elements."
+      }
+    ]
+  },
+  "NDWasmBlas.matMul": {
+    "longname": "NDWasmBlas.matMul",
+    "kind": "function",
+    "description": "General Matrix Multiplication (GEMM): C = A * B.\rComplexity: O(m * n * k)",
+    "params": [
+      {
+        "name": "a",
+        "description": "Left matrix of shape [m, n].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "b",
+        "description": "Right matrix of shape [n, k].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Result matrix of shape [m, k]."
+      }
+    ]
+  },
+  "NDWasmBlas.matPow": {
+    "longname": "NDWasmBlas.matPow",
+    "kind": "function",
+    "description": "matPow computes A^k (Matrix Power).\rMatrix Functions (O(n^3))",
+    "params": [
+      {
+        "name": "a",
+        "description": "Matrix of shape [n, n].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Result matrix of shape [n, n]."
+      }
+    ]
+  },
+  "NDWasmBlas.matMulBatch": {
+    "longname": "NDWasmBlas.matMulBatch",
+    "kind": "function",
+    "description": "Batched Matrix Multiplication: C[i] = A[i] * B[i].\rCommon in deep learning inference.\rComplexity: O(batch * m * n * k)",
+    "params": [
+      {
+        "name": "a",
+        "description": "Batch of matrices of shape [batch, m, n].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "b",
+        "description": "Batch of matrices of shape [batch, n, k].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Result batch of shape [batch, m, k]."
+      }
+    ]
+  },
+  "NDWasmBlas.syrk": {
+    "longname": "NDWasmBlas.syrk",
+    "kind": "function",
+    "description": "Symmetric Rank-K Update: C = alpha * A * A^T + beta * C.\rUsed for efficiently computing covariance matrices or Gram matrices.\rComplexity: O(n^2 * k)",
+    "params": [
+      {
+        "name": "a",
+        "description": "Input matrix of shape [n, k].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Symmetric result matrix of shape [n, n]."
+      }
+    ]
+  },
+  "NDWasmBlas.trsm": {
+    "longname": "NDWasmBlas.trsm",
+    "kind": "function",
+    "description": "Triangular System Solver: Solves A * X = B for X, where A is a triangular matrix.\rComplexity: O(m^2 * n)",
+    "params": [
+      {
+        "name": "a",
+        "description": "Triangular matrix of shape [m, m].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "b",
+        "description": "Right-hand side matrix/vector of shape [m, n].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Solution matrix X of shape [m, n]."
+      }
+    ]
+  },
+  "NDWasmBlas.matVecMul": {
+    "longname": "NDWasmBlas.matVecMul",
+    "kind": "function",
+    "description": "Matrix-Vector Multiplication: y = A * x.\rComplexity: O(m * n)",
+    "params": [
+      {
+        "name": "a",
+        "description": "Matrix of shape [m, n].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "x",
+        "description": "Vector of shape [n].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Result vector of shape [m]."
+      }
+    ]
+  },
+  "NDWasmBlas.ger": {
+    "longname": "NDWasmBlas.ger",
+    "kind": "function",
+    "description": "Vector Outer Product (Rank-1 Update): A = x * y^T.\rComplexity: O(m * n)",
+    "params": [
+      {
+        "name": "x",
+        "description": "Vector of shape [m].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "y",
+        "description": "Vector of shape [n].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Result matrix of shape [m, n]."
+      }
+    ]
+  },
+  "NDWasmDecomp": {
+    "longname": "NDWasmDecomp",
+    "kind": "namespace",
+    "description": "NDWasmDecomp: Decompositions & Solvers\rHandles O(n^3) matrix factorizations and linear system solutions."
+  },
+  "NDWasmDecomp.solve": {
+    "longname": "NDWasmDecomp.solve",
+    "kind": "function",
+    "description": "Solves a system of linear equations: Ax = B for x.\rComplexity: O(n^3)",
+    "params": [
+      {
+        "name": "a",
+        "description": "Square coefficient matrix of shape [n, n].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "b",
+        "description": "Right-hand side matrix or vector of shape [n, k].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Solution matrix x of shape [n, k]."
+      }
+    ]
+  },
+  "NDWasmDecomp.inv": {
+    "longname": "NDWasmDecomp.inv",
+    "kind": "function",
+    "description": "Computes the multiplicative inverse of a square matrix.\rComplexity: O(n^3)",
+    "params": [
+      {
+        "name": "a",
+        "description": "Square matrix to invert of shape [n, n].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "The inverted matrix of shape [n, n]."
+      }
+    ]
+  },
+  "NDWasmDecomp.svd": {
+    "longname": "NDWasmDecomp.svd",
+    "kind": "function",
+    "description": "Computes the Singular Value Decomposition (SVD): A = U * S * V^T.\rComplexity: O(m * n * min(m, n))",
+    "params": [
+      {
+        "name": "a",
+        "description": "Input matrix of shape [m, n].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        }
+      }
+    ]
+  },
+  "NDWasmDecomp.qr": {
+    "longname": "NDWasmDecomp.qr",
+    "kind": "function",
+    "description": "Computes the QR decomposition: A = Q * R.\rComplexity: O(n^3)",
+    "params": [
+      {
+        "name": "a",
+        "description": "Input matrix of shape [m, n].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        }
+      }
+    ]
+  },
+  "NDWasmDecomp.cholesky": {
+    "longname": "NDWasmDecomp.cholesky",
+    "kind": "function",
+    "description": "Computes the Cholesky decomposition of a symmetric, positive-definite matrix: A = L * L^T.\rComplexity: O(n^3)",
+    "params": [
+      {
+        "name": "a",
+        "description": "Symmetric positive-definite matrix of shape [n, n].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Lower triangular matrix L of shape [n, n]."
+      }
+    ]
+  },
+  "NDWasmDecomp.lu": {
+    "longname": "NDWasmDecomp.lu",
+    "kind": "function",
+    "description": "Computes the LU decomposition of a matrix: A = P * L * U.\rThe result is stored in-place in the output matrix.",
+    "params": [
+      {
+        "name": "a",
+        "description": "Input matrix of shape [m, n].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "LU matrix of shape [m, n]."
+      }
+    ]
+  },
+  "NDWasmDecomp.pinv": {
+    "longname": "NDWasmDecomp.pinv",
+    "kind": "function",
+    "description": "Computes the Moore-Penrose pseudo-inverse of a matrix using SVD.\rComplexity: O(n^3)",
+    "params": [
+      {
+        "name": "a",
+        "description": "Input matrix of shape [m, n].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Pseudo-inverted matrix of shape [n, m]."
+      }
+    ]
+  },
+  "NDWasmDecomp.det": {
+    "longname": "NDWasmDecomp.det",
+    "kind": "function",
+    "description": "Computes the determinant of a square matrix.\rComplexity: O(n^3)",
+    "params": [
+      {
+        "name": "a",
+        "description": "Square matrix of shape [n, n].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "description": "The determinant."
+      }
+    ]
+  },
+  "NDWasmDecomp.logDet": {
+    "longname": "NDWasmDecomp.logDet",
+    "kind": "function",
+    "description": "Computes the log-determinant for improved numerical stability.\rComplexity: O(n^3)",
+    "params": [
+      {
+        "name": "a",
+        "description": "Square matrix of shape [n, n].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        }
+      }
+    ]
+  },
+  "NDWasmDecomp.eigen": {
+    "longname": "NDWasmDecomp.eigen",
+    "kind": "function",
+    "description": "Computes the eigenvalues and eigenvectors of a general square matrix.\rEigenvalues and eigenvectors can be complex numbers.\rThe results are returned in an interleaved format where each complex number (a + bi)\ris represented by two consecutive float64 values (a, b).",
+    "params": [
+      {
+        "name": "a",
+        "description": "Input square matrix of shape `[n, n]`. Must be float64.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "An object containing:\r  - `values`: Complex eigenvalues as an NDArray of shape `[n, 2]`, where `[i, 0]` is real and `[i, 1]` is imaginary.\r  - `vectors`: Complex right eigenvectors as an NDArray of shape `[n, n, 2]`, where `[i, j, 0]` is real and `[i, j, 1]` is imaginary.\r             (Note: these are column vectors, such that `A * v = lambda * v`)."
+      }
+    ]
+  },
+  "NDWasmImage": {
+    "longname": "NDWasmImage",
+    "kind": "namespace",
+    "description": "Provides WebAssembly-powered functions for image processing.\nThis module allows for efficient conversion between image binary data and NDArrays."
+  },
+  "NDWasmImage.decode": {
+    "longname": "NDWasmImage.decode",
+    "kind": "function",
+    "description": "Decodes a binary image into an NDArray.\nSupports common formats like PNG, JPEG, GIF, and WebP.\nThe resulting NDArray will have a shape of [height, width, 4] and a 'uint8c' dtype,\nrepresenting RGBA channels. This provides a consistent starting point for image manipulation.",
+    "params": [
+      {
+        "name": "imageBytes",
+        "description": "The raw binary data of the image file.",
+        "type": {
+          "names": [
+            "Uint8Array"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray",
+            "null"
+          ]
+        },
+        "description": "A 3D NDArray representing the image, or null if decoding fails."
+      }
+    ],
+    "examples": [
+      "const imageBlob = await fetch('./my-image.png').then(res => res.blob());\nconst imageBytes = new Uint8Array(await imageBlob.arrayBuffer());\nconst imageArray = NDWasmImage.decode(imageBytes);\n// imageArray.shape is [height, width, 4]"
+    ]
+  },
+  "NDWasmImage.encode": {
+    "longname": "NDWasmImage.encode",
+    "kind": "function",
+    "description": "Encodes an NDArray into a binary image format (PNG or JPEG).",
+    "params": [
+      {
+        "name": "ndarray",
+        "description": "The input array.\n  Supported dtypes: 'uint8', 'uint8c', 'float32', 'float64'. Float values should be in the range [0, 1].\n  Supported shapes: [h, w] (grayscale), [h, w, 1] (grayscale), [h, w, 3] (RGB), or [h, w, 4] (RGBA).",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "options",
+        "description": "Encoding options.",
+        "type": {
+          "names": [
+            "object"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "{}"
+      },
+      {
+        "name": "options.format",
+        "description": "The target format: 'png' or 'jpeg'. It is recommended to use the `encodePng` or `encodeJpeg` helpers instead.",
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "'png'"
+      },
+      {
+        "name": "options.quality",
+        "description": "The quality for JPEG encoding (1-100). Ignored for PNG.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": 90
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Uint8Array",
+            "null"
+          ]
+        },
+        "description": "A Uint8Array containing the binary data of the encoded image, or null on failure."
+      }
+    ],
+    "examples": [
+      "// Encode a 3-channel float array to a high-quality JPEG using the main function\nconst floatArr = NDArray.random([100, 150, 3]);\nconst jpegBytes = NDWasmImage.encode(floatArr, { format: 'jpeg', quality: 95 });"
+    ]
+  },
+  "NDWasmImage.encodePng": {
+    "longname": "NDWasmImage.encodePng",
+    "kind": "function",
+    "description": "Encodes an NDArray into a PNG image.\nThis is a helper function that calls `encode` with `format: 'png'`.",
+    "params": [
+      {
+        "name": "ndarray",
+        "description": "The input array. See `encode` for supported shapes and dtypes.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Uint8Array",
+            "null"
+          ]
+        },
+        "description": "A Uint8Array containing the binary data of the PNG image."
+      }
+    ],
+    "examples": [
+      "const grayArr = ndarray.zeros([16, 16]);\nconst pngBytes = NDWasmImage.encodePng(grayArr);"
+    ]
+  },
+  "NDWasmImage.encodeJpeg": {
+    "longname": "NDWasmImage.encodeJpeg",
+    "kind": "function",
+    "description": "Encodes an NDArray into a JPEG image.\nThis is a helper function that calls `encode` with `format: 'jpeg'`.",
+    "params": [
+      {
+        "name": "ndarray",
+        "description": "The input array. See `encode` for supported shapes and dtypes.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "options",
+        "description": "Encoding options.",
+        "type": {
+          "names": [
+            "object"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "{}"
+      },
+      {
+        "name": "options.quality",
+        "description": "The quality for JPEG encoding (1-100).",
+        "type": {
+          "names": [
+            "number"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": 90
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Uint8Array",
+            "null"
+          ]
+        },
+        "description": "A Uint8Array containing the binary data of the JPEG image."
+      }
+    ],
+    "examples": [
+      "const floatArr = NDArray.random([20, 20, 3]);\nconst jpegBytes = NDWasmImage.encodeJpeg(floatArr, { quality: 85 });"
+    ]
+  },
+  "NDWasmImage.convertUint8ArrrayToDataurl": {
+    "longname": "NDWasmImage.convertUint8ArrrayToDataurl",
+    "kind": "function",
+    "description": "Converts a Uint8Array of binary data into a Base64 Data URL.\nThis is a utility function that runs purely in JavaScript.",
+    "params": [
+      {
+        "name": "uint8array",
+        "description": "The byte array to convert.",
+        "type": {
+          "names": [
+            "Uint8Array"
+          ]
+        }
+      },
+      {
+        "name": "mimeType",
+        "description": "The MIME type for the Data URL (e.g., 'image/jpeg').",
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "'image/png'"
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "description": "The complete Data URL string."
+      }
+    ],
+    "examples": [
+      "const pngBytes = NDWasmImage.encodePng(myNdarray);\nconst dataUrl = NDWasmImage.convertUint8ArrrayToDataurl(pngBytes, 'image/png');\n// <img src={dataUrl} />"
+    ]
+  },
+  "OPTIMIZE_STATUS_MAP": {
+    "longname": "OPTIMIZE_STATUS_MAP",
+    "kind": "constant",
+    "description": "Maps status codes from gonum/optimize to human-readable messages.",
+    "params": []
+  },
+  "NDWasmOptimize": {
+    "longname": "NDWasmOptimize",
+    "kind": "namespace",
+    "description": "Namespace for Optimization functions using Go WASM."
+  },
+  "NDWasmOptimize.linprog": {
+    "longname": "NDWasmOptimize.linprog",
+    "kind": "function",
+    "description": "Provides Optimization capabilities by wrapping Go WASM functions.\nminimize cᵀ * x\ns.t      G * x <= h\n\t        A * x = b\n         lower <= x <= upper",
+    "params": [
+      {
+        "name": "c",
+        "description": "Coefficient vector for the objective function (1D NDArray of float64).",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "G",
+        "description": "Coefficient matrix for inequality constraints (2D NDArray of float64).",
+        "type": {
+          "names": [
+            "NDArray",
+            "null"
+          ]
+        }
+      },
+      {
+        "name": "h",
+        "description": "Right-hand side vector for inequality constraints (1D NDArray of float64).",
+        "type": {
+          "names": [
+            "NDArray",
+            "null"
+          ]
+        }
+      },
+      {
+        "name": "A",
+        "description": "Coefficient matrix for equality constraints (2D NDArray of float64).",
+        "type": {
+          "names": [
+            "NDArray",
+            "null"
+          ]
+        }
+      },
+      {
+        "name": "b",
+        "description": "Right-hand side vector for equality constraints (1D NDArray of float64).",
+        "type": {
+          "names": [
+            "NDArray",
+            "null"
+          ]
+        }
+      },
+      {
+        "name": "bounds",
+        "description": "Optional variable bounds as an array of [lower, upper] pairs. Use null for unbounded. [0, null] for all for default.",
+        "type": {
+          "names": [
+            "Array"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "- The optimization result."
+      }
+    ]
+  },
+  "NDWasmOptimize.linearRegression": {
+    "longname": "NDWasmOptimize.linearRegression",
+    "kind": "function",
+    "description": "Fits a simple linear regression model: Y = alpha + beta*X.",
+    "params": [
+      {
+        "name": "x",
+        "description": "The independent variable (1D NDArray of float64).",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "y",
+        "description": "The dependent variable (1D NDArray of float64).",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "- An object containing the intercept (alpha) and slope (beta) of the fitted line."
+      }
+    ]
+  },
+  "NDWasmOptimize.minimize": {
+    "longname": "NDWasmOptimize.minimize",
+    "kind": "function",
+    "description": "Finds the minimum of a scalar function of one or more variables using an L-BFGS optimizer.",
+    "params": [
+      {
+        "name": "func",
+        "description": "The objective function to be minimized. It must take a 1D `Float64Array` `x` (current point) and return a single number (the function value at `x`).",
+        "type": {
+          "names": [
+            "function"
+          ]
+        }
+      },
+      {
+        "name": "x0",
+        "description": "The initial guess for the optimization (1D NDArray of float64).",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "options",
+        "description": "Optional parameters.",
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "optional": true
+      },
+      {
+        "name": "options.grad",
+        "description": "The gradient of the objective function. Must take `x` (a 1D `Float64Array`) and write the result into the second argument `grad_out` (a 1D `Float64Array`). This function should *not* return a value.",
+        "type": {
+          "names": [
+            "function"
+          ]
+        },
+        "optional": true
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Object"
+          ]
+        },
+        "description": "The optimization result."
+      }
+    ]
+  },
+  "NDWasmSignal": {
+    "longname": "NDWasmSignal",
+    "kind": "namespace",
+    "description": "NDWasmSignal: Signal Processing & Transformations\rHandles O(n log n) frequency domain transforms and O(n^2 * k^2) spatial filters."
+  },
+  "NDWasmSignal.fft": {
+    "longname": "NDWasmSignal.fft",
+    "kind": "function",
+    "description": "1D Complex-to-Complex Fast Fourier Transform.\rThe input array must have its last dimension of size 2 (real and imaginary parts).\rThe transform is performed in-place.\rComplexity: O(n log n)",
+    "params": [
+      {
+        "name": "a",
+        "description": "Complex input signal, with shape [..., 2].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "- Complex result, with the same shape as input."
+      }
+    ]
+  },
+  "NDWasmSignal.ifft": {
+    "longname": "NDWasmSignal.ifft",
+    "kind": "function",
+    "description": "1D Inverse Complex-to-Complex Fast Fourier Transform.\rThe input array must have its last dimension of size 2 (real and imaginary parts).\rThe transform is performed in-place.\rComplexity: O(n log n)",
+    "params": [
+      {
+        "name": "a",
+        "description": "Complex frequency-domain signal, with shape [..., 2].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "- Complex time-domain result, with the same shape as input."
+      }
+    ]
+  },
+  "NDWasmSignal.rfft": {
+    "longname": "NDWasmSignal.rfft",
+    "kind": "function",
+    "description": "1D Real-to-Complex Fast Fourier Transform (Optimized for real input).\rThe output is a complex array with shape [n/2 + 1, 2].\rComplexity: O(n log n)",
+    "params": [
+      {
+        "name": "a",
+        "description": "Real input signal.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "- Complex result of shape [n/2 + 1, 2]."
+      }
+    ]
+  },
+  "NDWasmSignal.rifft": {
+    "longname": "NDWasmSignal.rifft",
+    "kind": "function",
+    "description": "1D Complex-to-Real Inverse Fast Fourier Transform.\rThe input must be a complex array of shape [k, 2], where k is n/2 + 1.",
+    "params": [
+      {
+        "name": "a",
+        "description": "Complex frequency signal of shape [n/2 + 1, 2].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "n",
+        "description": "Length of the original real signal.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Real-valued time domain signal."
+      }
+    ]
+  },
+  "NDWasmSignal.fft2": {
+    "longname": "NDWasmSignal.fft2",
+    "kind": "function",
+    "description": "2D Complex-to-Complex Fast Fourier Transform.\rThe input array must be 3D with shape [rows, cols, 2].\rThe transform is performed in-place.\rComplexity: O(rows * cols * log(rows * cols))",
+    "params": [
+      {
+        "name": "a",
+        "description": "2D Complex input signal, with shape [rows, cols, 2].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "- 2D Complex result, with the same shape as input."
+      }
+    ]
+  },
+  "NDWasmSignal.ifft2": {
+    "longname": "NDWasmSignal.ifft2",
+    "kind": "function",
+    "description": "2D Inverse Complex-to-Complex Fast Fourier Transform.\rThe input array must be 3D with shape [rows, cols, 2].\rThe transform is performed in-place.",
+    "params": [
+      {
+        "name": "a",
+        "description": "2D Complex frequency-domain signal, with shape [rows, cols, 2].",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "- 2D Complex time-domain result, with the same shape as input."
+      }
+    ]
+  },
+  "NDWasmSignal.dct": {
+    "longname": "NDWasmSignal.dct",
+    "kind": "function",
+    "description": "1D Discrete Cosine Transform (Type II).\rComplexity: O(n log n)",
+    "params": [
+      {
+        "name": "a",
+        "description": "Input signal.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "DCT result of same shape."
+      }
+    ]
+  },
+  "NDWasmSignal.conv2d": {
+    "longname": "NDWasmSignal.conv2d",
+    "kind": "function",
+    "description": "2D Spatial Convolution.\rComplexity: O(img_h * img_w * kernel_h * kernel_w)",
+    "params": [
+      {
+        "name": "img",
+        "description": "2D Image/Matrix.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "kernel",
+        "description": "2D Filter kernel.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "stride",
+        "description": "Step size (default 1).",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "padding",
+        "description": "Zero-padding size (default 0).",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Convolved result."
+      }
+    ]
+  },
+  "NDWasmSignal.correlate2d": {
+    "longname": "NDWasmSignal.correlate2d",
+    "kind": "function",
+    "description": "2D Spatial Cross-Correlation.\rSimilar to convolution but without flipping the kernel.\rComplexity: O(img_h * img_w * kernel_h * kernel_w)",
+    "params": [
+      {
+        "name": "img",
+        "description": "2D Image/Matrix.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "kernel",
+        "description": "2D Filter kernel.",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "stride",
+        "description": "Step size.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "padding",
+        "description": "Zero-padding size.",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "Cross-correlated result."
+      }
+    ]
+  }
+}

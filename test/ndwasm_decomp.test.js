@@ -75,7 +75,7 @@ describe('NDWasmDecomp (WASM)', () => {
         test('case 3: A * A_inv approx Identity', () => {
             const a = ndarray.array([[1, 2], [3, 4]]);
             const aInv = a.inv();
-            const res = a.matmul(aInv);
+            const res = a.matMul(aInv);
             expect(res.get(0, 0)).toBeCloseTo(1);
             expect(res.get(0, 1)).toBeCloseTo(0);
             expect(res.get(1, 0)).toBeCloseTo(0);
@@ -104,7 +104,7 @@ describe('NDWasmDecomp (WASM)', () => {
             const sDiag = ndarray.zeros([2, 2]);
             sDiag.set(s.get(0), 0, 0);
             sDiag.set(s.get(1), 1, 1);
-            const recon = u.matmul(sDiag).matmul(v.transpose());
+            const recon = u.matMul(sDiag).matMul(v.transpose());
             recon.data.forEach((val, i) => expect(val).toBeCloseTo(a.data[i]));
         });
 
@@ -136,7 +136,7 @@ describe('NDWasmDecomp (WASM)', () => {
             const sDiag = ndarray.zeros([2, 3]);
             sDiag.set(s.get(0), 0, 0);
             sDiag.set(s.get(1), 1, 1);
-            const recon = u.matmul(sDiag).matmul(v.transpose());
+            const recon = u.matMul(sDiag).matMul(v.transpose());
             recon.data.forEach((val, i) => expect(val).toBeCloseTo(a.data[i]));
         });
     });
@@ -146,14 +146,14 @@ describe('NDWasmDecomp (WASM)', () => {
         test('case 1: square reconstruction (A = QR)', () => {
             const a = ndarray.array([[12, -51, 4], [6, 167, -68], [-4, 24, -41]]);
             const { q, r } = a.qr();
-            const recon = q.matmul(r);
+            const recon = q.matMul(r);
             recon.data.forEach((val, i) => expect(val).toBeCloseTo(a.data[i]));
         });
 
         test('case 2: Q is orthogonal (Q^T Q = I)', () => {
             const a = random.random([4, 4]);
             const { q } = a.qr();
-            const res = q.transpose().matmul(q);
+            const res = q.transpose().matMul(q);
             const identity = ndarray.eye(4);
             res.data.forEach((val, i) => expect(val).toBeCloseTo(identity.data[i]));
         });
@@ -171,7 +171,7 @@ describe('NDWasmDecomp (WASM)', () => {
             const { q, r } = a.qr();
             expect(q.shape).toEqual(new Int32Array([4, 4]));
             expect(r.shape).toEqual(new Int32Array([4, 2]));
-            const recon = q.matmul(r);
+            const recon = q.matMul(r);
             recon.data.forEach((val, i) => expect(val).toBeCloseTo(a.data[i]));
         });
 
@@ -188,7 +188,7 @@ describe('NDWasmDecomp (WASM)', () => {
         test('case 1: 2x2 positive definite reconstruction (A = L L^T)', () => {
             const a = ndarray.array([[4, 12], [12, 37]]);
             const l = a.cholesky();
-            const recon = l.matmul(l.transpose());
+            const recon = l.matMul(l.transpose());
             recon.data.forEach((val, i) => expect(val).toBeCloseTo(a.data[i]));
         });
 
@@ -215,7 +215,7 @@ describe('NDWasmDecomp (WASM)', () => {
         test('case 5: large symmetric positive definite', () => {
             const a = ndarray.array([[10, 2, 3], [2, 10, 4], [3, 4, 10]]);
             const l = a.cholesky();
-            const recon = l.matmul(l.transpose());
+            const recon = l.matMul(l.transpose());
             recon.data.forEach((val, i) => expect(val).toBeCloseTo(a.data[i]));
         });
     });
@@ -243,7 +243,7 @@ describe('NDWasmDecomp (WASM)', () => {
             const pinv = a.pinv();
             expect(pinv.shape).toEqual(new Int32Array([2, 3]));
             // (A^T A)^-1 A^T
-            const res = pinv.matmul(a); // Should be I(2x2)
+            const res = pinv.matMul(a); // Should be I(2x2)
             expect(res.get(0, 0)).toBeCloseTo(1);
             expect(res.get(1, 1)).toBeCloseTo(1);
         });
@@ -252,7 +252,7 @@ describe('NDWasmDecomp (WASM)', () => {
             const a = ndarray.array([[1, 0, 0], [0, 1, 1]]);
             const pinv = a.pinv();
             expect(pinv.shape).toEqual(new Int32Array([3, 2]));
-            const res = a.matmul(pinv); // Should be I(2x2)
+            const res = a.matMul(pinv); // Should be I(2x2)
             expect(res.get(0, 0)).toBeCloseTo(1);
             expect(res.get(1, 1)).toBeCloseTo(1);
         });
@@ -261,7 +261,7 @@ describe('NDWasmDecomp (WASM)', () => {
             const a = ndarray.array([[1, 1], [1, 1]]);
             const pinv = a.pinv();
             // A @ pinv @ A should be A
-            const res = a.matmul(pinv).matmul(a);
+            const res = a.matMul(pinv).matMul(a);
             res.data.forEach((v, i) => expect(v).toBeCloseTo(a.data[i]));
         });
 

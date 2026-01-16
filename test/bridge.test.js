@@ -20,13 +20,13 @@ describe('NDArray Bridge (WASM)', () => {
         expect(NDWasm.runtime.isLoaded).toBe(true);
     });
 
-    test('matmul', () => {
+    test('matMul', () => {
         const a = ndarray.array([[1, 2], [3, 4]]);
         const b = ndarray.array([[5, 6], [7, 8]]);
         // c = [[1*5+2*7, 1*6+2*8], [3*5+4*7, 3*6+4*8]]
         //   = [[19, 22], [43, 50]]
         
-        const c = a.matmul(b);
+        const c = a.matMul(b);
 
         expect(c.shape).toEqual(new Int32Array([2, 2]));
         expect(c.copy().data).toEqual(new Float64Array([19, 22, 43, 50]));
@@ -92,7 +92,7 @@ describe('NDArray Bridge (WASM)', () => {
         s_diag.set(s.get(0), 0, 0);
         s_diag.set(s.get(1), 1, 1);
         
-        const a_recon = u.matmul(s_diag).matmul(v);
+        const a_recon = u.matMul(s_diag).matMul(v);
 
         // Compare reconstructed matrix with original
         a_recon.copy().data.forEach((val, i) => {

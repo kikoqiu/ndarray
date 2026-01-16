@@ -253,7 +253,7 @@ var NDWasmBlas = {
    * @param {NDArray} b - Right matrix of shape [n, k].
    * @returns {NDArray} Result matrix of shape [m, k].
    */
-  matmul(a, b) {
+  matMul(a, b) {
     if (a.shape[1] !== b.shape[0]) {
       throw new Error(`Matrix inner dimensions must match: ${a.shape[1]} != ${b.shape[0]}`);
     }
@@ -296,7 +296,7 @@ var NDWasmBlas = {
    * @param {NDArray} b - Batch of matrices of shape [batch, n, k].
    * @returns {NDArray} Result batch of shape [batch, m, k].
    */
-  matmulBatch(a, b) {
+  matMulBatch(a, b) {
     if (a.ndim !== 3 || b.ndim !== 3 || a.shape[0] !== b.shape[0]) {
       throw new Error("Input must be 3D batches with same batch size.");
     }
@@ -1948,7 +1948,7 @@ var NDWasmArray = class _NDWasmArray {
    * @param {NDWasmArray | NDArray} other
    * @returns {NDWasmArray}
    */
-  matmul(other) {
+  matMul(other) {
     const [right, shouldDispose] = this._prepareOperand(other);
     try {
       if (this.shape[1] !== right.shape[0]) {
@@ -1978,7 +1978,7 @@ var NDWasmArray = class _NDWasmArray {
    * @param {NDWasmArray | NDArray}
    * @returns {NDWasmArray}
    */
-  matmulBatch(other) {
+  matMulBatch(other) {
     const [right, shouldDispose] = this._prepareOperand(other);
     try {
       if (this.ndim !== 3 || right.ndim !== 3 || this.shape[0] !== right.shape[0]) {
@@ -3427,6 +3427,143 @@ var NDArray = class _NDArray {
   flatten() {
     return this.slice().reshape(this.size);
   }
+  //------blas-------
+  /**
+   * Dot Product (Scalar Inner Product).
+   * Supports 1D arrays (vectors) only.
+   * @param {NDArray} other 
+   * @returns {number} Scalar result.
+   */
+  dotProduct(other) {
+    if (this.ndim !== 1 || other.ndim !== 1) {
+      throw new Error(`Dot product supports 1D arrays only. Shapes: ${this.shape} vs ${other.shape}`);
+    }
+    if (this.shape[0] !== other.shape[0]) {
+      throw new Error(`Shapes must match for dot product: ${this.shape[0]} vs ${other.shape[0]}`);
+    }
+    const len = this.shape[0];
+    let sum = 0;
+    const dataA = this.data;
+    const dataB = other.data;
+    const offA = this.offset;
+    const offB = other.offset;
+    const strA = this.strides[0];
+    const strB = other.strides[0];
+    for (let i = 0; i < len; i++) {
+      sum += dataA[offA + i * strA] * dataB[offB + i * strB];
+    }
+    return sum;
+  }
+  /**
+   * Cross Product.
+   * Only valid for 1D vectors of length 3.
+   * @param {NDArray} other 
+   * @returns {NDArray} New NDArray of size 3.
+   */
+  crossProduct(other) {
+    if (this.ndim !== 1 || other.ndim !== 1) {
+      throw new Error("Cross product requires 1D arrays.");
+    }
+    if (this.shape[0] !== 3 || other.shape[0] !== 3) {
+      throw new Error("Cross product is only defined for vectors of length 3.");
+    }
+    const dataA = this.data;
+    const dataB = other.data;
+    const idxA0 = this.offset;
+    const idxA1 = this.offset + this.strides[0];
+    const idxA2 = this.offset + 2 * this.strides[0];
+    const idxB0 = other.offset;
+    const idxB1 = other.offset + other.strides[0];
+    const idxB2 = other.offset + 2 * other.strides[0];
+    const ax = dataA[idxA0], ay = dataA[idxA1], az = dataA[idxA2];
+    const bx = dataB[idxB0], by = dataB[idxB1], bz = dataB[idxB2];
+    const Ctor = DTYPE_MAP[this.dtype];
+    const resData = new Ctor([
+      ay * bz - az * by,
+      az * bx - ax * bz,
+      ax * by - ay * bx
+    ]);
+    return new _NDArray(resData, { shape: [3], dtype: this.dtype });
+  }
+  /**
+   * Matrix Multiplication in js.
+   * Operations: (M, K) @ (K, N) -> (M, N)
+   * @param {NDArray} other 
+   * @returns {NDArray} New NDArray.
+   */
+  jsMatMul(other) {
+    if (this.ndim !== 2 || other.ndim !== 2) {
+      throw new Error(`jsMatMul requires 2D arrays. Got ${this.ndim}D and ${other.ndim}D.`);
+    }
+    const [M, K] = this.shape;
+    const [K2, N] = other.shape;
+    if (K !== K2) {
+      throw new Error(`inner dimensions must match: (${M}, ${K}) vs (${K2}, ${N})`);
+    }
+    const Ctor = DTYPE_MAP[this.dtype];
+    const outData = new Ctor(M * N);
+    const dataA = this.data;
+    const dataB = other.data;
+    const offA = this.offset;
+    const offB = other.offset;
+    const strA0 = this.strides[0];
+    const strA1 = this.strides[1];
+    const strB0 = other.strides[0];
+    const strB1 = other.strides[1];
+    for (let i = 0; i < M; i++) {
+      const rowAStart = offA + i * strA0;
+      for (let j = 0; j < N; j++) {
+        const colBStart = offB + j * strB1;
+        let sum = 0;
+        for (let k = 0; k < K; k++) {
+          const valA = dataA[rowAStart + k * strA1];
+          const valB = dataB[colBStart + k * strB0];
+          sum += valA * valB;
+        }
+        outData[i * N + j] = sum;
+      }
+    }
+    return new _NDArray(outData, { shape: [M, N], dtype: this.dtype });
+  }
+  /**
+   * Matrix-Vector Multiplication in js.
+   * Operation: (M, K) @ (K,) -> (M,)
+   * @param {NDArray} vec 
+   * @returns {NDArray} New NDArray (Vector).
+   */
+  jsMatVecMul(vec) {
+    if (this.ndim !== 2) {
+      throw new Error(`jsMatVecMul expects matrix as 'this' (2D). Got ${this.ndim}D.`);
+    }
+    if (vec.ndim !== 1) {
+      throw new Error(`jsMatVecMul expects vector as argument (1D). Got ${vec.ndim}D.`);
+    }
+    const [M, K] = this.shape;
+    const K2 = vec.shape[0];
+    if (K !== K2) {
+      throw new Error(`Shapes not aligned: Matrix(${M}, ${K}) vs Vector(${K2})`);
+    }
+    const Ctor = DTYPE_MAP[this.dtype];
+    const outData = new Ctor(M);
+    const dataA = this.data;
+    const dataV = vec.data;
+    const offA = this.offset;
+    const offV = vec.offset;
+    const strA0 = this.strides[0];
+    const strA1 = this.strides[1];
+    const strV = vec.strides[0];
+    for (let i = 0; i < M; i++) {
+      const rowAStart = offA + i * strA0;
+      let sum = 0;
+      for (let k = 0; k < K; k++) {
+        const valA = dataA[rowAStart + k * strA1];
+        const valV = dataV[offV + k * strV];
+        sum += valA * valV;
+      }
+      outData[i] = sum;
+    }
+    return new _NDArray(outData, { shape: [M], dtype: this.dtype });
+  }
   //--------------------NDWasm---------------------
   /**
    * Projects the current ndarray to a WASM proxy (WasmBuffer).
@@ -3466,14 +3603,14 @@ var NDArray = class _NDArray {
     return NDWasmBlas.trace(this);
   }
   /**
-   * Performs matrix multiplication. This is a wrapper around `NDWasmBlas.matmul`.
+   * Performs matrix multiplication. This is a wrapper around `NDWasmBlas.matMul`.
    * @param {NDArray} other The right-hand side matrix.
    * @returns {NDArray} The result of the matrix multiplication.
-   * @see NDWasmBlas.matmul
+   * @see NDWasmBlas.matMul
    * 
    */
-  matmul(other) {
-    return NDWasmBlas.matmul(this, other);
+  matMul(other) {
+    return NDWasmBlas.matMul(this, other);
   }
   /**
    * Computes the matrix power. This is a wrapper around `NDWasmBlas.matPow`.
@@ -3486,14 +3623,14 @@ var NDArray = class _NDArray {
     return NDWasmBlas.matPow(this, k);
   }
   /**
-   * Performs batched matrix multiplication. This is a wrapper around `NDWasmBlas.matmulBatch`.
+   * Performs batched matrix multiplication. This is a wrapper around `NDWasmBlas.matMulBatch`.
    * @param {NDArray} other The right-hand side batch of matrices.
    * @returns {NDArray} The result of the batched matrix multiplication.
-   * @see NDWasmBlas.matmulBatch
+   * @see NDWasmBlas.matMulBatch
    * 
    */
-  matmulBatch(other) {
-    return NDWasmBlas.matmulBatch(this, other);
+  matMulBatch(other) {
+    return NDWasmBlas.matMulBatch(this, other);
   }
   /**
    * Performs matrix-vector multiplication. This is a wrapper around `NDWasmBlas.matVecMul`.
@@ -3565,7 +3702,7 @@ var NDArray = class _NDArray {
   }
   /**
    * Computes the Singular Value Decomposition (SVD). This is a wrapper around `NDWasmDecomp.svd`.
-   * @returns {{{q: NDArray, r: NDArray}}} An object containing the U, S, and V matrices.
+   * @returns {{q: NDArray, r: NDArray}} An object containing the U, S, and V matrices.
    * @see NDWasmDecomp.svd
    * 
    */
@@ -3601,7 +3738,7 @@ var NDArray = class _NDArray {
   }
   /**
    * Computes the log-determinant of the matrix. This is a wrapper around `NDWasmDecomp.logDet`.
-   * @returns {{{sign: number, logAbsDet: number}}} An object containing the sign and log-absolute-determinant.
+   * @returns {{sign: number, logAbsDet: number}} An object containing the sign and log-absolute-determinant.
    * @see NDWasmDecomp.logDet
    * @memberof NDWasmDecomp.prototype
    */
@@ -3628,8 +3765,8 @@ var NDArray = class _NDArray {
   // 3. Signal Processing
   /**
    * Computes the 1D Fast Fourier Transform. This is a wrapper around `NDWasmSignal.fft`.
-   * @this {{NDArray}} Complex array with shape [..., 2].
-   * @returns {{NDArray}} Complex result with shape [..., 2].
+   * @this {NDArray} Complex array with shape [..., 2].
+   * @returns {NDArray} Complex result with shape [..., 2].
    * @see NDWasmSignal.fft
    * 
    */
@@ -3638,8 +3775,8 @@ var NDArray = class _NDArray {
   }
   /**
    * Computes the 1D Inverse Fast Fourier Transform. This is a wrapper around `NDWasmSignal.ifft`.
-   * @this {{NDArray}} Complex array with shape [..., 2].
-   * @returns {{NDArray}} Complex result with shape [..., 2].
+   * @this {NDArray} Complex array with shape [..., 2].
+   * @returns {NDArray} Complex result with shape [..., 2].
    * @see NDWasmSignal.ifft
    * 
    */
@@ -3648,8 +3785,8 @@ var NDArray = class _NDArray {
   }
   /**
    * Computes the 1D Real-to-Complex Fast Fourier Transform. This is a wrapper around `NDWasmSignal.rfft`.
-   * @this {{NDArray}} real input array.
-   * @returns {{NDArray}} Complex result with shape [..., 2].
+   * @this {NDArray} real input array.
+   * @returns {NDArray} Complex result with shape [..., 2].
    * @see NDWasmSignal.rfft
    * 
    */
@@ -5800,6 +5937,106 @@ var docs_default = {
       }
     ]
   },
+  "NDArray.prototype.dotProduct": {
+    longname: "NDArray#dotProduct",
+    kind: "function",
+    description: "Dot Product (Scalar Inner Product).\rSupports 1D arrays (vectors) only.",
+    params: [
+      {
+        name: "other",
+        type: {
+          names: [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    returns: [
+      {
+        type: {
+          names: [
+            "number"
+          ]
+        },
+        description: "Scalar result."
+      }
+    ]
+  },
+  "NDArray.prototype.crossProduct": {
+    longname: "NDArray#crossProduct",
+    kind: "function",
+    description: "Cross Product.\rOnly valid for 1D vectors of length 3.",
+    params: [
+      {
+        name: "other",
+        type: {
+          names: [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    returns: [
+      {
+        type: {
+          names: [
+            "NDArray"
+          ]
+        },
+        description: "New NDArray of size 3."
+      }
+    ]
+  },
+  "NDArray.prototype.jsMatMul": {
+    longname: "NDArray#jsMatMul",
+    kind: "function",
+    description: "Matrix Multiplication in js.\rOperations: (M, K) @ (K, N) -> (M, N)",
+    params: [
+      {
+        name: "other",
+        type: {
+          names: [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    returns: [
+      {
+        type: {
+          names: [
+            "NDArray"
+          ]
+        },
+        description: "New NDArray."
+      }
+    ]
+  },
+  "NDArray.prototype.jsMatVecMul": {
+    longname: "NDArray#jsMatVecMul",
+    kind: "function",
+    description: "Matrix-Vector Multiplication in js.\rOperation: (M, K) @ (K,) -> (M,)",
+    params: [
+      {
+        name: "vec",
+        type: {
+          names: [
+            "NDArray"
+          ]
+        }
+      }
+    ],
+    returns: [
+      {
+        type: {
+          names: [
+            "NDArray"
+          ]
+        },
+        description: "New NDArray (Vector)."
+      }
+    ]
+  },
   "NDArray.prototype.toWasm": {
     longname: "NDArray#toWasm",
     kind: "function",
@@ -5856,10 +6093,10 @@ var docs_default = {
       }
     ]
   },
-  "NDArray.prototype.matmul": {
-    longname: "NDArray#matmul",
+  "NDArray.prototype.matMul": {
+    longname: "NDArray#matMul",
     kind: "function",
-    description: "Performs matrix multiplication. This is a wrapper around `NDWasmBlas.matmul`.",
+    description: "Performs matrix multiplication. This is a wrapper around `NDWasmBlas.matMul`.",
     params: [
       {
         name: "other",
@@ -5908,10 +6145,10 @@ var docs_default = {
       }
     ]
   },
-  "NDArray.prototype.matmulBatch": {
-    longname: "NDArray#matmulBatch",
+  "NDArray.prototype.matMulBatch": {
+    longname: "NDArray#matMulBatch",
     kind: "function",
-    description: "Performs batched matrix multiplication. This is a wrapper around `NDWasmBlas.matmulBatch`.",
+    description: "Performs batched matrix multiplication. This is a wrapper around `NDWasmBlas.matMulBatch`.",
     params: [
       {
         name: "other",
@@ -6207,7 +6444,7 @@ var docs_default = {
       {
         type: {
           names: [
-            "Object"
+            "NDArray"
           ]
         },
         description: "Complex result with shape [..., 2]."
@@ -6223,7 +6460,7 @@ var docs_default = {
       {
         type: {
           names: [
-            "Object"
+            "NDArray"
           ]
         },
         description: "Complex result with shape [..., 2]."
@@ -6239,7 +6476,7 @@ var docs_default = {
       {
         type: {
           names: [
-            "Object"
+            "NDArray"
           ]
         },
         description: "Complex result with shape [..., 2]."
@@ -7070,6 +7307,7 @@ var docs_default = {
     params: [
       {
         name: "start",
+        description: "the starting value of the sequence.",
         type: {
           names: [
             "number"
@@ -7078,6 +7316,7 @@ var docs_default = {
       },
       {
         name: "stop",
+        description: "the end value of the sequence.",
         type: {
           names: [
             "number",
@@ -7087,18 +7326,33 @@ var docs_default = {
       },
       {
         name: "step",
+        description: "the spacing between values.",
         type: {
           names: [
             "number",
             "null"
           ]
-        }
+        },
+        optional: true,
+        defaultvalue: 1
       },
       {
         name: "dtype",
+        description: "the data type of the resulting array.",
         type: {
           names: [
             "string"
+          ]
+        },
+        optional: true,
+        defaultvalue: "'float64'"
+      }
+    ],
+    returns: [
+      {
+        type: {
+          names: [
+            "NDArray"
           ]
         }
       }
@@ -7111,6 +7365,7 @@ var docs_default = {
     params: [
       {
         name: "start",
+        description: "the starting value of the sequence.",
         type: {
           names: [
             "number"
@@ -7119,6 +7374,7 @@ var docs_default = {
       },
       {
         name: "stop",
+        description: "the end value of the sequence.",
         type: {
           names: [
             "number",
@@ -7128,19 +7384,25 @@ var docs_default = {
       },
       {
         name: "num",
+        description: "the number of samples to generate.",
         type: {
           names: [
             "number"
           ]
-        }
+        },
+        optional: true,
+        defaultvalue: 50
       },
       {
         name: "dtype",
+        description: "the data type of the resulting array.",
         type: {
           names: [
             "string"
           ]
-        }
+        },
+        optional: true,
+        defaultvalue: "'float64'"
       }
     ],
     returns: [
@@ -8159,8 +8421,8 @@ var docs_default = {
     description: "Internal helper to prepare operands for WASM operations.\rEnsures input is converted to NDWasmArray and tracks if it needs auto-disposal.",
     params: []
   },
-  "NDWasmArray.prototype.matmul": {
-    longname: "NDWasmArray#matmul",
+  "NDWasmArray.prototype.matMul": {
+    longname: "NDWasmArray#matMul",
     kind: "function",
     description: "Matrix Multiplication: C = this * other",
     params: [
@@ -8184,8 +8446,8 @@ var docs_default = {
       }
     ]
   },
-  "NDWasmArray.prototype.matmulBatch": {
-    longname: "NDWasmArray#matmulBatch",
+  "NDWasmArray.prototype.matMulBatch": {
+    longname: "NDWasmArray#matMulBatch",
     kind: "function",
     description: "Batched Matrix Multiplication: C[i] = this[i] * other[i]",
     params: [
@@ -8587,8 +8849,8 @@ var docs_default = {
       }
     ]
   },
-  "NDWasmBlas.matmul": {
-    longname: "NDWasmBlas.matmul",
+  "NDWasmBlas.matMul": {
+    longname: "NDWasmBlas.matMul",
     kind: "function",
     description: "General Matrix Multiplication (GEMM): C = A * B.\rComplexity: O(m * n * k)",
     params: [
@@ -8648,8 +8910,8 @@ var docs_default = {
       }
     ]
   },
-  "NDWasmBlas.matmulBatch": {
-    longname: "NDWasmBlas.matmulBatch",
+  "NDWasmBlas.matMulBatch": {
+    longname: "NDWasmBlas.matMulBatch",
     kind: "function",
     description: "Batched Matrix Multiplication: C[i] = A[i] * B[i].\rCommon in deep learning inference.\rComplexity: O(batch * m * n * k)",
     params: [

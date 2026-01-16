@@ -1338,8 +1338,196 @@ export class NDArray {
 
     
 
+    //------blas-------
+    /**
+     * Dot Product (Scalar Inner Product).
+     * Supports 1D arrays (vectors) only.
+     * @param {NDArray} other 
+     * @returns {number} Scalar result.
+     */
+    dot(other) {
+        if (this.ndim !== 1 || other.ndim !== 1) {
+            throw new Error(`Dot product supports 1D arrays only. Shapes: ${this.shape} vs ${other.shape}`);
+        }
+        if (this.shape[0] !== other.shape[0]) {
+            throw new Error(`Shapes must match for dot product: ${this.shape[0]} vs ${other.shape[0]}`);
+        }
 
+        const len = this.shape[0];
+        let sum = 0;
+        
+        // Cache references for performance
+        const dataA = this.data;
+        const dataB = other.data;
+        const offA = this.offset;
+        const offB = other.offset;
+        const strA = this.strides[0];
+        const strB = other.strides[0];
 
+        // Perform dot product
+        for (let i = 0; i < len; i++) {
+            sum += dataA[offA + i * strA] * dataB[offB + i * strB];
+        }
+
+        return sum;
+    }
+
+    /**
+     * Cross Product.
+     * Only valid for 1D vectors of length 3.
+     * @param {NDArray} other 
+     * @returns {NDArray} New NDArray of size 3.
+     */
+    cross(other) {
+        if (this.ndim !== 1 || other.ndim !== 1) {
+            throw new Error("Cross product requires 1D arrays.");
+        }
+        if (this.shape[0] !== 3 || other.shape[0] !== 3) {
+            throw new Error("Cross product is only defined for vectors of length 3.");
+        }
+
+        const dataA = this.data;
+        const dataB = other.data;
+
+        // Calculate raw indices for 'this' (A)
+        // Formula: offset + index * stride
+        const idxA0 = this.offset;
+        const idxA1 = this.offset + this.strides[0];
+        const idxA2 = this.offset + 2 * this.strides[0];
+
+        // Calculate raw indices for 'other' (B)
+        const idxB0 = other.offset;
+        const idxB1 = other.offset + other.strides[0];
+        const idxB2 = other.offset + 2 * other.strides[0];
+
+        // Fetch values directly from underlying buffer
+        const ax = dataA[idxA0], ay = dataA[idxA1], az = dataA[idxA2];
+        const bx = dataB[idxB0], by = dataB[idxB1], bz = dataB[idxB2];
+
+        // Get constructor from map
+        const Ctor = DTYPE_MAP[this.dtype];
+
+        // Compute cross product: (ay*bz - az*by, az*bx - ax*bz, ax*by - ay*bx)
+        const resData = new Ctor([
+            ay * bz - az * by,
+            az * bx - ax * bz,
+            ax * by - ay * bx
+        ]);
+
+        return new NDArray(resData, { shape: [3], dtype: this.dtype });
+    }
+
+    /**
+     * Matrix Multiplication in js.
+     * Operations: (M, K) @ (K, N) -> (M, N)
+     * @param {NDArray} other 
+     * @returns {NDArray} New NDArray.
+     */
+    jsMatMul(other) {
+        if (this.ndim !== 2 || other.ndim !== 2) {
+            throw new Error(`jsMatMul requires 2D arrays. Got ${this.ndim}D and ${other.ndim}D.`);
+        }
+        
+        const [M, K] = this.shape;
+        const [K2, N] = other.shape;
+
+        if (K !== K2) {
+            throw new Error(`inner dimensions must match: (${M}, ${K}) vs (${K2}, ${N})`);
+        }
+
+        // Get constructor from map
+        const Ctor = DTYPE_MAP[this.dtype];
+
+        // Create result buffer (M * N)
+        const outData = new Ctor(M * N);
+        
+        const dataA = this.data;
+        const dataB = other.data;
+        
+        const offA = this.offset;
+        const offB = other.offset;
+        
+        // Strides
+        const strA0 = this.strides[0]; // Row stride A
+        const strA1 = this.strides[1]; // Col stride A
+        const strB0 = other.strides[0]; // Row stride B
+        const strB1 = other.strides[1]; // Col stride B
+
+        // Triple loop implementation
+        for (let i = 0; i < M; i++) {
+            const rowAStart = offA + i * strA0;
+            
+            for (let j = 0; j < N; j++) {
+                const colBStart = offB + j * strB1;
+                
+                let sum = 0;
+                for (let k = 0; k < K; k++) {
+                    // A[i, k] * B[k, j]
+                    const valA = dataA[rowAStart + k * strA1];
+                    const valB = dataB[colBStart + k * strB0];
+                    sum += valA * valB;
+                }
+                
+                // Result is stored in C-contiguous format (row-major)
+                outData[i * N + j] = sum;
+            }
+        }
+
+        return new NDArray(outData, { shape: [M, N], dtype: this.dtype });
+    }
+
+    /**
+     * Matrix-Vector Multiplication in js.
+     * Operation: (M, K) @ (K,) -> (M,)
+     * @param {NDArray} vec 
+     * @returns {NDArray} New NDArray (Vector).
+     */
+    jsMatVecMul(vec) {
+        if (this.ndim !== 2) {
+            throw new Error(`jsMatVecMul expects matrix as 'this' (2D). Got ${this.ndim}D.`);
+        }
+        if (vec.ndim !== 1) {
+            throw new Error(`jsMatVecMul expects vector as argument (1D). Got ${vec.ndim}D.`);
+        }
+
+        const [M, K] = this.shape;
+        const K2 = vec.shape[0];
+
+        if (K !== K2) {
+            throw new Error(`Shapes not aligned: Matrix(${M}, ${K}) vs Vector(${K2})`);
+        }
+
+        // Get constructor from map
+        const Ctor = DTYPE_MAP[this.dtype];
+
+        const outData = new Ctor(M);
+        
+        const dataA = this.data;
+        const dataV = vec.data;
+        
+        const offA = this.offset;
+        const offV = vec.offset;
+        
+        const strA0 = this.strides[0];
+        const strA1 = this.strides[1];
+        const strV = vec.strides[0];
+
+        for (let i = 0; i < M; i++) {
+            const rowAStart = offA + i * strA0;
+            let sum = 0;
+            
+            for (let k = 0; k < K; k++) {
+                // A[i, k] * V[k]
+                const valA = dataA[rowAStart + k * strA1];
+                const valV = dataV[offV + k * strV];
+                sum += valA * valV;
+            }
+            
+            outData[i] = sum;
+        }
+
+        return new NDArray(outData, { shape: [M], dtype: this.dtype });
+    }
 
     //--------------------NDWasm---------------------
     /**
@@ -1393,13 +1581,13 @@ export class NDArray {
     }
 
     /**
-     * Performs matrix multiplication. This is a wrapper around `NDWasmBlas.matmul`.
+     * Performs matrix multiplication. This is a wrapper around `NDWasmBlas.matMul`.
      * @param {NDArray} other The right-hand side matrix.
      * @returns {NDArray} The result of the matrix multiplication.
-     * @see NDWasmBlas.matmul
+     * @see NDWasmBlas.matMul
      * 
      */
-    matmul(other) { return NDWasmBlas.matmul(this, other); }
+    matMul(other) { return NDWasmBlas.matMul(this, other); }
     /**
      * Computes the matrix power. This is a wrapper around `NDWasmBlas.matPow`.
      * @param {number} k The exponent.
@@ -1409,13 +1597,13 @@ export class NDArray {
      */
     matPow(k) { return NDWasmBlas.matPow(this, k); }
     /**
-     * Performs batched matrix multiplication. This is a wrapper around `NDWasmBlas.matmulBatch`.
+     * Performs batched matrix multiplication. This is a wrapper around `NDWasmBlas.matMulBatch`.
      * @param {NDArray} other The right-hand side batch of matrices.
      * @returns {NDArray} The result of the batched matrix multiplication.
-     * @see NDWasmBlas.matmulBatch
+     * @see NDWasmBlas.matMulBatch
      * 
      */
-    matmulBatch(other) { return NDWasmBlas.matmulBatch(this, other); }
+    matMulBatch(other) { return NDWasmBlas.matMulBatch(this, other); }
     /**
      * Performs matrix-vector multiplication. This is a wrapper around `NDWasmBlas.matVecMul`.
      * @param {NDArray} vec The vector to multiply by.
@@ -1473,7 +1661,7 @@ export class NDArray {
     pinv() { return NDWasmDecomp.pinv(this); }
     /**
      * Computes the Singular Value Decomposition (SVD). This is a wrapper around `NDWasmDecomp.svd`.
-     * @returns {{{q: NDArray, r: NDArray}}} An object containing the U, S, and V matrices.
+     * @returns {{q: NDArray, r: NDArray}} An object containing the U, S, and V matrices.
      * @see NDWasmDecomp.svd
      * 
      */
@@ -1501,7 +1689,7 @@ export class NDArray {
     det() { return NDWasmDecomp.det(this); }
     /**
      * Computes the log-determinant of the matrix. This is a wrapper around `NDWasmDecomp.logDet`.
-     * @returns {{{sign: number, logAbsDet: number}}} An object containing the sign and log-absolute-determinant.
+     * @returns {{sign: number, logAbsDet: number}} An object containing the sign and log-absolute-determinant.
      * @see NDWasmDecomp.logDet
      * @memberof NDWasmDecomp.prototype
      */
@@ -1524,24 +1712,24 @@ export class NDArray {
     // 3. Signal Processing
     /**
      * Computes the 1D Fast Fourier Transform. This is a wrapper around `NDWasmSignal.fft`.
-     * @this {{NDArray}} Complex array with shape [..., 2].
-     * @returns {{NDArray}} Complex result with shape [..., 2].
+     * @this {NDArray} Complex array with shape [..., 2].
+     * @returns {NDArray} Complex result with shape [..., 2].
      * @see NDWasmSignal.fft
      * 
      */
     fft() { return NDWasmSignal.fft(this); }
     /**
      * Computes the 1D Inverse Fast Fourier Transform. This is a wrapper around `NDWasmSignal.ifft`.
-     * @this {{NDArray}} Complex array with shape [..., 2].
-     * @returns {{NDArray}} Complex result with shape [..., 2].
+     * @this {NDArray} Complex array with shape [..., 2].
+     * @returns {NDArray} Complex result with shape [..., 2].
      * @see NDWasmSignal.ifft
      * 
      */
     ifft() { return NDWasmSignal.ifft(this, imag); }
     /**
      * Computes the 1D Real-to-Complex Fast Fourier Transform. This is a wrapper around `NDWasmSignal.rfft`.
-     * @this {{NDArray}} real input array.
-     * @returns {{NDArray}} Complex result with shape [..., 2].
+     * @this {NDArray} real input array.
+     * @returns {NDArray} Complex result with shape [..., 2].
      * @see NDWasmSignal.rfft
      * 
      */

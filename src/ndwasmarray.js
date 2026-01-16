@@ -124,7 +124,7 @@ export class NDWasmArray {
      * @param {NDWasmArray | NDArray} other
      * @returns {NDWasmArray}
      */
-    matmul(other) {
+    matMul(other) {
         const [right, shouldDispose] = this._prepareOperand(other);
         
         try {
@@ -159,7 +159,7 @@ export class NDWasmArray {
      * @param {NDWasmArray | NDArray}
      * @returns {NDWasmArray}
      */
-    matmulBatch(other) {
+    matMulBatch(other) {
         const [right, shouldDispose] = this._prepareOperand(other);
 
         try {

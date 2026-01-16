@@ -253,7 +253,7 @@ describe('NDWasmAnalysis (WASM)', () => {
             const L = ndarray.zeros([2, 2]);
             L.set(values.get(0), 0, 0);
             L.set(values.get(1), 1, 1);
-            const recon = vectors.matmul(L).matmul(vectors.transpose());
+            const recon = vectors.matMul(L).matMul(vectors.transpose());
             recon.data.forEach((v, i) => expect(v).toBeCloseTo(a.data[i]));
         });
 
