@@ -218,3 +218,16 @@ describe('NDArray.set - JIT Complex Scenarios Suite', () => {
         expect(Array.from(arr3D.data)).toEqual([100, 1, 2, 3, 4, 5, 6, 200]);
     });
 });
+
+
+describe('arg min max', () => {
+    test('argmin', () => {
+        const arr = ndarray.array([1, 2, 3, -1]);
+        expect(arr.argmin()).toBe(3);
+    });
+
+    test('argmax', () => {
+        const arr = ndarray.array([1, 2, 0, -1]);
+        expect(arr.argmax()).toBe(1);
+    });
+});

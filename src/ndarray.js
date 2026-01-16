@@ -17,6 +17,8 @@ import { NDWasmImage } from "./ndwasm_image.js";
 import { NDWasmOptimize } from './ndwasm_optimize.js';
 
 import * as factory from "./ndarray_factory.js"
+import * as helpers from "./ndarray_helpers.js"
+
 
 // 2. Import help system and documentation data
 import docMap from './docs.json';
@@ -38,6 +40,7 @@ function registerAll() {
         NDWasmImage,
         NDWasmOptimize,
         ...factory,
+        ...helpers
     };
 
     for (const name in docMap) {
@@ -92,6 +95,7 @@ export { Jit } from "./ndarray_jit.js";
 
 export * from "./ndwasm.js";
 export * from "./ndarray_factory.js";
+export * from "./ndarray_helpers.js";
 export { NDArray, DTYPE_MAP, NDWasmArray };
 
 export function init(baseDir='.'){

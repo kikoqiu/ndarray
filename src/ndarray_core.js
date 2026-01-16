@@ -245,15 +245,18 @@ export class NDArray {
 
 
     /**
-     * Generic iterator that handles stride logic. It's slow. use map if you want to use jit.
-     * @param {Function} callback - A function called with `(value, index, flatPhysicalIndex)`.
+     * Generic iterator that handles stride logic. It's slow. use map/reduce if you want to use jit.
+     * @param {Function} callback - A function called with `(value, index, flatPhysicalIndex)`, return true to exit early
      * @see NDArray#map
      */
     iterate(callback) {
         const currentIdx = new Int32Array(this.ndim);
         for (let i = 0; i < this.size; i++) {
             const ptr = this._getOffset(currentIdx);
-            callback(this.data[ptr], i, ptr);
+            let earlyExit = callback(this.data[ptr], i, ptr);
+            if(earlyExit === true){
+                return;
+            }
             // Increment multidimensional index
             for (let d = this.ndim - 1; d >= 0; d--) {
                 if (++currentIdx[d] < this.shape[d]) break;
@@ -775,8 +778,15 @@ export class NDArray {
      * 
      */
     argmax() {
+        let flatten = this.asContiguous().flatten();
         let maxV = -Infinity, maxIdx = -1;
-        this.iterate((v, i) => { if (v > maxV) { maxV = v; maxIdx = i; } });
+        for(let i = 0; i < flatten.size; ++i){
+            const v = flatten.data[flatten.offset + i]
+            if (v > maxV) {
+                maxV = v; 
+                maxIdx = i;
+            }
+        }
         return maxIdx;
     }
     /**
@@ -785,8 +795,15 @@ export class NDArray {
      * 
      */
     argmin() {
+        let flatten = this.asContiguous().flatten();
         let minV = Infinity, minIdx = -1;
-        this.iterate((v, i) => { if (v < minV) { minV = v; minIdx = i; } });
+        for(let i = 0; i < flatten.size; ++i){
+            const v = flatten.data[flatten.offset + i]
+            if (v < minV) {
+                minV = v; 
+                minIdx = i;
+            }
+        }
         return minIdx;
     }
 
@@ -797,9 +814,14 @@ export class NDArray {
      * 
      */
     all() {
-        let result = true;
-        this.iterate(v => { if (!v) { result = false; } }); // Cannot break early
-        return result;
+        let flatten = this.asContiguous().flatten();
+        for(let i = 0; i < flatten.size; ++i){
+            const v = flatten.data[flatten.offset + i];
+            if(!v){//early exit
+                return false;
+            }
+        }
+        return true;
     }
     /**
      * Checks if any element in the array is truthy.
@@ -807,9 +829,14 @@ export class NDArray {
      * 
      */
     any() {
-        let result = false;
-        this.iterate(v => { if (v) { result = true; } }); // Cannot break early
-        return result;
+        let flatten = this.asContiguous().flatten();
+        for(let i = 0; i < flatten.size; ++i){
+            const v = flatten.data[flatten.offset + i];
+            if(v){//early exit
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -1333,7 +1360,7 @@ export class NDArray {
      * @return {NDArray} - new flatten view to the array
      */
     flatten(){
-        return this.slice().reshape(this.size);
+        return this.reshape(this.size);
     }
 
     

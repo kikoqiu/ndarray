@@ -12,7 +12,7 @@ describe('blas', () => {
         const a = ndarray.array([1, 2, 3, 4]);
         const b = ndarray.array([1, 2, 3, 4]);
         const c = a.dot(b);
-        expect(c.data).toEqual(new Float64Array([30]));
+        expect(c).toEqual(30);
     });
 
    test('case 1: crossProduct', () => {

@@ -415,11 +415,11 @@
   "NDArray.prototype.iterate": {
     "longname": "NDArray#iterate",
     "kind": "function",
-    "description": "Generic iterator that handles stride logic. It's slow. use map if you want to use jit.",
+    "description": "Generic iterator that handles stride logic. It's slow. use map/reduce if you want to use jit.",
     "params": [
       {
         "name": "callback",
-        "description": "A function called with `(value, index, flatPhysicalIndex)`.",
+        "description": "A function called with `(value, index, flatPhysicalIndex)`, return true to exit early",
         "type": {
           "names": [
             "function"
@@ -1929,8 +1929,8 @@
       }
     ]
   },
-  "NDArray.prototype.dotProduct": {
-    "longname": "NDArray#dotProduct",
+  "NDArray.prototype.dot": {
+    "longname": "NDArray#dot",
     "kind": "function",
     "description": "Dot Product (Scalar Inner Product).\rSupports 1D arrays (vectors) only.",
     "params": [
@@ -1954,8 +1954,8 @@
       }
     ]
   },
-  "NDArray.prototype.crossProduct": {
-    "longname": "NDArray#crossProduct",
+  "NDArray.prototype.cross": {
+    "longname": "NDArray#cross",
     "kind": "function",
     "description": "Cross Product.\rOnly valid for 1D vectors of length 3.",
     "params": [
@@ -3581,6 +3581,74 @@
           ]
         },
         "description": "A 2D NDArray with ones on the main diagonal."
+      }
+    ]
+  },
+  "dot": {
+    "longname": "dot",
+    "kind": "function",
+    "description": "Dot Product",
+    "params": [
+      {
+        "name": "l",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      },
+      {
+        "name": "r",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "cross": {
+    "longname": "cross",
+    "kind": "function",
+    "description": "Cross Product",
+    "params": [
+      {
+        "name": "l",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      },
+      {
+        "name": "r",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
       }
     ]
   },
