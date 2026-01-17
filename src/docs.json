@@ -3584,6 +3584,691 @@
       }
     ]
   },
+  "add": {
+    "longname": "add",
+    "kind": "function",
+    "description": "Element-wise addition. Supports broadcasting.",
+    "params": [
+      {
+        "name": "l",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      },
+      {
+        "name": "r",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "sub": {
+    "longname": "sub",
+    "kind": "function",
+    "description": "Element-wise subtraction. Supports broadcasting.",
+    "params": [
+      {
+        "name": "l",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      },
+      {
+        "name": "r",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "mul": {
+    "longname": "mul",
+    "kind": "function",
+    "description": "Element-wise multiplication. Supports broadcasting.",
+    "params": [
+      {
+        "name": "l",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      },
+      {
+        "name": "r",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "div": {
+    "longname": "div",
+    "kind": "function",
+    "description": "Element-wise division. Supports broadcasting.",
+    "params": [
+      {
+        "name": "l",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      },
+      {
+        "name": "r",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "pow": {
+    "longname": "pow",
+    "kind": "function",
+    "description": "Element-wise exponentiation. Supports broadcasting.",
+    "params": [
+      {
+        "name": "l",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      },
+      {
+        "name": "r",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "mod": {
+    "longname": "mod",
+    "kind": "function",
+    "description": "Element-wise modulo. Supports broadcasting.",
+    "params": [
+      {
+        "name": "l",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      },
+      {
+        "name": "r",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "bitwise_and": {
+    "longname": "bitwise_and",
+    "kind": "function",
+    "description": "Bitwise AND.",
+    "params": [
+      {
+        "name": "l",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      },
+      {
+        "name": "r",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "bitwise_or": {
+    "longname": "bitwise_or",
+    "kind": "function",
+    "description": "Bitwise OR.",
+    "params": [
+      {
+        "name": "l",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      },
+      {
+        "name": "r",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "bitwise_xor": {
+    "longname": "bitwise_xor",
+    "kind": "function",
+    "description": "Bitwise XOR.",
+    "params": [
+      {
+        "name": "l",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      },
+      {
+        "name": "r",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "bitwise_lshift": {
+    "longname": "bitwise_lshift",
+    "kind": "function",
+    "description": "Bitwise left shift.",
+    "params": [
+      {
+        "name": "l",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      },
+      {
+        "name": "r",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "bitwise_rshift": {
+    "longname": "bitwise_rshift",
+    "kind": "function",
+    "description": "Bitwise (logical) right shift.",
+    "params": [
+      {
+        "name": "l",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      },
+      {
+        "name": "r",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "bitwise_not": {
+    "longname": "bitwise_not",
+    "kind": "function",
+    "description": "Bitwise NOT.",
+    "params": [
+      {
+        "name": "x",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "neg": {
+    "longname": "neg",
+    "kind": "function",
+    "description": "Numeric negation.",
+    "params": [
+      {
+        "name": "x",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "abs": {
+    "longname": "abs",
+    "kind": "function",
+    "description": "Absolute value.",
+    "params": [
+      {
+        "name": "x",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "exp": {
+    "longname": "exp",
+    "kind": "function",
+    "description": "Exponential function (e^x).",
+    "params": [
+      {
+        "name": "x",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "sqrt": {
+    "longname": "sqrt",
+    "kind": "function",
+    "description": "Square root.",
+    "params": [
+      {
+        "name": "x",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "sin": {
+    "longname": "sin",
+    "kind": "function",
+    "description": "Sine.",
+    "params": [
+      {
+        "name": "x",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "cos": {
+    "longname": "cos",
+    "kind": "function",
+    "description": "Cosine.",
+    "params": [
+      {
+        "name": "x",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "tan": {
+    "longname": "tan",
+    "kind": "function",
+    "description": "Tangent.",
+    "params": [
+      {
+        "name": "x",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "log": {
+    "longname": "log",
+    "kind": "function",
+    "description": "Natural logarithm (base e).",
+    "params": [
+      {
+        "name": "x",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "ceil": {
+    "longname": "ceil",
+    "kind": "function",
+    "description": "Ceiling (round up).",
+    "params": [
+      {
+        "name": "x",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "floor": {
+    "longname": "floor",
+    "kind": "function",
+    "description": "Floor (round down).",
+    "params": [
+      {
+        "name": "x",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
+  "round": {
+    "longname": "round",
+    "kind": "function",
+    "description": "Round to nearest integer.",
+    "params": [
+      {
+        "name": "x",
+        "type": {
+          "names": [
+            "Array",
+            "TypedArray"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      }
+    ]
+  },
   "dot": {
     "longname": "dot",
     "kind": "function",
@@ -3646,7 +4331,7 @@
       {
         "type": {
           "names": [
-            "NDArray"
+            "NDArray#cross"
           ]
         }
       }
