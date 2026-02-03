@@ -144,10 +144,11 @@
     "params": [
       {
         "name": "data",
-        "description": "The underlying physical storage.",
+        "description": "The underlying physical storage. Or number when it's a scalar.",
         "type": {
           "names": [
-            "TypedArray"
+            "TypedArray",
+            "number"
           ]
         }
       },
@@ -209,10 +210,11 @@
     "params": [
       {
         "name": "data",
-        "description": "The underlying physical storage.",
+        "description": "The underlying physical storage. Or number when it's a scalar.",
         "type": {
           "names": [
-            "TypedArray"
+            "TypedArray",
+            "number"
           ]
         }
       },
@@ -5130,11 +5132,78 @@
       }
     ]
   },
+  "NDWasmArray.newArray": {
+    "longname": "NDWasmArray.newArray",
+    "kind": "function",
+    "description": "Static factory: Creates an uninitialized WASM-resident array.",
+    "params": [
+      {
+        "name": "shape",
+        "description": "Shape of the array.",
+        "type": {
+          "names": [
+            "*"
+          ]
+        }
+      },
+      {
+        "name": "dtype",
+        "description": "Data type.",
+        "type": {
+          "names": [
+            "*"
+          ]
+        },
+        "defaultvalue": "float64"
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDWasmArray"
+          ]
+        }
+      }
+    ]
+  },
   "NDWasmArray.fromArray": {
     "longname": "NDWasmArray.fromArray",
     "kind": "function",
-    "description": "Static factory: Creates a WASM-resident array.\r1. If source is an NDArray, it calls .push() to move it to WASM.\r2. If source is a JS Array, it allocates WASM memory and fills it directly \r   via recursive traversal to avoid intermediate flattening.",
-    "params": []
+    "description": "Static factory: Creates a WASM-resident array.\r1. If source is an NDArray, it calls .push() to move it to WASM.\r2. If source is a JS Array, it allocates WASM memory and fills it directly \r   via recursive traversal to avoid intermediate flattening.\r3. If source is a single number, it creates a 1-element WASM array.\rMust dispose() manually to free WASM memory.",
+    "params": [
+      {
+        "name": "source",
+        "description": "Source data.",
+        "type": {
+          "names": [
+            "NDArray",
+            "Array",
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "dtype",
+        "description": "Data type.",
+        "type": {
+          "names": [
+            "string"
+          ]
+        },
+        "optional": true,
+        "defaultvalue": "'float64'"
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDWasmArray"
+          ]
+        }
+      }
+    ]
   },
   "NDWasmArray.prototype.pull": {
     "longname": "NDWasmArray#pull",
@@ -5160,23 +5229,25 @@
     "description": "Manually releases WASM heap memory.",
     "params": []
   },
-  "NDWasmArray.prototype._prepareOperand": {
-    "longname": "NDWasmArray#_prepareOperand",
-    "kind": "function",
-    "description": "Internal helper to prepare operands for WASM operations.\rEnsures input is converted to NDWasmArray and tracks if it needs auto-disposal.",
-    "params": []
-  },
   "NDWasmArray.prototype.matMul": {
     "longname": "NDWasmArray#matMul",
     "kind": "function",
-    "description": "Matrix Multiplication: C = this * other",
+    "description": "Matrix Multiplication: C = this * right",
     "params": [
       {
-        "name": "other",
+        "name": "right",
         "type": {
           "names": [
-            "NDWasmArray",
-            "NDArray"
+            "NDWasmArray"
+          ]
+        }
+      },
+      {
+        "name": "result",
+        "description": "Pre-allocated result array.",
+        "type": {
+          "names": [
+            "NDWasmArray"
           ]
         }
       }
@@ -5187,7 +5258,8 @@
           "names": [
             "NDWasmArray"
           ]
-        }
+        },
+        "description": "the result array."
       }
     ]
   },
@@ -5200,8 +5272,16 @@
         "name": "other",
         "type": {
           "names": [
-            "NDWasmArray",
-            "NDArray"
+            "NDWasmArray"
+          ]
+        }
+      },
+      {
+        "name": "result",
+        "description": "Pre-allocated result array.",
+        "type": {
+          "names": [
+            "NDWasmArray"
           ]
         }
       }

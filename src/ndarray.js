@@ -5,7 +5,7 @@
 
 // 1. Import library components
 import { NDArray, DTYPE_MAP } from './ndarray_core.js';
-import { NDWasmArray } from './ndwasmarray.js';
+import * as ndwasmarray from './ndwasmarray.js';
 import * as ndwasm from './ndwasm.js';
 
 import { NDProb } from "./ndarray_prob.js";
@@ -23,14 +23,13 @@ import * as helpers from "./ndarray_helpers.js"
 // 2. Import help system and documentation data
 import docMap from './docs.json';
 import { help } from './help.js';
-export { help };
 
 // 3. Register all documented objects with the help system
 function registerAll() {
     // Define the top-level objects that are exported and documented
     const rootObjects = { 
         NDArray, 
-        NDWasmArray, 
+        ...ndwasmarray,
         ...ndwasm,
         NDProb,
         NDWasmDecomp,
@@ -69,10 +68,6 @@ registerAll();
 
 
 
-
-
-
-
 export {
     NDProb,
     NDWasmDecomp,
@@ -82,6 +77,7 @@ export {
     NDWasmImage,
     NDWasmOptimize
 };
+export { help };
 
 export const random = NDProb;
 export const image = NDWasmImage;
@@ -96,7 +92,8 @@ export { Jit } from "./ndarray_jit.js";
 export * from "./ndwasm.js";
 export * from "./ndarray_factory.js";
 export * from "./ndarray_helpers.js";
-export { NDArray, DTYPE_MAP, NDWasmArray };
+export * from "./ndwasmarray.js";
+export { NDArray, DTYPE_MAP };
 
 export function init(baseDir='.'){
     return ndwasm.NDWasm.init(baseDir);
