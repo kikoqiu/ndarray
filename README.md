@@ -8,6 +8,10 @@ This library provides an `NDArray` class that mimics the rich, expressive API of
 
 It supports a wide range of operations, from basic element-wise arithmetic to advanced linear algebra decompositions, signal processing, and statistical analysis.
 
+## Try
+[Try it in JSLab](https://kikoqiu.github.io/jslab/jslab.html?zcode=PY69CsMwEIP3PMWNd-FifP2ZTB4gQ6F78GBcQwImCbEH--0Lwe2iDwmBFEOGAiNsH3eerqq4bulwPqBmeLm8qPfUi9YMojWZLoYMFUYoKq0bUt8IAxTl93QlF1tVYASsKsXVB5zF0vA3mgexRD22GTLdEfeMhSsXrkKmC37Z8ffsUpyFb3znBz8tkfkC)
+
+
 ## Features
 
 -   **Familiar API**: Designed to be intuitive for developers coming from NumPy.
