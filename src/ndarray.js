@@ -79,13 +79,15 @@ export {
 };
 export { help };
 
-export const random = NDProb;
-export const image = NDWasmImage;
-export const optimize = NDWasmOptimize;
-export const decomp = NDWasmDecomp;
-export const analysis = NDWasmAnalysis;
-export const blas = NDWasmBlas;
-export const signal = NDWasmSignal;
+export {
+    NDProb as random,
+    NDWasmDecomp as decomp,
+    NDWasmAnalysis as analysis,
+    NDWasmBlas as blas,
+    NDWasmSignal as signal,
+    NDWasmImage as image,
+    NDWasmOptimize as optimize
+};
 
 export { Jit } from "./ndarray_jit.js";
 
