@@ -841,4 +841,152 @@ describe('NDWasmOptimize (WASM)', () => {
         });
 
     });
+
+
+
+    describe('polyfit', () => {
+        test('case 1: degree 1, simple positive correlation (matches linear regression)', () => {
+            const x = array([1, 2, 3, 4, 5]);
+            const y = array([2, 4, 5, 4, 5]); // y approx = 2.2 + 0.6x
+            const coeffs = NDWasmOptimize.polyfit(x, y, 1);
+            expect(coeffs.length).toBe(2);
+            expect(coeffs[0]).toBeCloseTo(2.2); // Intercept (c0)
+            expect(coeffs[1]).toBeCloseTo(0.6); // Slope (c1)
+        });
+
+        test('case 2: degree 1, perfect negative correlation', () => {
+            const x = array([1, 2, 3]);
+            const y = array([3, 2, 1]); // y = 4 - 1*x
+            const coeffs = NDWasmOptimize.polyfit(x, y, 1);
+            expect(coeffs[0]).toBeCloseTo(4);
+            expect(coeffs[1]).toBeCloseTo(-1);
+        });
+
+        test('case 3: degree 2, perfect quadratic fit (y = x^2)', () => {
+            const x = array([-2, -1, 0, 1, 2]);
+            const y = array([4, 1, 0, 1, 4]); // y = 0 + 0*x + 1*x^2
+            const coeffs = NDWasmOptimize.polyfit(x, y, 2);
+            expect(coeffs.length).toBe(3);
+            expect(coeffs[0]).toBeCloseTo(0);
+            expect(coeffs[1]).toBeCloseTo(0);
+            expect(coeffs[2]).toBeCloseTo(1);
+        });
+
+        test('case 4: degree 2, quadratic fit with all terms (y = 1.5 - 2x + 0.5x^2)', () => {
+            const x = array([0, 1, 2, 3, 4]);
+            const y = array([1.5, 0, -0.5, 0, 1.5]);
+            const coeffs = NDWasmOptimize.polyfit(x, y, 2);
+            expect(coeffs[0]).toBeCloseTo(1.5);
+            expect(coeffs[1]).toBeCloseTo(-2);
+            expect(coeffs[2]).toBeCloseTo(0.5);
+        });
+
+        test('case 5: degree 3, perfect cubic fit (y = 5 - 2x^2 + x^3)', () => {
+            const x = array([-2, -1, 0, 1, 2]);
+            // x=-2 => 5 - 8 - 8 = -11
+            // x=-1 => 5 - 2 - 1 = 2
+            // x=0  => 5
+            // x=1  => 5 - 2 + 1 = 4
+            // x=2  => 5 - 8 + 8 = 5
+            const y = array([-11, 2, 5, 4, 5]);
+            const coeffs = NDWasmOptimize.polyfit(x, y, 3);
+            expect(coeffs.length).toBe(4);
+            expect(coeffs[0]).toBeCloseTo(5);
+            expect(coeffs[1]).toBeCloseTo(0);
+            expect(coeffs[2]).toBeCloseTo(-2);
+            expect(coeffs[3]).toBeCloseTo(1);
+        });
+
+        test('case 6: degree 0, constant fit (matches mean of y)', () => {
+            const x = array([1, 2, 3, 4, 5]);
+            const y = array([2, 4, 4, 4, 6]); // mean = 20 / 5 = 4
+            const coeffs = NDWasmOptimize.polyfit(x, y, 0);
+            expect(coeffs.length).toBe(1);
+            expect(coeffs[0]).toBeCloseTo(4);
+        });
+
+        test('case 7: degree 4, perfect quartic fit (y = x^4)', () => {
+            const x = array([-2, -1, 0, 1, 2]);
+            const y = array([16, 1, 0, 1, 16]);
+            const coeffs = NDWasmOptimize.polyfit(x, y, 4);
+            expect(coeffs.length).toBe(5);
+            expect(coeffs[0]).toBeCloseTo(0);
+            expect(coeffs[1]).toBeCloseTo(0);
+            expect(coeffs[2]).toBeCloseTo(0);
+            expect(coeffs[3]).toBeCloseTo(0);
+            expect(coeffs[4]).toBeCloseTo(1);
+        });
+
+        test('case 8: error on mismatched lengths', () => {
+            const x = array([1, 2]);
+            const y = array([1, 2, 3]);
+            expect(() => NDWasmOptimize.polyfit(x, y, 1)).toThrow(/same length/);
+        });
+
+        test('case 9: error on negative degree', () => {
+            const x = array([1, 2, 3]);
+            const y = array([1, 2, 3]);
+            expect(() => NDWasmOptimize.polyfit(x, y, -1)).toThrow(/non-negative integer/);
+        });
+
+        test('case 10: error on non-integer degree', () => {
+            const x = array([1, 2, 3]);
+            const y = array([1, 2, 3]);
+            expect(() => NDWasmOptimize.polyfit(x, y, 1.5)).toThrow(/non-negative integer/);
+        });
+    });
+
+
+
+    describe('polyfit - randomized high-degree tests', () => {
+        // Generate 10 random test cases
+        for (let i = 1; i <= 10; i++) {
+            test(`case ${10 + i}: random degree 5-15, random data points 10-100`, () => {
+                // 1. Randomly choose a degree between 5 and 15
+                const degree = Math.floor(Math.random() * 11) + 5;
+                
+                // 2. Randomly choose number of data points between 10 and 100.
+                // We also ensure that numPoints >= degree + 1 so the system is not underdetermined.
+                const randomPoints = Math.floor(Math.random() * 91) + 10; 
+                const numPoints = Math.max(degree + 1, randomPoints);
+
+                // 3. Generate random true coefficients for the polynomial
+                // Used to generate the y values. Kept between -5 and 5 to avoid overflow.
+                const trueCoeffs =[];
+                for (let j = 0; j <= degree; j++) {
+                    trueCoeffs.push((Math.random() - 0.5) * 10);
+                }
+
+                // 4. Generate x and y data
+                const xData = [];
+                const yData =[];
+                for (let k = 0; k < numPoints; k++) {
+                    // It is crucial to keep x within [-1, 1] for high-degree polynomial fitting.
+                    // Otherwise, x^15 can cause severe numerical instability (ill-conditioned Vandermonde matrix).
+                    const xVal = (Math.random() - 0.5) * 2; 
+                    let yVal = 0;
+                    for (let j = 0; j <= degree; j++) {
+                        yVal += trueCoeffs[j] * Math.pow(xVal, j);
+                    }
+                    xData.push(xVal);
+                    yData.push(yVal);
+                }
+
+                const x = array(xData);
+                const y = array(yData);
+
+                // 5. Run polyfit
+                const coeffs = NDWasmOptimize.polyfit(x, y, degree);
+
+                // 6. Assertions
+                expect(coeffs.length).toBe(degree + 1);
+                
+                for (let j = 0; j <= degree; j++) {
+                    // Due to floating point arithmetic and the condition number of the matrix, 
+                    // we use a 3-decimal-place tolerance for high-degree coefficients.
+                    expect(coeffs[j]).toBeCloseTo(trueCoeffs[j], 3);
+                }
+            });
+        }
+    });
 });

@@ -147,7 +147,38 @@ export const NDWasmOptimize = {
             [xWasm, yWasm, alphaWasm, betaWasm].forEach(b => b?.dispose());
         }
     },
-
+    /**
+     * Fits a polynomial of the specified degree to a set of 2D points using least squares.
+     * Model: Y = c0 + c1*X + c2*X^2 + ... + cd*X^d
+     * @param {NDArray} x - The independent variable (1D NDArray of float64).
+     * @param {NDArray} y - The dependent variable (1D NDArray of float64).
+     * @param {number} degree - The degree of the polynomial to fit (non-negative integer).
+     * @returns {Float64Array} - An array of coefficients in ascending order of degree [c0, c1, ..., cd].
+     * @throws {Error} If WASM runtime is not loaded, inputs are invalid, or degree is negative.
+     */
+    polyfit(x, y, degree) {
+        if (!NDWasm.runtime?.isLoaded) throw new Error("WasmRuntime not loaded.");
+        if (x.ndim !== 1 || y.ndim !== 1 || x.size !== y.size) throw new Error("Inputs must be 1D arrays of the same length.");
+        if (!Number.isInteger(degree) || degree < 0) throw new Error("Degree must be a non-negative integer.");
+        
+        let xWasm, yWasm, coeffsWasm;
+        try {
+            xWasm = x.toWasm(NDWasm.runtime);
+            yWasm = y.toWasm(NDWasm.runtime);
+            // Coefficient array size is degree + 1 (for c0 to cd)
+            coeffsWasm = NDWasm.runtime.createBuffer(degree + 1, 'float64');
+            
+            // Call the exported Go WASM function
+            NDWasm.runtime.exports.Polyfit_F64(xWasm.ptr, yWasm.ptr, x.size, degree, coeffsWasm.ptr);
+            
+            // Create a copy of the Float64Array because the underlying memory view 
+            // becomes invalid/detached once coeffsWasm.dispose() is called in the finally block.
+            const coeffs = new Float64Array(coeffsWasm.refresh().view);
+            return coeffs;
+        } finally {
+            [xWasm, yWasm, coeffsWasm].forEach(b => b?.dispose());
+        }
+    },
     /**
      * Finds the minimum of a scalar function of one or more variables using an L-BFGS optimizer.
      * @param {Function} func - The objective function to be minimized. It must take a 1D `Float64Array` `x` (current point) and return a single number (the function value at `x`).

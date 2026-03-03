@@ -9,6 +9,7 @@ import (
 	"unsafe"
 
 	"github.com/kikoqiu/golp"
+	"gonum.org/v1/gonum/mat"
 	"gonum.org/v1/gonum/optimize"
 	"gonum.org/v1/gonum/stat"
 )
@@ -234,6 +235,55 @@ func Minimize_F64(
 	statsData[3] = float64(stats.FuncEvaluations)
 	statsData[4] = float64(stats.GradEvaluations)
 	statsData[5] = float64(stats.Runtime)
+}
+
+// --- Polynomial Regression (Polyfit) ---
+
+// Polyfit_F64 fits a polynomial of the specified degree to a set of 2D points using least squares.
+// The computed coefficients are returned in ascending order of degree (c0 + c1*x + c2*x^2 + ...).
+//
+// Arguments:
+//   - xPtr, yPtr: Pointers to x and y data arrays.
+//   - n: Number of data points.
+//   - degree: Degree of the fitting polynomial.
+//   - coeffsPtr: Buffer to store the resulting coefficients. Size assumed: degree + 1.
+//
+//go:wasmexport Polyfit_F64
+func Polyfit_F64(xPtr, yPtr unsafe.Pointer, n int32, degree int32, coeffsPtr unsafe.Pointer) {
+	xData := ptrToF64Slice(xPtr, n)
+	yData := ptrToF64Slice(yPtr, n)
+	coeffsData := ptrToF64Slice(coeffsPtr, degree+1)
+
+	rows := int(n)
+	cols := int(degree + 1)
+
+	// Create the Vandermonde matrix V where V[i, j] = x[i]^j
+	v := mat.NewDense(rows, cols, nil)
+	for i := 0; i < rows; i++ {
+		for j := 0; j < cols; j++ {
+			v.Set(i, j, math.Pow(xData[i], float64(j)))
+		}
+	}
+
+	// Create the Y vector
+	yVec := mat.NewVecDense(rows, yData)
+
+	// Solve the linear least squares problem V * c = Y
+	var c mat.VecDense
+	err := c.SolveVec(v, yVec)
+	if err != nil {
+		fmt.Printf("Polyfit_F64 Error: %v\n", err)
+		// On error (e.g., singular/ill-conditioned matrix), fallback to NaN
+		for i := 0; i < cols; i++ {
+			coeffsData[i] = math.NaN()
+		}
+		return
+	}
+
+	// Copy result coefficients back to the WASM memory buffer
+	for i := 0; i < cols; i++ {
+		coeffsData[i] = c.AtVec(i)
+	}
 }
 
 func f64SliceToBytes(s []float64) []byte {

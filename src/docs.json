@@ -6513,6 +6513,50 @@
       }
     ]
   },
+  "NDWasmOptimize.polyfit": {
+    "longname": "NDWasmOptimize.polyfit",
+    "kind": "function",
+    "description": "Fits a polynomial of the specified degree to a set of 2D points using least squares.\nModel: Y = c0 + c1*X + c2*X^2 + ... + cd*X^d",
+    "params": [
+      {
+        "name": "x",
+        "description": "The independent variable (1D NDArray of float64).",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "y",
+        "description": "The dependent variable (1D NDArray of float64).",
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "degree",
+        "description": "The degree of the polynomial to fit (non-negative integer).",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Float64Array"
+          ]
+        },
+        "description": "- An array of coefficients in ascending order of degree [c0, c1, ..., cd]."
+      }
+    ]
+  },
   "NDWasmOptimize.minimize": {
     "longname": "NDWasmOptimize.minimize",
     "kind": "function",
