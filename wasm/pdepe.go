@@ -34,6 +34,49 @@ type BcFunRes struct {
 type BcFun func(xl float64, ul []float64, xr float64, ur []float64, t float64) BcFunRes
 
 // ==========================================
+// pdeWorkspace handles all pre-allocated memory slices internally
+// to guarantee zero-allocation during the intense PDE MOL integration loop.
+// ==========================================
+type pdeWorkspace struct {
+	dY       []float64
+	M        []float64
+	F_mid    [][]float64
+	C_node   [][]float64
+	S_node   [][]float64
+	uMid     []float64
+	dudxMid  []float64
+	dudxNode []float64
+
+	// Jacobian perturbation arrays
+	yPert    []float64
+	deltas   []float64
+	fValBase []float64
+	rowIdx   []int
+	colIdx   []int
+	vals     []float64
+}
+
+func newPdeWorkspace(N, D int) *pdeWorkspace {
+	return &pdeWorkspace{
+		dY:       make([]float64, N*D),
+		M:        make([]float64, N*D),
+		F_mid:    make([][]float64, N-1),
+		C_node:   make([][]float64, N),
+		S_node:   make([][]float64, N),
+		uMid:     make([]float64, D),
+		dudxMid:  make([]float64, D),
+		dudxNode: make([]float64, D),
+
+		yPert:    make([]float64, N*D),
+		deltas:   make([]float64, N),
+		fValBase: make([]float64, N*D),
+		rowIdx:   make([]int, 0, N*D*3),
+		colIdx:   make([]int, 0, N*D*3),
+		vals:     make([]float64, 0, N*D*3),
+	}
+}
+
+// ==========================================
 // 2. High-Performance 1D PDE Solver
 // ==========================================
 
@@ -48,7 +91,7 @@ type BcFun func(xl float64, ul []float64, xr float64, ur []float64, t float64) B
 //	icfun: Initial conditions callback.
 //	bcfun: Boundary conditions callback.
 //	xmesh: Spatial grid points [x_0, x_1, ..., x_N].
-//	tspan: Time output points [t_0, t_1, ..., t_M].
+//	tspan: Time output points[t_0, t_1, ..., t_M].
 //	info: Configuration and Status object forwarded to Ode15s.
 //
 // Returns a 3D slice[time_index][spatial_index][equation_index].
@@ -135,94 +178,84 @@ func Pdepe(m int, pdefun PdeFun, icfun IcFun, bcfun BcFun, xmesh []float64, tspa
 		preInvV[i] = 1.0 / V[i]
 	}
 
-	// Extract Initial State and Infer Equation Dimensions (D)
-	var U0Flat []float64
-	var D int
-
-	for i := 0; i < N; i++ {
-		u0Res := icfun(xmesh[i])
-		if i == 0 {
-			D = len(u0Res)
-		}
-		U0Flat = append(U0Flat, u0Res...)
+	// Extract Initial State and Infer Equation Dimensions (D) optimized initialization
+	u0Res0 := icfun(xmesh[0])
+	D := len(u0Res0)
+	U0Flat := make([]float64, 0, N*D)
+	U0Flat = append(U0Flat, u0Res0...)
+	for i := 1; i < N; i++ {
+		U0Flat = append(U0Flat, icfun(xmesh[i])...)
 	}
 
 	getU := func(Y []float64, i int) []float64 {
 		return Y[i*D : (i+1)*D]
 	}
 
+	// Pre-allocate MOL workspace for Zero-Allocation loop
+	ws := newPdeWorkspace(N, D)
+
 	// 3. Method of Lines (MOL) Core Assembly with Differential-Algebraic (DAE) Integration Map
 	odeSys := func(t float64, Y []float64) OdeRes {
-		dY := make([]float64, N*D)
-		M := make([]float64, N*D)
-
 		// a. Compute Interface Fluxes (F_mid)
-		F_mid := make([][]float64, N-1)
 		for i := 0; i < N-1; i++ {
 			uL := getU(Y, i)
 			uR := getU(Y, i+1)
-			uMid := make([]float64, D)
-			dudxMid := make([]float64, D)
 
 			for d := 0; d < D; d++ {
-				uMid[d] = (uL[d] + uR[d]) * 0.5
-				dudxMid[d] = (uR[d] - uL[d]) * preInvDx[i]
+				ws.uMid[d] = (uL[d] + uR[d]) * 0.5
+				ws.dudxMid[d] = (uR[d] - uL[d]) * preInvDx[i]
 			}
-			resMid := pdefun(Xmid[i], t, uMid, dudxMid)
-			F_mid[i] = resMid.F
+			resMid := pdefun(Xmid[i], t, ws.uMid, ws.dudxMid)
+			ws.F_mid[i] = resMid.F
 		}
 
 		// b. Point-wise Node Properties and Interior PDE Formulation
-		C_node := make([][]float64, N)
-		S_node := make([][]float64, N)
-
 		for i := 0; i < N; i++ {
 			uNode := getU(Y, i)
-			dudxNode := make([]float64, D)
 
 			if i == 0 {
 				uR := getU(Y, 1)
 				for d := 0; d < D; d++ {
-					dudxNode[d] = (uR[d] - uNode[d]) * preInvDx[0]
+					ws.dudxNode[d] = (uR[d] - uNode[d]) * preInvDx[0]
 				}
 			} else if i == N-1 {
 				uL := getU(Y, N-2)
 				for d := 0; d < D; d++ {
-					dudxNode[d] = (uNode[d] - uL[d]) * preInvDx[N-2]
+					ws.dudxNode[d] = (uNode[d] - uL[d]) * preInvDx[N-2]
 				}
 			} else {
 				uL := getU(Y, i-1)
 				uR := getU(Y, i+1)
 				for d := 0; d < D; d++ {
-					dudxNode[d] = (uR[d] - uL[d]) * preInvDx2[i]
+					ws.dudxNode[d] = (uR[d] - uL[d]) * preInvDx2[i]
 				}
 			}
 
-			pdeRes := pdefun(xmesh[i], t, uNode, dudxNode)
-			C_node[i] = pdeRes.C
-			S_node[i] = pdeRes.S
+			pdeRes := pdefun(xmesh[i], t, uNode, ws.dudxNode)
+			ws.C_node[i] = pdeRes.C
+			ws.S_node[i] = pdeRes.S
 
 			// Compute Interior Points
 			if i > 0 && i < N-1 {
 				for d := 0; d < D; d++ {
-					fluxR := powMXmid[i] * F_mid[i][d]
-					fluxL := powMXmid[i-1] * F_mid[i-1][d]
+					fluxR := powMXmid[i] * ws.F_mid[i][d]
+					fluxL := powMXmid[i-1] * ws.F_mid[i-1][d]
 					fluxDiff := (fluxR - fluxL) * preInvV[i]
 
-					cVal := C_node[i][d]
+					cVal := ws.C_node[i][d]
 					// Regularize values close to zero, pass NaN through explicitly
-					if math.IsNaN(cVal) {
-						// Let it propagate to be caught by ODE solver
-					} else if math.Abs(cVal) < zeroTol {
-						if cVal >= 0 {
-							cVal = zeroTol
-						} else {
-							cVal = -zeroTol
+					if !math.IsNaN(cVal) {
+						if math.Abs(cVal) < zeroTol {
+							if cVal >= 0 {
+								cVal = zeroTol
+							} else {
+								cVal = -zeroTol
+							}
 						}
 					}
 
-					M[i*D+d] = cVal
-					dY[i*D+d] = fluxDiff + S_node[i][d]
+					ws.M[i*D+d] = cVal
+					ws.dY[i*D+d] = fluxDiff + ws.S_node[i][d]
 				}
 			}
 		}
@@ -234,51 +267,48 @@ func Pdepe(m int, pdefun PdeFun, icfun IcFun, bcfun BcFun, xmesh []float64, tspa
 		if isSymLeft {
 			for d := 0; d < D; d++ {
 				// Zero Flux enforced for origin in cylinder/sphere mappings
-				fluxR := powMXmid[0] * F_mid[0][d]
-				fluxL := 0.0
-				fluxDiff := (fluxR - fluxL) * preInvV[0]
+				fluxR := powMXmid[0] * ws.F_mid[0][d]
+				fluxDiff := fluxR * preInvV[0] // fluxL = 0
 
-				cVal := C_node[0][d]
-				// Regularize values close to zero, pass NaN through explicitly
-				if math.IsNaN(cVal) {
-					// Let it propagate to be caught by ODE solver
-				} else if math.Abs(cVal) < zeroTol {
-					if cVal >= 0 {
-						cVal = zeroTol
-					} else {
-						cVal = -zeroTol
-					}
-				}
-
-				M[d] = cVal
-				dY[d] = fluxDiff + S_node[0][d]
-			}
-		} else {
-			for d := 0; d < D; d++ {
-				if !(math.Abs(bcRes.Ql[d]) > qZeroTol) { // Catches NaN effectively
-					// Exact Algebraic Dirichlet Constraints -> M(d)=0
-					M[d] = 0.0
-					dY[d] = bcRes.Pl[d]
-				} else {
-					fL := -bcRes.Pl[d] / bcRes.Ql[d]
-					fluxR := powMXmid[0] * F_mid[0][d]
-					fluxL := powMX[0] * fL
-					fluxDiff := (fluxR - fluxL) * preInvV[0]
-
-					cVal := C_node[0][d]
-					// Regularize values close to zero, pass NaN through explicitly
-					if math.IsNaN(cVal) {
-						// Let it propagate to be caught by ODE solver
-					} else if math.Abs(cVal) < zeroTol {
+				cVal := ws.C_node[0][d]
+				if !math.IsNaN(cVal) {
+					if math.Abs(cVal) < zeroTol {
 						if cVal >= 0 {
 							cVal = zeroTol
 						} else {
 							cVal = -zeroTol
 						}
 					}
+				}
 
-					M[d] = cVal
-					dY[d] = fluxDiff + S_node[0][d]
+				ws.M[d] = cVal
+				ws.dY[d] = fluxDiff + ws.S_node[0][d]
+			}
+		} else {
+			for d := 0; d < D; d++ {
+				if !(math.Abs(bcRes.Ql[d]) > qZeroTol) { // Catches NaN effectively
+					// Exact Algebraic Dirichlet Constraints -> M(d)=0
+					ws.M[d] = 0.0
+					ws.dY[d] = bcRes.Pl[d]
+				} else {
+					fL := -bcRes.Pl[d] / bcRes.Ql[d]
+					fluxR := powMXmid[0] * ws.F_mid[0][d]
+					fluxL := powMX[0] * fL
+					fluxDiff := (fluxR - fluxL) * preInvV[0]
+
+					cVal := ws.C_node[0][d]
+					if !math.IsNaN(cVal) {
+						if math.Abs(cVal) < zeroTol {
+							if cVal >= 0 {
+								cVal = zeroTol
+							} else {
+								cVal = -zeroTol
+							}
+						}
+					}
+
+					ws.M[d] = cVal
+					ws.dY[d] = fluxDiff + ws.S_node[0][d]
 				}
 			}
 		}
@@ -288,32 +318,31 @@ func Pdepe(m int, pdefun PdeFun, icfun IcFun, bcfun BcFun, xmesh []float64, tspa
 		for d := 0; d < D; d++ {
 			if math.Abs(bcRes.Qr[d]) <= qZeroTol {
 				// Exact Algebraic Dirichlet Constraints -> M(d)=0
-				M[offset+d] = 0.0
-				dY[offset+d] = bcRes.Pr[d]
+				ws.M[offset+d] = 0.0
+				ws.dY[offset+d] = bcRes.Pr[d]
 			} else {
 				fR := -bcRes.Pr[d] / bcRes.Qr[d]
 				fluxR := powMX[N-1] * fR
-				fluxL := powMXmid[N-2] * F_mid[N-2][d]
+				fluxL := powMXmid[N-2] * ws.F_mid[N-2][d]
 				fluxDiff := (fluxR - fluxL) * preInvV[N-1]
 
-				cVal := C_node[N-1][d]
-				// Regularize values close to zero, pass NaN through explicitly
-				if math.IsNaN(cVal) {
-					// Let it propagate to be caught by ODE solver
-				} else if math.Abs(cVal) < zeroTol {
-					if cVal >= 0 {
-						cVal = zeroTol
-					} else {
-						cVal = -zeroTol
+				cVal := ws.C_node[N-1][d]
+				if !math.IsNaN(cVal) {
+					if math.Abs(cVal) < zeroTol {
+						if cVal >= 0 {
+							cVal = zeroTol
+						} else {
+							cVal = -zeroTol
+						}
 					}
 				}
 
-				M[offset+d] = cVal
-				dY[offset+d] = fluxDiff + S_node[N-1][d]
+				ws.M[offset+d] = cVal
+				ws.dY[offset+d] = fluxDiff + ws.S_node[N-1][d]
 			}
 		}
 
-		return OdeRes{M: M, F: dY}
+		return OdeRes{M: ws.M, F: ws.dY}
 	}
 
 	// 4. Stiff ODE Global Integration setup
@@ -339,14 +368,16 @@ func Pdepe(m int, pdefun PdeFun, icfun IcFun, bcfun BcFun, xmesh []float64, tspa
 		jacobianEps := math.Sqrt(eps)
 
 		info.Jacobian = func(tVal float64, yVal []float64, fVal []float64) CooMatrix {
-			var rowIdx []int
-			var colIdx []int
-			var vals []float64
+			ws.rowIdx = ws.rowIdx[:0]
+			ws.colIdx = ws.colIdx[:0]
+			ws.vals = ws.vals[:0]
+
+			// Anti-aliasing protection: fVal is backed by ws.dY which will be overwritten by odeSys.
+			copy(ws.fValBase, fVal)
+			copy(ws.yPert, yVal)
 
 			for color := 0; color < 3; color++ {
 				for d := 0; d < D; d++ {
-					yPert := cloneSlice(yVal) // Relies on the previously established cloneSlice logic
-					deltas := make([]float64, N)
 					hasPert := false
 
 					// Perturb all independent structural blocks simultaneously
@@ -356,20 +387,20 @@ func Pdepe(m int, pdefun PdeFun, icfun IcFun, bcfun BcFun, xmesh []float64, tspa
 						if delta < jacobianEps {
 							delta = jacobianEps
 						}
-						deltas[i] = delta
-						yPert[j] += delta
+						ws.deltas[i] = delta
+						ws.yPert[j] += delta
 						hasPert = true
 					}
 					if !hasPert {
 						continue
 					}
 
-					resPert := odeSys(tVal, yPert)
+					resPert := odeSys(tVal, ws.yPert)
 					fPert := resPert.F
 
 					for i := color; i < N; i += 3 {
 						j := i*D + d
-						invDelta := 1.0 / deltas[i]
+						invDelta := 1.0 / ws.deltas[i]
 
 						// Limit dependent residual checks to mathematically adjacent physical nodes only
 						startNode := i - 1
@@ -384,18 +415,20 @@ func Pdepe(m int, pdefun PdeFun, icfun IcFun, bcfun BcFun, xmesh []float64, tspa
 						for node := startNode; node <= endNode; node++ {
 							for dAff := 0; dAff < D; dAff++ {
 								r := node*D + dAff
-								diff := (fPert[r] - fVal[r]) * invDelta
+								diff := (fPert[r] - ws.fValBase[r]) * invDelta
 								if diff != 0 {
-									rowIdx = append(rowIdx, r)
-									colIdx = append(colIdx, j)
-									vals = append(vals, diff)
+									ws.rowIdx = append(ws.rowIdx, r)
+									ws.colIdx = append(ws.colIdx, j)
+									ws.vals = append(ws.vals, diff)
 								}
 							}
 						}
+						// Direct local restore completely avoids slice cloning
+						ws.yPert[j] = yVal[j]
 					}
 				}
 			}
-			return CooMatrix{RowIdx: rowIdx, ColIdx: colIdx, Vals: vals}
+			return CooMatrix{RowIdx: ws.rowIdx, ColIdx: ws.colIdx, Vals: ws.vals}
 		}
 	}
 
@@ -418,15 +451,22 @@ func Pdepe(m int, pdefun PdeFun, icfun IcFun, bcfun BcFun, xmesh []float64, tspa
 	}
 
 	// 5. Piecewise Cubic Hermite Interpolation (Continuous dense output exactly matching tspan)
-	sol := make([][][]float64, 0, len(tspan))
+	// Block Memory Allocation for maximal CPU Cache optimization (avoids loop allocations entirely)
+	totalNodes := len(tspan) * N
+	totalEqs := totalNodes * D
+
+	sol := make([][][]float64, len(tspan))
+	gridOutBlock := make([][]float64, totalNodes)
+	eqOutBlock := make([]float64, totalEqs)
+	stateAtTs := make([]float64, N*D)
+
+	idx := 0
 	k := 0
 
-	for _, ts := range tspan {
+	for tIdx, ts := range tspan {
 		for k < len(odeT)-2 && (odeT[k+1]-ts)*tSpanDir < 0 {
 			k++
 		}
-
-		stateAtTs := make([]float64, N*D)
 
 		if k+1 >= len(odeT) {
 			copy(stateAtTs, odeY[k])
@@ -461,16 +501,17 @@ func Pdepe(m int, pdefun PdeFun, icfun IcFun, bcfun BcFun, xmesh []float64, tspa
 			}
 		}
 
-		// 6. Formatting output
-		gridOut := make([][]float64, N)
+		// 6. Formatting output mapping sub-slices sequentially over contiguous memory blocks
+		gridOut := gridOutBlock[tIdx*N : (tIdx+1)*N]
 		for i := 0; i < N; i++ {
-			eqOut := make([]float64, D)
+			eqOut := eqOutBlock[idx*D : (idx+1)*D]
 			for d := 0; d < D; d++ {
 				eqOut[d] = stateAtTs[i*D+d]
 			}
 			gridOut[i] = eqOut
+			idx++
 		}
-		sol = append(sol, gridOut)
+		sol[tIdx] = gridOut
 	}
 
 	return sol

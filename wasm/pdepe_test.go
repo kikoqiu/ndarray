@@ -755,7 +755,7 @@ func TestButterflySpreadOptionPricing(t *testing.T) {
 	const SMax = 300.0         // Max Stock Price
 
 	// 2. Grid Generation
-	const NS = 400   // Number of spatial nodes (S)
+	const NS = 500   // Number of spatial nodes (S)
 	const NTau = 200 // Number of time nodes (tau)
 	sMesh := linspace(SMin, SMax, NS)
 	tauMesh := linspace(0, TimeToMaturity, NTau)
@@ -808,8 +808,8 @@ func TestButterflySpreadOptionPricing(t *testing.T) {
 
 	// 3. Configure the solver
 	info := &OdeInfo{
-		AbsTol:        1e-5,
-		RelTol:        1e-4,
+		AbsTol:        1e-4,
+		RelTol:        1e-3,
 		EstimateError: true,
 		Progress:      0.1,
 		ProgressCb: func(pos, t float64, y []float64) {

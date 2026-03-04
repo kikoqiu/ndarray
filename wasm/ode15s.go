@@ -100,6 +100,110 @@ var BDF = []bdfCoeffs{
 	{alpha: []float64{300.0 / 137.0, -300.0 / 137.0, 200.0 / 137.0, -75.0 / 137.0, 12.0 / 137.0}, beta: 60.0 / 137.0}, // 5th Order
 }
 
+// OdeWorkspace holds all pre-allocated memory slices internally used by the solver
+// to guarantee zero-allocation and maximize performance during hot iterations.
+type OdeWorkspace struct {
+	yPred    []float64
+	yStar    [][]float64
+	C        []float64
+	yTmpCurr []float64
+	negG     []float64
+	yTmp     []float64
+	deltaY   []float64
+	dyCurr   []float64
+	rhsE     []float64
+	eTmp     []float64
+	yPert    []float64
+
+	D [][][]float64
+
+	luRowIdx []int
+	luColIdx []int
+	luVals   []float64
+
+	colCounts []int
+	curPos    []int
+	rowIdxCSC []int
+	valsCSC   []float64
+
+	lRow  [][]int
+	lVals [][]float64
+	uRow  [][]int
+	uVals [][]float64
+	uDiag []float64
+	P     []int
+	PInv  []int
+	X     []float64
+
+	lColPtr   []int
+	lRowIdx   []int
+	lValsFlat []float64
+
+	uColPtr   []int
+	uRowIdx   []int
+	uValsFlat []float64
+}
+
+func newOdeWorkspace(dim int) *OdeWorkspace {
+	ws := &OdeWorkspace{
+		yPred:    make([]float64, dim),
+		C:        make([]float64, dim),
+		yTmpCurr: make([]float64, dim),
+		negG:     make([]float64, dim),
+		yTmp:     make([]float64, dim),
+		deltaY:   make([]float64, dim),
+		dyCurr:   make([]float64, dim),
+		rhsE:     make([]float64, dim),
+		eTmp:     make([]float64, dim),
+		yPert:    make([]float64, dim),
+
+		yStar: make([][]float64, 6),
+		D:     make([][][]float64, 7),
+
+		luRowIdx: make([]int, 0, dim*4),
+		luColIdx: make([]int, 0, dim*4),
+		luVals:   make([]float64, 0, dim*4),
+
+		colCounts: make([]int, dim),
+		curPos:    make([]int, dim),
+		rowIdxCSC: make([]int, 0, dim*4),
+		valsCSC:   make([]float64, 0, dim*4),
+
+		lRow:  make([][]int, dim),
+		lVals: make([][]float64, dim),
+		uRow:  make([][]int, dim),
+		uVals: make([][]float64, dim),
+		uDiag: make([]float64, dim),
+		P:     make([]int, dim),
+		PInv:  make([]int, dim),
+		X:     make([]float64, dim),
+
+		lColPtr:   make([]int, 0, dim+1),
+		lRowIdx:   make([]int, 0, dim*4),
+		lValsFlat: make([]float64, 0, dim*4),
+
+		uColPtr:   make([]int, 0, dim+1),
+		uRowIdx:   make([]int, 0, dim*4),
+		uValsFlat: make([]float64, 0, dim*4),
+	}
+	for i := 0; i < 6; i++ {
+		ws.yStar[i] = make([]float64, dim)
+	}
+	for i := 0; i < 7; i++ {
+		ws.D[i] = make([][]float64, 7)
+		for j := 0; j < 7; j++ {
+			ws.D[i][j] = make([]float64, dim)
+		}
+	}
+	for i := 0; i < dim; i++ {
+		ws.lRow[i] = make([]int, 0, 16)
+		ws.lVals[i] = make([]float64, 0, 16)
+		ws.uRow[i] = make([]int, 0, 16)
+		ws.uVals[i] = make([]float64, 0, 16)
+	}
+	return ws
+}
+
 // ==========================================
 // 2. High-Precision Stiff ODE Solver
 // ==========================================
@@ -184,9 +288,13 @@ func Ode15s(odefun OdeFunc, tspan [2]float64, y0 []float64, info *OdeInfo) *OdeR
 	}
 	h *= direction
 
-	info.T = []float64{t}
-	info.Y = [][]float64{cloneSlice(yCurr)}
-	info.Dy = [][]float64{}
+	info.T = make([]float64, 0, 1000)
+	info.Y = make([][]float64, 0, 1000)
+	info.Dy = make([][]float64, 0, 1000)
+
+	info.T = append(info.T, t)
+	info.Y = append(info.Y, cloneSlice(yCurr))
+
 	info.Steps = 0
 	info.FailedSteps = 0
 	info.Status = "running"
@@ -211,12 +319,21 @@ func Ode15s(odefun OdeFunc, tspan [2]float64, y0 []float64, info *OdeInfo) *OdeR
 	}
 	info.Dy = append(info.Dy, dy0)
 
-	history := []historyPoint{{t: t, y: cloneSlice(yCurr), f: cloneSlice(f0), M: cloneSlice(M0)}}
+	history := make([]historyPoint, 1, 7)
+	history[0] = historyPoint{
+		t: t,
+		y: cloneSlice(yCurr),
+		f: cloneSlice(f0),
+	}
+	if M0 != nil {
+		history[0].M = cloneSlice(M0)
+	}
 
 	var globalError []float64
 	if info.EstimateError {
 		globalError = make([]float64, dim)
-		info.GlobalErrorHistory = [][]float64{cloneSlice(globalError)}
+		info.GlobalErrorHistory = make([][]float64, 0, 1000)
+		info.GlobalErrorHistory = append(info.GlobalErrorHistory, cloneSlice(globalError))
 	}
 
 	updateJacobian := true
@@ -224,8 +341,29 @@ func Ode15s(odefun OdeFunc, tspan [2]float64, y0 []float64, info *OdeInfo) *OdeR
 	stepsSinceJacobian := 0
 	lastHBeta := 0.0
 	var JM []float64
+
+	// Pre-allocate structs to avoid GC allocations in loop
+	ws := newOdeWorkspace(dim)
 	var Jf CooMatrix
-	var luRes LUResult
+	jgSparse := &CSCMatrix{
+		ColPtr: make([]int, 0, dim+1),
+		RowIdx: make([]int, 0, dim*4),
+		Vals:   make([]float64, 0, dim*4),
+	}
+	luRes := LUResult{
+		L: &LFactor{
+			ColPtr: make([]int, 0, dim+1),
+			RowIdx: make([]int, 0, dim*4),
+			Vals:   make([]float64, 0, dim*4),
+			P:      make([]int, 0, dim),
+		},
+		U: &UFactor{
+			ColPtr: make([]int, 0, dim+1),
+			RowIdx: make([]int, 0, dim*4),
+			Vals:   make([]float64, 0, dim*4),
+			Diag:   make([]float64, 0, dim),
+		},
+	}
 
 	done := false
 	steps := 0
@@ -261,12 +399,9 @@ func Ode15s(odefun OdeFunc, tspan [2]float64, y0 []float64, info *OdeInfo) *OdeR
 			pts = history[:k+1]
 		}
 
-		var yPred []float64
 		var yStar [][]float64
-		var DOld [][][]float64
 
 		if len(pts) == 1 {
-			yPred = make([]float64, dim)
 			mStart := pts[0].M
 			fStart := pts[0].f
 			for d := 0; d < dim; d++ {
@@ -275,26 +410,29 @@ func Ode15s(odefun OdeFunc, tspan [2]float64, y0 []float64, info *OdeInfo) *OdeR
 					mVal = mStart[d]
 				}
 				if math.Abs(mVal) <= mZeroTol {
-					yPred[d] = pts[0].y[d]
+					ws.yPred[d] = pts[0].y[d]
 				} else {
-					yPred[d] = pts[0].y[d] + (h * fStart[d] / mVal)
+					ws.yPred[d] = pts[0].y[d] + (h * fStart[d] / mVal)
 				}
 			}
-			yStar = [][]float64{cloneSlice(pts[0].y)}
+			copy(ws.yStar[0], pts[0].y)
+			yStar = ws.yStar[:1]
 		} else {
-			DOld = computeDividedDifferences(pts, dim)
-			yPred = evalPoly(pts, DOld, tNext, dim)
-			yStar = make([][]float64, 0, k)
+			computeDividedDifferences(pts, dim, ws.D)
+			evalPoly(pts, ws.D, tNext, dim, ws.yPred)
 			for j := 1; j <= k; j++ {
-				yStar = append(yStar, evalPoly(pts, DOld, tNext-(h*bdfKArr[j]), dim))
+				evalPoly(pts, ws.D, tNext-(h*bdfKArr[j]), dim, ws.yStar[j-1])
 			}
+			yStar = ws.yStar[:k]
 		}
 
-		C := make([]float64, dim)
+		for d := 0; d < dim; d++ {
+			ws.C[d] = 0.0
+		}
 		for j := 1; j <= k; j++ {
 			alphaJ := BDF[k].alpha[j-1]
 			for d := 0; d < dim; d++ {
-				C[d] += alphaJ * yStar[j-1][d]
+				ws.C[d] += alphaJ * yStar[j-1][d]
 			}
 		}
 
@@ -306,10 +444,10 @@ func Ode15s(odefun OdeFunc, tspan [2]float64, y0 []float64, info *OdeInfo) *OdeR
 		}
 
 		if updateJacobian {
-			resPred := odefun(tNext, yPred)
+			resPred := odefun(tNext, ws.yPred)
 			fPred := resPred.F
 			JM = resPred.M
-			Jf = getJacobian(info, odefun, dim, tNext, yPred, fPred, jacobianEps)
+			getJacobian(info, odefun, dim, tNext, ws.yPred, fPred, jacobianEps, ws, &Jf)
 
 			stepsSinceJacobian = 0
 			updateLU = true
@@ -324,9 +462,9 @@ func Ode15s(odefun OdeFunc, tspan [2]float64, y0 []float64, info *OdeInfo) *OdeR
 		}
 
 		if updateLU {
-			rowIdx := make([]int, 0, dim+len(Jf.Vals))
-			colIdx := make([]int, 0, dim+len(Jf.Vals))
-			vals := make([]float64, 0, dim+len(Jf.Vals))
+			ws.luRowIdx = ws.luRowIdx[:0]
+			ws.luColIdx = ws.luColIdx[:0]
+			ws.luVals = ws.luVals[:0]
 
 			for i := 0; i < dim; i++ {
 				mVal := 1.0
@@ -334,20 +472,20 @@ func Ode15s(odefun OdeFunc, tspan [2]float64, y0 []float64, info *OdeInfo) *OdeR
 					mVal = JM[i]
 				}
 				if mVal != 0 {
-					rowIdx = append(rowIdx, i)
-					colIdx = append(colIdx, i)
-					vals = append(vals, mVal)
+					ws.luRowIdx = append(ws.luRowIdx, i)
+					ws.luColIdx = append(ws.luColIdx, i)
+					ws.luVals = append(ws.luVals, mVal)
 				}
 			}
 
 			for i := 0; i < len(Jf.Vals); i++ {
 				jTerm := -(hBeta * Jf.Vals[i])
-				rowIdx = append(rowIdx, Jf.RowIdx[i])
-				colIdx = append(colIdx, Jf.ColIdx[i])
-				vals = append(vals, jTerm)
+				ws.luRowIdx = append(ws.luRowIdx, Jf.RowIdx[i])
+				ws.luColIdx = append(ws.luColIdx, Jf.ColIdx[i])
+				ws.luVals = append(ws.luVals, jTerm)
 			}
 
-			jgSparse, err := NewSparseMatrixCSCFromCOO(dim, dim, rowIdx, colIdx, vals)
+			err := buildCSC(jgSparse, dim, dim, ws.luRowIdx, ws.luColIdx, ws.luVals, ws)
 			if err != nil {
 				h *= 0.2
 				info.FailedSteps++
@@ -356,7 +494,7 @@ func Ode15s(odefun OdeFunc, tspan [2]float64, y0 []float64, info *OdeInfo) *OdeR
 				continue
 			}
 
-			luRes, err = jgSparse.LU()
+			err = jgSparse.LUWithWorkspace(&luRes, ws)
 			if err != nil {
 				h *= 0.2
 				info.FailedSteps++
@@ -375,49 +513,48 @@ func Ode15s(odefun OdeFunc, tspan [2]float64, y0 []float64, info *OdeInfo) *OdeR
 			updateLU = false
 		}
 
-		yTmpCurr := cloneSlice(yPred)
+		copy(ws.yTmpCurr, ws.yPred)
 		newtonConverged := false
 		var MCurr []float64
 		var fCurr []float64
 		oldDeltaNorm := -1.0
 
 		for iter := 0; iter < 5; iter++ {
-			resCurr := odefun(tNext, yTmpCurr)
+			resCurr := odefun(tNext, ws.yTmpCurr)
 			MCurr = resCurr.M
 			fCurr = resCurr.F
 
-			negG := make([]float64, dim)
 			for d := 0; d < dim; d++ {
-				yDiff := yTmpCurr[d] - C[d]
+				yDiff := ws.yTmpCurr[d] - ws.C[d]
 				mTerm := yDiff
 				if MCurr != nil {
 					mTerm = MCurr[d] * yDiff
 				}
 				gVal := mTerm - (hBeta * fCurr[d])
-				negG[d] = -gVal
+				ws.negG[d] = -gVal
 			}
 
-			yTmp := luRes.L.SolveLowerTriangular(negG)
-			deltaY := luRes.U.SolveUpperTriangular(yTmp)
+			luRes.L.SolveLowerTriangularInPlace(ws.negG, ws.yTmp)
+			luRes.U.SolveUpperTriangularInPlace(ws.yTmp, ws.deltaY)
 
 			stepConverged := true
 			currentDeltaNorm := 0.0
 
 			for d := 0; d < dim; d++ {
-				yTmpCurr[d] += deltaY[d]
+				ws.yTmpCurr[d] += ws.deltaY[d]
 
 				maxY := math.Abs(yCurr[d])
-				if !(math.Abs(yTmpCurr[d]) <= maxY) {
-					maxY = math.Abs(yTmpCurr[d])
+				if !(math.Abs(ws.yTmpCurr[d]) <= maxY) {
+					maxY = math.Abs(ws.yTmpCurr[d])
 				}
 				sc := absTol + (relTol * maxY)
 
-				ratio := math.Abs(deltaY[d]) / sc
+				ratio := math.Abs(ws.deltaY[d]) / sc
 				if !(ratio <= currentDeltaNorm) {
 					currentDeltaNorm = ratio
 				}
 
-				if !(math.Abs(deltaY[d]) <= (sc * newtonTol)) {
+				if !(math.Abs(ws.deltaY[d]) <= (sc * newtonTol)) {
 					stepConverged = false
 				}
 			}
@@ -460,10 +597,10 @@ func Ode15s(odefun OdeFunc, tspan [2]float64, y0 []float64, info *OdeInfo) *OdeR
 				continue
 			}
 
-			errVal := (yTmpCurr[d] - yPred[d]) * invKPlus1
+			errVal := (ws.yTmpCurr[d] - ws.yPred[d]) * invKPlus1
 			maxY := math.Abs(yCurr[d])
-			if !(math.Abs(yTmpCurr[d]) <= maxY) {
-				maxY = math.Abs(yTmpCurr[d])
+			if !(math.Abs(ws.yTmpCurr[d]) <= maxY) {
+				maxY = math.Abs(ws.yTmpCurr[d])
 			}
 			sc := absTol + (relTol * maxY)
 
@@ -475,46 +612,76 @@ func Ode15s(odefun OdeFunc, tspan [2]float64, y0 []float64, info *OdeInfo) *OdeR
 
 		if LTENorm <= 1.0 {
 			if info.EstimateError {
-				rhsE := make([]float64, dim)
 				for d := 0; d < dim; d++ {
 					mVal := 1.0
 					if MCurr != nil {
 						mVal = MCurr[d]
 					}
 					if math.Abs(mVal) <= mZeroTol {
-						rhsE[d] = globalError[d]
+						ws.rhsE[d] = globalError[d]
 					} else {
-						errValTrue := (yTmpCurr[d] - yPred[d]) * invKPlus1
-						rhsE[d] = globalError[d] + errValTrue
+						errValTrue := (ws.yTmpCurr[d] - ws.yPred[d]) * invKPlus1
+						ws.rhsE[d] = globalError[d] + errValTrue
 					}
 				}
 
-				eTmp := luRes.L.SolveLowerTriangular(rhsE)
-				globalError = luRes.U.SolveUpperTriangular(eTmp)
+				luRes.L.SolveLowerTriangularInPlace(ws.rhsE, ws.eTmp)
+				luRes.U.SolveUpperTriangularInPlace(ws.eTmp, globalError)
 				info.GlobalErrorHistory = append(info.GlobalErrorHistory, cloneSlice(globalError))
 			}
 
 			stepsSinceJacobian++
 			t = tNext
-			yCurr = yTmpCurr
+			copy(yCurr, ws.yTmpCurr)
 
 			resFinal := odefun(t, yCurr)
 			fFinal := resFinal.F
 			MFinal := resFinal.M
 
-			history = append([]historyPoint{{t: t, y: cloneSlice(yCurr), f: cloneSlice(fFinal), M: cloneSlice(MFinal)}}, history...)
-			if len(history) > 7 {
-				history = history[:7]
+			// Avoid slice/struct allocations by using a shifting buffer pattern locally.
+			lastIdx := len(history) - 1
+			var recycleY, recycleF, recycleM []float64
+			if len(history) == 7 {
+				recycleY = history[6].y
+				recycleF = history[6].f
+				recycleM = history[6].M
+			} else {
+				history = append(history, historyPoint{})
+				lastIdx = len(history) - 1
+				recycleY = make([]float64, dim)
+				recycleF = make([]float64, dim)
+				if MFinal != nil {
+					recycleM = make([]float64, dim)
+				}
 			}
 
-			dyCurr := make([]float64, dim)
+			for i := lastIdx; i > 0; i-- {
+				history[i] = history[i-1]
+			}
+
+			history[0].t = t
+			history[0].y = recycleY
+			history[0].f = recycleF
+			history[0].M = recycleM
+
+			copy(history[0].y, yCurr)
+			copy(history[0].f, fFinal)
+			if MFinal != nil {
+				if history[0].M == nil {
+					history[0].M = make([]float64, dim)
+				}
+				copy(history[0].M, MFinal)
+			} else {
+				history[0].M = nil
+			}
+
 			for d := 0; d < dim; d++ {
-				dyCurr[d] = (yCurr[d] - C[d]) / hBeta
+				ws.dyCurr[d] = (yCurr[d] - ws.C[d]) / hBeta
 			}
 
 			info.T = append(info.T, t)
 			info.Y = append(info.Y, cloneSlice(yCurr))
-			info.Dy = append(info.Dy, dyCurr)
+			info.Dy = append(info.Dy, cloneSlice(ws.dyCurr))
 
 			if info.Cb != nil {
 				info.Cb(t, yCurr)
@@ -529,7 +696,8 @@ func Ode15s(odefun OdeFunc, tspan [2]float64, y0 []float64, info *OdeInfo) *OdeR
 				break
 			}
 
-			DNew := computeDividedDifferences(history, dim)
+			computeDividedDifferences(history, dim, ws.D)
+			DNew := ws.D
 			LHist := len(history)
 			maxHOpt := 0.0
 			nextK := k
@@ -653,32 +821,29 @@ func Ode15s(odefun OdeFunc, tspan [2]float64, y0 []float64, info *OdeInfo) *OdeR
 // 3. Mathematical Helpers
 // ==========================================
 
-func computeDividedDifferences(pts []historyPoint, dim int) [][][]float64 {
+func computeDividedDifferences(pts []historyPoint, dim int, D [][][]float64) {
 	m := len(pts) - 1
-	D := make([][][]float64, m+1)
 
 	for i := 0; i <= m; i++ {
-		D[i] = make([][]float64, 0, m+1-i)
-		D[i] = append(D[i], cloneSlice(pts[i].y))
+		copy(D[i][0], pts[i].y)
 	}
 
 	for j := 1; j <= m; j++ {
 		for i := 0; i <= m-j; i++ {
 			dx := pts[i].t - pts[i+j].t
 			invDx := 1.0 / dx
-			diff := make([]float64, dim)
 			for d := 0; d < dim; d++ {
-				diff[d] = (D[i][j-1][d] - D[i+1][j-1][d]) * invDx
+				D[i][j][d] = (D[i][j-1][d] - D[i+1][j-1][d]) * invDx
 			}
-			D[i] = append(D[i], diff)
 		}
 	}
-	return D
 }
 
-func evalPoly(pts []historyPoint, D [][][]float64, tTarget float64, dim int) []float64 {
+func evalPoly(pts []historyPoint, D [][][]float64, tTarget float64, dim int, res []float64) {
 	m := len(pts) - 1
-	res := make([]float64, dim)
+	for d := 0; d < dim; d++ {
+		res[d] = 0.0
+	}
 	term := 1.0
 	for j := 0; j <= m; j++ {
 		for d := 0; d < dim; d++ {
@@ -688,20 +853,23 @@ func evalPoly(pts []historyPoint, D [][][]float64, tTarget float64, dim int) []f
 			term *= (tTarget - pts[j].t)
 		}
 	}
-	return res
 }
 
-func getJacobian(info *OdeInfo, odefun OdeFunc, dim int, tVal float64, yVal []float64, fVal []float64, jacobianEps float64) CooMatrix {
+func getJacobian(info *OdeInfo, odefun OdeFunc, dim int, tVal float64, yVal []float64, fVal []float64, jacobianEps float64, ws *OdeWorkspace, Jf *CooMatrix) {
 	if info.Jacobian != nil {
-		return info.Jacobian(tVal, yVal, fVal)
+		userJf := info.Jacobian(tVal, yVal, fVal)
+		Jf.RowIdx = append(Jf.RowIdx[:0], userJf.RowIdx...)
+		Jf.ColIdx = append(Jf.ColIdx[:0], userJf.ColIdx...)
+		Jf.Vals = append(Jf.Vals[:0], userJf.Vals...)
+		return
 	}
 
-	rowIdx := make([]int, 0)
-	colIdx := make([]int, 0)
-	vals := make([]float64, 0)
+	Jf.RowIdx = Jf.RowIdx[:0]
+	Jf.ColIdx = Jf.ColIdx[:0]
+	Jf.Vals = Jf.Vals[:0]
 
 	for j := 0; j < dim; j++ {
-		yPert := cloneSlice(yVal)
+		copy(ws.yPert, yVal)
 		delta := math.Abs(yVal[j]) * jacobianEps
 
 		if delta == 0 {
@@ -709,22 +877,20 @@ func getJacobian(info *OdeInfo, odefun OdeFunc, dim int, tVal float64, yVal []fl
 		}
 
 		invDelta := 1.0 / delta
-		yPert[j] += delta
+		ws.yPert[j] += delta
 
-		resPert := odefun(tVal, yPert)
+		resPert := odefun(tVal, ws.yPert)
 		fPert := resPert.F
 
 		for i := 0; i < dim; i++ {
 			diff := (fPert[i] - fVal[i]) * invDelta
 			if diff != 0 {
-				rowIdx = append(rowIdx, i)
-				colIdx = append(colIdx, j)
-				vals = append(vals, diff)
+				Jf.RowIdx = append(Jf.RowIdx, i)
+				Jf.ColIdx = append(Jf.ColIdx, j)
+				Jf.Vals = append(Jf.Vals, diff)
 			}
 		}
 	}
-
-	return CooMatrix{RowIdx: rowIdx, ColIdx: colIdx, Vals: vals}
 }
 
 func cloneSlice(src []float64) []float64 {
@@ -751,105 +917,153 @@ type CSCMatrix struct {
 
 // NewSparseMatrixCSCFromCOO constructs a CSC matrix from COO coordinates.
 // It safely sums duplicate coordinate entries which is critical for finite-difference Jacobian assembly.
+// Preserves the identical API wrapper over optimized zero-allocation logic.
 func NewSparseMatrixCSCFromCOO(rows, cols int, rowIdx, colIdx []int, vals []float64) (*CSCMatrix, error) {
+	A := &CSCMatrix{}
+	ws := newOdeWorkspace(cols)
+	err := buildCSC(A, rows, cols, rowIdx, colIdx, vals, ws)
+	if err != nil {
+		return nil, err
+	}
+	return A, nil
+}
+
+// buildCSC provides inner allocation-free CSC assembling process
+func buildCSC(A *CSCMatrix, rows, cols int, rowIdx, colIdx []int, vals []float64, ws *OdeWorkspace) error {
 	if rows <= 0 || cols <= 0 {
-		return nil, fmt.Errorf("invalid matrix dimensions: %dx%d", rows, cols)
+		return fmt.Errorf("invalid matrix dimensions: %dx%d", rows, cols)
 	}
 
-	colData := make([]map[int]float64, cols)
 	for i := 0; i < cols; i++ {
-		colData[i] = make(map[int]float64)
+		ws.colCounts[i] = 0
 	}
+	for _, c := range colIdx {
+		ws.colCounts[c]++
+	}
+
+	if cap(A.ColPtr) < cols+1 {
+		A.ColPtr = make([]int, cols+1)
+	} else {
+		A.ColPtr = A.ColPtr[:cols+1]
+	}
+
+	A.ColPtr[0] = 0
+	for i := 0; i < cols; i++ {
+		A.ColPtr[i+1] = A.ColPtr[i] + ws.colCounts[i]
+	}
+
+	if cap(ws.rowIdxCSC) < len(vals) {
+		ws.rowIdxCSC = make([]int, len(vals))
+		ws.valsCSC = make([]float64, len(vals))
+	} else {
+		ws.rowIdxCSC = ws.rowIdxCSC[:len(vals)]
+		ws.valsCSC = ws.valsCSC[:len(vals)]
+	}
+
+	copy(ws.curPos, A.ColPtr[:cols])
 
 	for i := 0; i < len(vals); i++ {
 		c := colIdx[i]
-		r := rowIdx[i]
-		v := vals[i]
-		colData[c][r] += v
+		pos := ws.curPos[c]
+		ws.rowIdxCSC[pos] = rowIdx[i]
+		ws.valsCSC[pos] = vals[i]
+		ws.curPos[c]++
 	}
 
-	colPtr := make([]int, cols+1)
-	var rowIdxCSC []int
-	var valsCSC []float64
+	A.RowIdx = A.RowIdx[:0]
+	A.Vals = A.Vals[:0]
 
 	for c := 0; c < cols; c++ {
-		colPtr[c] = len(rowIdxCSC)
-		rIdxs := make([]int, 0, len(colData[c]))
-		for r := range colData[c] {
-			rIdxs = append(rIdxs, r)
-		}
+		start := A.ColPtr[c]
+		end := A.ColPtr[c+1]
 
-		// Bubble sort for small NNZ columns (Highly efficient for standard PDE/ODE banded patterns)
-		for i := 0; i < len(rIdxs)-1; i++ {
-			for j := i + 1; j < len(rIdxs); j++ {
-				if rIdxs[i] > rIdxs[j] {
-					rIdxs[i], rIdxs[j] = rIdxs[j], rIdxs[i]
+		if end > start {
+			// Fast insertion sort to arrange indices within the small column buffer safely
+			for i := start + 1; i < end; i++ {
+				rTmp := ws.rowIdxCSC[i]
+				vTmp := ws.valsCSC[i]
+				j := i - 1
+				for j >= start && ws.rowIdxCSC[j] > rTmp {
+					ws.rowIdxCSC[j+1] = ws.rowIdxCSC[j]
+					ws.valsCSC[j+1] = ws.valsCSC[j]
+					j--
+				}
+				ws.rowIdxCSC[j+1] = rTmp
+				ws.valsCSC[j+1] = vTmp
+			}
+
+			A.ColPtr[c] = len(A.RowIdx)
+			curR := ws.rowIdxCSC[start]
+			curV := ws.valsCSC[start]
+			for i := start + 1; i < end; i++ {
+				if ws.rowIdxCSC[i] == curR {
+					curV += ws.valsCSC[i]
+				} else {
+					A.RowIdx = append(A.RowIdx, curR)
+					A.Vals = append(A.Vals, curV)
+					curR = ws.rowIdxCSC[i]
+					curV = ws.valsCSC[i]
 				}
 			}
-		}
-
-		for _, r := range rIdxs {
-			rowIdxCSC = append(rowIdxCSC, r)
-			valsCSC = append(valsCSC, colData[c][r])
+			A.RowIdx = append(A.RowIdx, curR)
+			A.Vals = append(A.Vals, curV)
+		} else {
+			A.ColPtr[c] = len(A.RowIdx)
 		}
 	}
-	colPtr[cols] = len(rowIdxCSC)
+	A.ColPtr[cols] = len(A.RowIdx)
+	A.Rows = rows
+	A.Cols = cols
 
-	return &CSCMatrix{
-		Rows:   rows,
-		Cols:   cols,
-		ColPtr: colPtr,
-		RowIdx: rowIdxCSC,
-		Vals:   valsCSC,
-	}, nil
+	return nil
 }
 
 // LU performs Left-Looking Sparse LU Factorization with Partial Pivoting.
-// Utilizes a Sparse Accumulator (SPA) for mathematically rigorous structural singularity avoidance.
 func (A *CSCMatrix) LU() (LUResult, error) {
+	ws := newOdeWorkspace(A.Cols)
+	var res LUResult
+	err := A.LUWithWorkspace(&res, ws)
+	return res, err
+}
+
+// LUWithWorkspace exposes internal preallocated fast factorization mechanics.
+func (A *CSCMatrix) LUWithWorkspace(res *LUResult, ws *OdeWorkspace) error {
 	n := A.Cols
 	if n != A.Rows {
-		return LUResult{}, fmt.Errorf("LU factorization requires a square matrix")
+		return fmt.Errorf("LU factorization requires a square matrix")
 	}
 
-	lRow := make([][]int, n)
-	lVals := make([][]float64, n)
-
-	uRow := make([][]int, n)
-	uVals := make([][]float64, n)
-	uDiag := make([]float64, n)
-
-	P := make([]int, n)
-	PInv := make([]int, n)
 	for i := 0; i < n; i++ {
-		P[i] = i
-		PInv[i] = i
+		ws.P[i] = i
+		ws.PInv[i] = i
+		ws.lRow[i] = ws.lRow[i][:0]
+		ws.lVals[i] = ws.lVals[i][:0]
+		ws.uRow[i] = ws.uRow[i][:0]
+		ws.uVals[i] = ws.uVals[i][:0]
 	}
-
-	X := make([]float64, n)
 
 	for k := 0; k < n; k++ {
 		for i := 0; i < n; i++ {
-			X[i] = 0.0
+			ws.X[i] = 0.0
 		}
 
 		for p := A.ColPtr[k]; p < A.ColPtr[k+1]; p++ {
 			origR := A.RowIdx[p]
-			X[PInv[origR]] = A.Vals[p]
+			ws.X[ws.PInv[origR]] = A.Vals[p]
 		}
 
 		for j := 0; j < k; j++ {
-			if X[j] != 0 {
-				uRow[k] = append(uRow[k], j)
-				uVals[k] = append(uVals[k], X[j])
+			if ws.X[j] != 0 {
+				ws.uRow[k] = append(ws.uRow[k], j)
+				ws.uVals[k] = append(ws.uVals[k], ws.X[j])
 
-				xj := X[j]
-				lRowJ := lRow[j]
-				lValsJ := lVals[j]
+				xj := ws.X[j]
+				lRowJ := ws.lRow[j]
+				lValsJ := ws.lVals[j]
 
 				for idx := 0; idx < len(lRowJ); idx++ {
 					r := lRowJ[idx]
-					X[r] -= xj * lValsJ[idx]
+					ws.X[r] -= xj * lValsJ[idx]
 				}
 			}
 		}
@@ -857,27 +1071,27 @@ func (A *CSCMatrix) LU() (LUResult, error) {
 		pivotVal := 0.0
 		p := k
 		for i := k; i < n; i++ {
-			if !(math.Abs(X[i]) <= math.Abs(pivotVal)) {
-				pivotVal = X[i]
+			if !(math.Abs(ws.X[i]) <= math.Abs(pivotVal)) {
+				pivotVal = ws.X[i]
 				p = i
 			}
 		}
 
 		if pivotVal == 0.0 {
-			return LUResult{}, fmt.Errorf("structural singularity encountered at column %d", k)
+			return fmt.Errorf("structural singularity encountered at column %d", k)
 		}
 
 		if p != k {
-			X[k], X[p] = X[p], X[k]
+			ws.X[k], ws.X[p] = ws.X[p], ws.X[k]
 
-			origK := P[k]
-			origP := P[p]
-			P[k], P[p] = origP, origK
-			PInv[origP] = k
-			PInv[origK] = p
+			origK := ws.P[k]
+			origP := ws.P[p]
+			ws.P[k], ws.P[p] = origP, origK
+			ws.PInv[origP] = k
+			ws.PInv[origK] = p
 
 			for j := 0; j < k; j++ {
-				lRowJ := lRow[j]
+				lRowJ := ws.lRow[j]
 				for idx := 0; idx < len(lRowJ); idx++ {
 					if lRowJ[idx] == k {
 						lRowJ[idx] = p
@@ -888,41 +1102,59 @@ func (A *CSCMatrix) LU() (LUResult, error) {
 			}
 		}
 
-		uDiag[k] = X[k]
+		ws.uDiag[k] = ws.X[k]
 
-		invPivot := 1.0 / X[k]
+		invPivot := 1.0 / ws.X[k]
 		for i := k + 1; i < n; i++ {
-			if X[i] != 0 {
-				lRow[k] = append(lRow[k], i)
-				lVals[k] = append(lVals[k], X[i]*invPivot)
+			if ws.X[i] != 0 {
+				ws.lRow[k] = append(ws.lRow[k], i)
+				ws.lVals[k] = append(ws.lVals[k], ws.X[i]*invPivot)
 			}
 		}
 	}
 
-	lColPtr := make([]int, n+1)
-	var lRowIdx []int
-	var lValsFlat []float64
-	for k := 0; k < n; k++ {
-		lColPtr[k] = len(lRowIdx)
-		lRowIdx = append(lRowIdx, lRow[k]...)
-		lValsFlat = append(lValsFlat, lVals[k]...)
-	}
-	lColPtr[n] = len(lRowIdx)
+	ws.lColPtr = ws.lColPtr[:0]
+	ws.lRowIdx = ws.lRowIdx[:0]
+	ws.lValsFlat = ws.lValsFlat[:0]
 
-	uColPtr := make([]int, n+1)
-	var uRowIdx []int
-	var uValsFlat []float64
 	for k := 0; k < n; k++ {
-		uColPtr[k] = len(uRowIdx)
-		uRowIdx = append(uRowIdx, uRow[k]...)
-		uValsFlat = append(uValsFlat, uVals[k]...)
+		ws.lColPtr = append(ws.lColPtr, len(ws.lRowIdx))
+		ws.lRowIdx = append(ws.lRowIdx, ws.lRow[k]...)
+		ws.lValsFlat = append(ws.lValsFlat, ws.lVals[k]...)
 	}
-	uColPtr[n] = len(uRowIdx)
+	ws.lColPtr = append(ws.lColPtr, len(ws.lRowIdx))
 
-	return LUResult{
-		L: &LFactor{n: n, ColPtr: lColPtr, RowIdx: lRowIdx, Vals: lValsFlat, P: P},
-		U: &UFactor{n: n, ColPtr: uColPtr, RowIdx: uRowIdx, Vals: uValsFlat, Diag: uDiag},
-	}, nil
+	ws.uColPtr = ws.uColPtr[:0]
+	ws.uRowIdx = ws.uRowIdx[:0]
+	ws.uValsFlat = ws.uValsFlat[:0]
+
+	for k := 0; k < n; k++ {
+		ws.uColPtr = append(ws.uColPtr, len(ws.uRowIdx))
+		ws.uRowIdx = append(ws.uRowIdx, ws.uRow[k]...)
+		ws.uValsFlat = append(ws.uValsFlat, ws.uVals[k]...)
+	}
+	ws.uColPtr = append(ws.uColPtr, len(ws.uRowIdx))
+
+	if res.L == nil {
+		res.L = &LFactor{}
+	}
+	if res.U == nil {
+		res.U = &UFactor{}
+	}
+
+	res.L.n = n
+	res.L.ColPtr = append(res.L.ColPtr[:0], ws.lColPtr...)
+	res.L.RowIdx = append(res.L.RowIdx[:0], ws.lRowIdx...)
+	res.L.Vals = append(res.L.Vals[:0], ws.lValsFlat...)
+	res.L.P = append(res.L.P[:0], ws.P...)
+
+	res.U.n = n
+	res.U.ColPtr = append(res.U.ColPtr[:0], ws.uColPtr...)
+	res.U.RowIdx = append(res.U.RowIdx[:0], ws.uRowIdx...)
+	res.U.Vals = append(res.U.Vals[:0], ws.uValsFlat...)
+	res.U.Diag = append(res.U.Diag[:0], ws.uDiag...)
+
+	return nil
 }
 
 // ==========================================
@@ -940,7 +1172,12 @@ type LFactor struct {
 // SolveLowerTriangular iteratively solves L * y = P * b
 func (L *LFactor) SolveLowerTriangular(b []float64) []float64 {
 	x := make([]float64, L.n)
+	L.SolveLowerTriangularInPlace(b, x)
+	return x
+}
 
+// SolveLowerTriangularInPlace operates without allocating a slice structure.
+func (L *LFactor) SolveLowerTriangularInPlace(b, x []float64) {
 	for i := 0; i < L.n; i++ {
 		x[i] = b[L.P[i]]
 	}
@@ -954,7 +1191,6 @@ func (L *LFactor) SolveLowerTriangular(b []float64) []float64 {
 			}
 		}
 	}
-	return x
 }
 
 type UFactor struct {
@@ -968,6 +1204,12 @@ type UFactor struct {
 // SolveUpperTriangular iteratively solves U * x = y
 func (U *UFactor) SolveUpperTriangular(b []float64) []float64 {
 	x := make([]float64, U.n)
+	U.SolveUpperTriangularInPlace(b, x)
+	return x
+}
+
+// SolveUpperTriangularInPlace operates without allocating a slice structure.
+func (U *UFactor) SolveUpperTriangularInPlace(b, x []float64) {
 	copy(x, b)
 
 	for j := U.n - 1; j >= 0; j-- {
@@ -981,5 +1223,4 @@ func (U *UFactor) SolveUpperTriangular(b []float64) []float64 {
 			}
 		}
 	}
-	return x
 }
