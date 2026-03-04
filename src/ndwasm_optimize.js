@@ -171,9 +171,7 @@ export const NDWasmOptimize = {
             // Call the exported Go WASM function
             NDWasm.runtime.exports.Polyfit_F64(xWasm.ptr, yWasm.ptr, x.size, degree, coeffsWasm.ptr);
             
-            // Create a copy of the Float64Array because the underlying memory view 
-            // becomes invalid/detached once coeffsWasm.dispose() is called in the finally block.
-            const coeffs = new Float64Array(coeffsWasm.refresh().view);
+            const coeffs = fromWasm(coeffsWasm, [degree + 1], 'float64');
             return coeffs;
         } finally {
             [xWasm, yWasm, coeffsWasm].forEach(b => b?.dispose());

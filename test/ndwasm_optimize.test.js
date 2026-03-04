@@ -848,7 +848,7 @@ describe('NDWasmOptimize (WASM)', () => {
         test('case 1: degree 1, simple positive correlation (matches linear regression)', () => {
             const x = array([1, 2, 3, 4, 5]);
             const y = array([2, 4, 5, 4, 5]); // y approx = 2.2 + 0.6x
-            const coeffs = NDWasmOptimize.polyfit(x, y, 1);
+            const coeffs = NDWasmOptimize.polyfit(x, y, 1).toArray();
             expect(coeffs.length).toBe(2);
             expect(coeffs[0]).toBeCloseTo(2.2); // Intercept (c0)
             expect(coeffs[1]).toBeCloseTo(0.6); // Slope (c1)
@@ -857,7 +857,7 @@ describe('NDWasmOptimize (WASM)', () => {
         test('case 2: degree 1, perfect negative correlation', () => {
             const x = array([1, 2, 3]);
             const y = array([3, 2, 1]); // y = 4 - 1*x
-            const coeffs = NDWasmOptimize.polyfit(x, y, 1);
+            const coeffs = NDWasmOptimize.polyfit(x, y, 1).toArray();
             expect(coeffs[0]).toBeCloseTo(4);
             expect(coeffs[1]).toBeCloseTo(-1);
         });
@@ -865,7 +865,7 @@ describe('NDWasmOptimize (WASM)', () => {
         test('case 3: degree 2, perfect quadratic fit (y = x^2)', () => {
             const x = array([-2, -1, 0, 1, 2]);
             const y = array([4, 1, 0, 1, 4]); // y = 0 + 0*x + 1*x^2
-            const coeffs = NDWasmOptimize.polyfit(x, y, 2);
+            const coeffs = NDWasmOptimize.polyfit(x, y, 2).toArray();
             expect(coeffs.length).toBe(3);
             expect(coeffs[0]).toBeCloseTo(0);
             expect(coeffs[1]).toBeCloseTo(0);
@@ -875,7 +875,7 @@ describe('NDWasmOptimize (WASM)', () => {
         test('case 4: degree 2, quadratic fit with all terms (y = 1.5 - 2x + 0.5x^2)', () => {
             const x = array([0, 1, 2, 3, 4]);
             const y = array([1.5, 0, -0.5, 0, 1.5]);
-            const coeffs = NDWasmOptimize.polyfit(x, y, 2);
+            const coeffs = NDWasmOptimize.polyfit(x, y, 2).toArray();
             expect(coeffs[0]).toBeCloseTo(1.5);
             expect(coeffs[1]).toBeCloseTo(-2);
             expect(coeffs[2]).toBeCloseTo(0.5);
@@ -889,7 +889,7 @@ describe('NDWasmOptimize (WASM)', () => {
             // x=1  => 5 - 2 + 1 = 4
             // x=2  => 5 - 8 + 8 = 5
             const y = array([-11, 2, 5, 4, 5]);
-            const coeffs = NDWasmOptimize.polyfit(x, y, 3);
+            const coeffs = NDWasmOptimize.polyfit(x, y, 3).toArray();
             expect(coeffs.length).toBe(4);
             expect(coeffs[0]).toBeCloseTo(5);
             expect(coeffs[1]).toBeCloseTo(0);
@@ -900,7 +900,7 @@ describe('NDWasmOptimize (WASM)', () => {
         test('case 6: degree 0, constant fit (matches mean of y)', () => {
             const x = array([1, 2, 3, 4, 5]);
             const y = array([2, 4, 4, 4, 6]); // mean = 20 / 5 = 4
-            const coeffs = NDWasmOptimize.polyfit(x, y, 0);
+            const coeffs = NDWasmOptimize.polyfit(x, y, 0).toArray();
             expect(coeffs.length).toBe(1);
             expect(coeffs[0]).toBeCloseTo(4);
         });
@@ -908,7 +908,7 @@ describe('NDWasmOptimize (WASM)', () => {
         test('case 7: degree 4, perfect quartic fit (y = x^4)', () => {
             const x = array([-2, -1, 0, 1, 2]);
             const y = array([16, 1, 0, 1, 16]);
-            const coeffs = NDWasmOptimize.polyfit(x, y, 4);
+            const coeffs = NDWasmOptimize.polyfit(x, y, 4).toArray();
             expect(coeffs.length).toBe(5);
             expect(coeffs[0]).toBeCloseTo(0);
             expect(coeffs[1]).toBeCloseTo(0);
@@ -976,7 +976,7 @@ describe('NDWasmOptimize (WASM)', () => {
                 const y = array(yData);
 
                 // 5. Run polyfit
-                const coeffs = NDWasmOptimize.polyfit(x, y, degree);
+                const coeffs = NDWasmOptimize.polyfit(x, y, degree).toArray();
 
                 // 6. Assertions
                 expect(coeffs.length).toBe(degree + 1);

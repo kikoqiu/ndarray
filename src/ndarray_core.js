@@ -121,6 +121,7 @@ export class NDArray {
      */
     _getOffset(indices) {
         let ptr = this.offset;
+        indices = indices.map((idx, dim) => idx>=0 ? idx : this.shape[dim] + idx) // Handle negative indices
         for (let i = 0; i < indices.length; i++) {
             ptr += indices[i] * this.strides[i];
         }
@@ -231,6 +232,7 @@ export class NDArray {
      * High-performance element-wise mapping with jit compilation.
      * @param {string | Function} fnOrStr - The function string to apply to each element, like 'Math.sqrt(${val})', or a lambda expression
      * @returns {NDArray} A new array with the results.
+     * @see NDArray#iterate for a non-jit, pure Javascript map like alternative that allows early exit.
      * 
      */
     map(fnOrStr, dtype = undefined) {
