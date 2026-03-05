@@ -79,6 +79,11 @@ describe('NDArray View', () => {
 });
 
 describe('Complex View Manipulation', () => {
+    beforeEach(() => {
+        // Create a 2x3 array for view tests: [[0, 1, 2], [3, 4, 5]]
+        arr = ndarray.arange(6).reshape([2, 3]); 
+    });
+
     test('Chained views (transpose -> slice)', () => {
         // arr = [[0, 1, 2], [3, 4, 5]]
         const t = arr.transpose(); // [[0, 3], [1, 4], [2, 5]]
@@ -1702,6 +1707,18 @@ describe('ndarray.where - Selection & Broadcasting (30 Cases)', () => {
         const x = ndarray.array([[10, 20, 30]]); // shape [1, 3]
         const res = ndarray.where(cond, x, 0);
         expect(Array.from(res.data)).toEqual([10, 0, 30, 10, 0, 30]);
+    });
+
+    test('11.1 Where with Transposed inputs', () => {
+        const x = ndarray.array([[1, 0], [1, 4]]).transpose(); // [[1, 1], [0, 4]]
+        const res = ndarray.where(x).asContiguous();
+        expect(Array.from(res.data)).toEqual([0, 0, 1, 0, 1, 1]);
+    });
+
+    test('11.2 argwhere with sliced inputs', () => {
+        const x = ndarray.array([[1, 0], [1, 4]]).slice(null,[0,1]); // [[1], [1]]
+        const res = ndarray.argwhere(x).asContiguous();
+        expect(Array.from(res.data)).toEqual([0, 0, 1, 0]);
     });
 
     test('12. All three have different shapes (Broadcast extreme)', () => {

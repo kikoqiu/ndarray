@@ -254,6 +254,7 @@ export class NDArray {
     /**
      * Generic iterator that handles stride logic. It's slow. use map/reduce if you want to use jit.
      * @param {Function} callback - A function called with `(value, index, flatPhysicalIndex)`, return true to exit early
+     * @returns {Array|null} If the callback returns true, returns the current multidimensional index. Otherwise, returns null after full iteration.
      * @see NDArray#map
      */
     iterate(callback) {
@@ -262,7 +263,7 @@ export class NDArray {
             const ptr = this._getOffset(currentIdx);
             let earlyExit = callback(this.data[ptr], i, ptr);
             if(earlyExit === true){
-                return;
+                return currentIdx; // Return the current multidimensional index where the callback requested an early exit
             }
             // Increment multidimensional index
             for (let d = this.ndim - 1; d >= 0; d--) {
@@ -270,6 +271,7 @@ export class NDArray {
                 currentIdx[d] = 0;
             }
         }
+        return null; // No early exit, completed full iteration
     }
     
     // --- Basic Arithmetic ---

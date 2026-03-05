@@ -438,7 +438,8 @@ func Pdepe(m int, pdefun PdeFun, icfun IcFun, bcfun BcFun, xmesh []float64, tspa
 	info.Jacobian = nil // Clean up Jacobian reference to prevent memory leaks
 
 	if res == nil {
-		panic("pdepe: Underlying ode15s integration failed catastrophically: " + info.Status)
+		ConsoleLog("pdepe: Underlying ode15s integration failed catastrophically: " + info.Status)
+		return nil
 	}
 
 	odeT := res.T

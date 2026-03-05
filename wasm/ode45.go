@@ -334,7 +334,7 @@ func Ode45(odefun OdeFunc, tspan [2]float64, y0 []float64, info *OdeInfo) *OdeRe
 
 			// Underflow Safety
 			if math.Abs(h) < minHLimit {
-				fmt.Println("ode45: Step size underflow limit reached.")
+				ConsoleLog("ode45: Step size underflow limit reached.")
 				info.Status = "underflow"
 				break
 			}

@@ -445,8 +445,8 @@ func Ode15s(odefun OdeFunc, tspan [2]float64, y0 []float64, info *OdeInfo) *OdeR
 
 		if updateJacobian {
 			resPred := odefun(tNext, ws.yPred)
-			fPred := resPred.F
-			JM = resPred.M
+			fPred := cloneSlice(resPred.F)
+			JM = cloneSlice(resPred.M)
 			getJacobian(info, odefun, dim, tNext, ws.yPred, fPred, jacobianEps, ws, &Jf)
 
 			stepsSinceJacobian = 0
@@ -502,7 +502,7 @@ func Ode15s(odefun OdeFunc, tspan [2]float64, y0 []float64, info *OdeInfo) *OdeR
 				updateJacobian = true
 
 				if !(math.Abs(h) >= minHLimit) {
-					fmt.Println("ode15s: Step size underflow limit reached.")
+					ConsoleLog("ode15s: Step size underflow limit reached.")
 					info.Status = "underflow"
 					break
 				}
@@ -792,7 +792,7 @@ func Ode15s(odefun OdeFunc, tspan [2]float64, y0 []float64, info *OdeInfo) *OdeR
 			h *= factor
 
 			if !(math.Abs(h) >= minHLimit) {
-				fmt.Println("ode15s: Step size underflow limit reached.")
+				ConsoleLog("ode15s: Step size underflow limit reached.")
 				info.Status = "underflow"
 				break
 			}

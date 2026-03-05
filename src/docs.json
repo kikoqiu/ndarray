@@ -428,6 +428,17 @@
           ]
         }
       }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "Array",
+            "null"
+          ]
+        },
+        "description": "If the callback returns true, returns the current multidimensional index. Otherwise, returns null after full iteration."
+      }
     ]
   },
   "NDArray.prototype.add": {
@@ -3406,6 +3417,34 @@
             "NDArray"
           ]
         }
+      }
+    ]
+  },
+  "argwhere": {
+    "longname": "argwhere",
+    "kind": "function",
+    "description": "argwhere(condition)",
+    "params": [
+      {
+        "name": "condition",
+        "description": "Input array to check for non-zero elements.",
+        "type": {
+          "names": [
+            "NDArray",
+            "Array",
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "A new contiguous NDArray with shape[nz, condition.ndim], where nz is the number of non-zero elements in condition.\rEach row contains the indices of a non-zero element in condition."
       }
     ]
   },
@@ -6609,6 +6648,437 @@
           ]
         },
         "description": "The optimization result."
+      }
+    ]
+  },
+  "NDWasmOptimize.ode15s": {
+    "longname": "NDWasmOptimize.ode15s",
+    "kind": "function",
+    "params": [
+      {
+        "name": "odefun",
+        "description": "(t, y, f_out, m_out)",
+        "type": {
+          "names": [
+            "function"
+          ]
+        }
+      },
+      {
+        "name": "tspan",
+        "description": "[t0, tfinal]",
+        "type": {
+          "names": [
+            "Array",
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "y0",
+        "description": "Initial state",
+        "type": {
+          "names": [
+            "Array",
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "options",
+        "description": "{absTol, relTol, initialStep, hasM, jac}",
+        "type": {
+          "names": [
+            "Object"
+          ]
+        }
+      },
+      {
+        "name": "options.jac:",
+        "description": "(t, y, f, index_out, val_out) => returns nnz (number of non-zeros)\n    - index_out: NDArray of int32 with shape [max_nnz, 2]\n    - val_out: NDArray of float64 with shape [max_nnz]",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "options.hasM",
+        "description": "Whether the ODE function uses the mass matrix M (i.e. M*dy/dt = f(t,y))",
+        "type": {
+          "names": [
+            "boolean"
+          ]
+        }
+      },
+      {
+        "name": "options.absTol",
+        "description": "Absolute tolerance for ODE solver",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "options.relTol",
+        "description": "Relative tolerance for ODE solver",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "options.maxStep",
+        "description": "Maximum number of steps for ODE solver",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "options.maxTime",
+        "description": "Maximum time for ODE solver in milliseconds",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ]
+  },
+  "NDWasmOptimize.ode45": {
+    "longname": "NDWasmOptimize.ode45",
+    "kind": "function",
+    "params": [
+      {
+        "name": "odefun",
+        "description": "(t, y, f_out, m_out)",
+        "type": {
+          "names": [
+            "function"
+          ]
+        }
+      },
+      {
+        "name": "tspan",
+        "description": "[t0, tfinal]",
+        "type": {
+          "names": [
+            "Array",
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "y0",
+        "description": "Initial state",
+        "type": {
+          "names": [
+            "Array",
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "options",
+        "description": "{absTol, relTol, initialStep, hasM, jac}",
+        "type": {
+          "names": [
+            "Object"
+          ]
+        }
+      },
+      {
+        "name": "options.jac:",
+        "description": "(t, y, f, index_out, val_out) => returns nnz (number of non-zeros)\n    - index_out: NDArray of int32 with shape [max_nnz, 2]\n    - val_out: NDArray of float64 with shape [max_nnz]",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "options.hasM",
+        "description": "Whether the ODE function uses the mass matrix M (i.e. M*dy/dt = f(t,y))",
+        "type": {
+          "names": [
+            "boolean"
+          ]
+        }
+      },
+      {
+        "name": "options.absTol",
+        "description": "Absolute tolerance for ODE solver",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "options.relTol",
+        "description": "Relative tolerance for ODE solver",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "options.maxStep",
+        "description": "Maximum number of steps for ODE solver",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "options.maxTime",
+        "description": "Maximum time for ODE solver in milliseconds",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ]
+  },
+  "NDWasmOptimize.odeSolve": {
+    "longname": "NDWasmOptimize.odeSolve",
+    "kind": "function",
+    "params": [
+      {
+        "name": "odefun",
+        "description": "(t, y, f_out, m_out)",
+        "type": {
+          "names": [
+            "function"
+          ]
+        }
+      },
+      {
+        "name": "tspan",
+        "description": "[t0, tfinal]",
+        "type": {
+          "names": [
+            "Array",
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "y0",
+        "description": "Initial state",
+        "type": {
+          "names": [
+            "Array",
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "options",
+        "description": "{absTol, relTol, initialStep, method: 'ode45'|'ode15s', hasM, jac}",
+        "type": {
+          "names": [
+            "Object"
+          ]
+        }
+      },
+      {
+        "name": "options.jac:",
+        "description": "(t, y, f, index_out, val_out) => returns nnz (number of non-zeros)\n    - index_out: NDArray of int32 with shape [max_nnz, 2]\n    - val_out: NDArray of float64 with shape [max_nnz]",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "options.hasM",
+        "description": "Whether the ODE function uses the mass matrix M (i.e. M*dy/dt = f(t,y))",
+        "type": {
+          "names": [
+            "boolean"
+          ]
+        }
+      },
+      {
+        "name": "options.absTol",
+        "description": "Absolute tolerance for ODE solver",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "options.relTol",
+        "description": "Relative tolerance for ODE solver",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "options.maxStep",
+        "description": "Maximum number of steps for ODE solver",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "options.maxTime",
+        "description": "Maximum time for ODE solver in milliseconds",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ]
+  },
+  "NDWasmOptimize.pdepe": {
+    "longname": "NDWasmOptimize.pdepe",
+    "kind": "function",
+    "description": "Solve 1D Parabolic and Elliptic PDEs using the method of lines with an underlying ODE15s integrator.",
+    "params": [
+      {
+        "name": "m",
+        "description": "Symmetry parameter: 0 (slab), 1 (cylinder), 2 (sphere)",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "pdefun",
+        "description": "(x, t, u, dudx, c_out, f_out, s_out)",
+        "type": {
+          "names": [
+            "function"
+          ]
+        }
+      },
+      {
+        "name": "icfun",
+        "description": "(x) => returns initial conditions as Array or NDArray",
+        "type": {
+          "names": [
+            "function"
+          ]
+        }
+      },
+      {
+        "name": "bcfun",
+        "description": "(xl, ul, xr, ur, t, pl_out, ql_out, pr_out, qr_out)",
+        "type": {
+          "names": [
+            "function"
+          ]
+        }
+      },
+      {
+        "name": "xmesh",
+        "description": "Spatial grid points [x0, ..., xN]",
+        "type": {
+          "names": [
+            "Array",
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "tspan",
+        "description": "Time output points [t0, ..., tM]",
+        "type": {
+          "names": [
+            "Array",
+            "NDArray"
+          ]
+        }
+      },
+      {
+        "name": "options",
+        "description": "{absTol: 1e-5, relTol: 1e-4}",
+        "type": {
+          "names": [
+            "Object"
+          ]
+        }
+      },
+      {
+        "name": "options.absTol",
+        "description": "Absolute tolerance for ODE solver",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "options.relTol",
+        "description": "Relative tolerance for ODE solver",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "options.maxStep",
+        "description": "Maximum number of steps for ODE solver",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "options.maxTime",
+        "description": "Maximum time for ODE solver in milliseconds",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      },
+      {
+        "name": "options.EstimateError",
+        "description": "Whether to return an error estimate",
+        "type": {
+          "names": [
+            "boolean"
+          ]
+        }
+      },
+      {
+        "name": "options.EstimatedError",
+        "description": "The returned error estimate (if options.EstimateError is true) will be a 2D tensor of shape [length(xmesh), dim] containing the estimated local truncation error at each point in space.",
+        "type": {
+          "names": [
+            "boolean"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray",
+            "null"
+          ]
+        },
+        "description": "3D Tensor of shape [length(tspan), length(xmesh), dim]"
       }
     ]
   },

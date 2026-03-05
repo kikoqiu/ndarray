@@ -211,6 +211,47 @@ export function linspace(start, stop, num = 50, dtype = 'float64') {
     return new NDArray(data, { shape: [num], dtype });
 }
 
+const toNDArray = (val, defaultDtype = 'float64') => {
+    return (val instanceof NDArray) ? val : array(val, defaultDtype);
+};
+
+/**
+ * argwhere(condition)
+ * 
+ * @param {NDArray|Array|number} condition - Input array to check for non-zero elements.
+ * @returns {NDArray} A new contiguous NDArray with shape[nz, condition.ndim], where nz is the number of non-zero elements in condition.
+ * Each row contains the indices of a non-zero element in condition.
+ */
+export function argwhere(condition) {
+    const cond = toNDArray(condition, 'int8').asContiguous();
+    let nz = 0;
+
+    for (let i = 0; i < cond.size; i++) {
+        if (cond.data[cond.offset + i]) {
+            nz++;
+        }
+    }
+
+    let ret = new NDArray(new Int32Array(nz * cond.ndim), {
+        shape: [nz, cond.ndim], 
+        dtype: 'int32'
+    });
+    
+    let idx = 0;
+    for (let i = 0; i < cond.size; i++) {
+        if (cond.data[cond.offset + i]) {
+            if (cond.ndim > 0) {
+                ret.data[idx * cond.ndim] = Math.floor(i / cond.strides[0]);
+                for (let j = 1; j < cond.ndim; j++) {
+                    ret.data[idx * cond.ndim + j] = Math.floor((i % cond.strides[j - 1]) / cond.strides[j]);
+                }
+            }
+            idx++;
+        }
+    }
+
+    return ret;
+}
 
 /**
  * where(condition, x, y)
@@ -229,6 +270,10 @@ export function where(condition, x, y) {
     };
 
     const cond = toNDArray(condition, 'int8');
+
+    if( x===undefined || y===undefined){        
+        return argwhere(cond).transpose(); // shape [cond.ndim, nz]
+    }
 
     const dtypes = [(x instanceof NDArray)?x.dtype:null , (y instanceof NDArray)?y.dtype:null];
     let dtype = null;
