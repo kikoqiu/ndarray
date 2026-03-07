@@ -162,6 +162,12 @@ func Minimize_F64(
 	resultPtr unsafe.Pointer,
 	statsPtr unsafe.Pointer,
 ) {
+	defer func() {
+		if r := recover(); r != nil {
+			ConsoleLog("Recovered in Minimize_F64:", r)
+		}
+	}()
+
 	// Retrieve the JavaScript global functions.
 	// These functions must accept pointers (numbers) and length, not arrays.
 	jsFunc := js.Global().Get("ndarray_minimize_func")

@@ -1773,6 +1773,32 @@
       }
     ]
   },
+  "NDArray.prototype.expandDims": {
+    "longname": "NDArray#expandDims",
+    "kind": "function",
+    "description": "Insert a new axis of length one at the specified axis position.\rThis is an O(1) operation that returns a new view.",
+    "params": [
+      {
+        "name": "axis",
+        "description": "The index at which to insert the new axis. \r                       Supports negative indexing (e.g., -1 for the last position).",
+        "type": {
+          "names": [
+            "number"
+          ]
+        }
+      }
+    ],
+    "returns": [
+      {
+        "type": {
+          "names": [
+            "NDArray"
+          ]
+        },
+        "description": "NDArray view with the expanded dimension."
+      }
+    ]
+  },
   "NDArray.prototype.copy": {
     "longname": "NDArray#copy",
     "kind": "function",
@@ -7052,7 +7078,7 @@
         }
       },
       {
-        "name": "options.EstimateError",
+        "name": "options.estimateError",
         "description": "Whether to return an error estimate",
         "type": {
           "names": [
@@ -7061,8 +7087,8 @@
         }
       },
       {
-        "name": "options.EstimatedError",
-        "description": "The returned error estimate (if options.EstimateError is true) will be a 2D tensor of shape [length(xmesh), dim] containing the estimated local truncation error at each point in space.",
+        "name": "options.estimatedError",
+        "description": "The returned error estimate (if options.estimateError is true) will be a 2D tensor of shape [length(xmesh), dim] containing the estimated local truncation error at each point in space.",
         "type": {
           "names": [
             "boolean"

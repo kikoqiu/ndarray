@@ -1058,6 +1058,36 @@ export class NDArray {
     }
 
     /**
+     * Insert a new axis of length one at the specified axis position.
+     * This is an O(1) operation that returns a new view.
+     * 
+     * @param {number} axis - The index at which to insert the new axis. 
+     *                        Supports negative indexing (e.g., -1 for the last position).
+     * @returns {NDArray} NDArray view with the expanded dimension.
+     */
+    expandDims(axis) {
+        // 1. Normalize negative axis indexing.
+        // The new dimension count will be this.ndim + 1, 
+        // so axis ranges from -(ndim + 1) to ndim.
+        if (axis < 0) {
+            axis += this.ndim + 1;
+        }
+
+        // 2. Validate bounds.
+        if (axis < 0 || axis > this.ndim) {
+            throw new Error(`Axis ${axis} is out of bounds for array of dimension ${this.ndim}`);
+        }
+
+        // 3. Create the new shape by inserting 1 at the specified axis.
+        const newShape = [...this.shape];
+        newShape.splice(axis, 0, 1);
+
+        // 4. Use reshape to generate the new view. 
+        // This leverages the existing logic for stride calculation and metadata handling.
+        return this.reshape(...newShape);
+    }
+
+    /**
      * Returns a new, contiguous array with the same data. O(n) operation.
      * This converts any view (transposed, sliced) into a new array with a standard C-style memory layout.
      * 

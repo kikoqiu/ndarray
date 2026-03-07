@@ -25,6 +25,13 @@ func Ode_Solve_F64(
 	config := ptrToF64Slice(configPtr, 6)
 	stats := ptrToF64Slice(statsPtr, 7)
 
+	defer func() {
+		if r := recover(); r != nil {
+			stats[0] = -5
+			ConsoleLog("Recovered in Ode_Solve_F64:", r)
+		}
+	}()
+
 	// Retrieve JS callbacks from global scope
 	jsOdeFun := js.Global().Get("ndarray_ode_func")
 	jsJacFun := js.Global().Get("ndarray_ode_jac")
@@ -46,7 +53,10 @@ func Ode_Solve_F64(
 		yPtr := uintptr(unsafe.Pointer(&y[0]))
 
 		// Call JS: odefun(t, yPtr, fPtr, mPtr, length)
-		jsOdeFun.Invoke(t, yPtr, fPtr, mPtr, len(y))
+		status := jsOdeFun.Invoke(t, yPtr, fPtr, mPtr, len(y))
+		if !status.Truthy() {
+			panic("odefun not return truthy")
+		}
 
 		return resOdefun
 	}
@@ -82,7 +92,9 @@ func Ode_Solve_F64(
 			// Call JS: jac(t, yPtr, fPtr, indexPtr, valPtr, dim)
 			// The JS function must return the actual number of non-zeros (nnz).
 			nnzJs := jsJacFun.Invoke(t, yPtr, fPtr, jacIndexPtr, jacValsPtr, len(y)).Int()
-
+			if nnzJs < 0 || nnzJs > maxNnz {
+				panic("Invalid number of non-zeros returned by Jacobian function ")
+			}
 			// Fast mapping from flattened 1D int32 pair-array back to independent int slices
 			for i := 0; i < nnzJs; i++ {
 				jacCooRow[i] = int(jacIndex[i*2])
@@ -159,6 +171,13 @@ func Pdepe_Solve_F64(
 	config := ptrToF64Slice(configPtr, 5)
 	stats := ptrToF64Slice(statsPtr, 3)
 
+	defer func() {
+		if r := recover(); r != nil {
+			stats[0] = -5
+			ConsoleLog("Recovered in Pdepe_Solve_F64:", r)
+		}
+	}()
+
 	jsPdeFun := js.Global().Get("ndarray_pde_fun")
 	jsIcFun := js.Global().Get("ndarray_ic_fun")
 	jsBcFun := js.Global().Get("ndarray_bc_fun")
@@ -170,7 +189,10 @@ func Pdepe_Solve_F64(
 		res := make([]float64, dim)
 		ptr := uintptr(unsafe.Pointer(&res[0]))
 		// JS writes directly to 'res' via WASM memory
-		jsIcFun.Invoke(x, float64(ptr), dim)
+		status := jsIcFun.Invoke(x, float64(ptr), dim)
+		if !status.Truthy() {
+			panic("icfun not return truthy")
+		}
 		return res
 	}
 
@@ -203,7 +225,10 @@ func Pdepe_Solve_F64(
 		fPtr := uintptr(unsafe.Pointer(&fSlice[0]))
 		sPtr := uintptr(unsafe.Pointer(&sSlice[0]))
 
-		jsPdeFun.Invoke(x, t, float64(uPtr), float64(dudxPtr), float64(cPtr), float64(fPtr), float64(sPtr), dim)
+		status := jsPdeFun.Invoke(x, t, float64(uPtr), float64(dudxPtr), float64(cPtr), float64(fPtr), float64(sPtr), dim)
+		if !status.Truthy() {
+			panic("pdefun not return truthy")
+		}
 		callIdx++
 
 		return PdeFunRes{C: cSlice, F: fSlice, S: sSlice}
@@ -226,7 +251,10 @@ func Pdepe_Solve_F64(
 		ulPtr := float64(uintptr(unsafe.Pointer(&ul[0])))
 		urPtr := float64(uintptr(unsafe.Pointer(&ur[0])))
 
-		jsBcFun.Invoke(xl, ulPtr, xr, urPtr, t, plPtr, qlPtr, prPtr, qrPtr, dim)
+		status := jsBcFun.Invoke(xl, ulPtr, xr, urPtr, t, plPtr, qlPtr, prPtr, qrPtr, dim)
+		if !status.Truthy() {
+			panic("bcfun not return truthy")
+		}
 
 		return BcFunRes{Pl: plRes, Ql: qlRes, Pr: prRes, Qr: qrRes}
 	}

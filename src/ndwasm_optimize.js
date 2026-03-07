@@ -324,8 +324,13 @@ export const NDWasmOptimize = {
                     if(hasM) {
                         mArr = data.subarray(mPtr/8, mPtr/8+size);
                     }
-                    
-                    odefun(t, yArr, fArr, mArr);
+                    try{
+                        odefun(t, yArr, fArr, mArr);
+                    }catch(e){
+                        console.error(`Error in odefun at t=${t}:`, e);
+                        return false; // Indicate failure to ODE function
+                    }
+                    return true; // Indicate success
                 };
             }
             {
@@ -426,8 +431,8 @@ export const NDWasmOptimize = {
      * @param {number} options.relTol - Relative tolerance for ODE solver
      * @param {number} options.maxStep - Maximum number of steps for ODE solver
      * @param {number} options.maxTime - Maximum time for ODE solver in milliseconds
-     * @param {boolean} options.EstimateError - Whether to return an error estimate
-     * @param {boolean} options.EstimatedError - The returned error estimate (if options.EstimateError is true) will be a 2D tensor of shape [length(xmesh), dim] containing the estimated local truncation error at each point in space.
+     * @param {boolean} options.estimateError - Whether to return an error estimate
+     * @param {boolean} options.estimatedError - The returned error estimate (if options.estimateError is true) will be a 2D tensor of shape [length(xmesh), dim] containing the estimated local truncation error at each point in space.
      * @returns {NDArray|null} 3D Tensor of shape [length(tspan), length(xmesh), dim]
      */
     pdepe(m, pdefun, icfun, bcfun, xmesh, tspan, options = {}) {
@@ -457,10 +462,10 @@ export const NDWasmOptimize = {
                 }catch(e){
                     lastErrorLogged = e;
                     console.error("Error in icfun at x =", x, ":", e);
-                    uArr.fill(NaN); // Fill with NaNs on error to avoid silent failures
-                    return;
+                    return false;
                 }
                 uArr.set(res.data || res);
+                return true;
             };
 
             const u = new NDArray(null, {shape: [dim], dtype: 'float64'});
@@ -483,10 +488,9 @@ export const NDWasmOptimize = {
                 }catch(e){
                     lastErrorLogged = e;
                     console.error(`Error in pdefun at x=${x}, t=${t}:`, e);
-                    c.set(NaN);
-                    f.set(NaN);
-                    s.set(NaN);
+                    return false;
                 }
+                return true;
             };
 
             const ul = new NDArray(null, {shape: [dim], dtype: 'float64'});
@@ -510,11 +514,9 @@ export const NDWasmOptimize = {
                 }catch(e){
                     lastErrorLogged = e;
                     console.error(`Error in bcfun at xl=${xl}, xr=${xr}, t=${t}:`, e);
-                    pl.set(NaN);
-                    ql.set(NaN);
-                    pr.set(NaN);
-                    qr.set(NaN);
+                    return false;
                 }
+                return true;
             };
 
             const mem = NDWasm.runtime.exports.mem.buffer;
@@ -528,11 +530,11 @@ export const NDWasmOptimize = {
             cfgArr[1] = options.relTol || 1e-4;
             cfgArr[2] = options.maxStep || 2000000;
             cfgArr[3] = options.maxTime || 1200000; // in milliseconds
-            cfgArr[4] = options.EstimateError ? 1 : 0;
+            cfgArr[4] = options.estimateError ? 1 : 0;
 
             // Stats: [status, runtime, solPtr]
             statsWasm = NDWasm.runtime.createBuffer(3, 'float64');
-            errorWasm = options.EstimateError ? NDWasm.runtime.createBuffer(xLen * dim, 'float64') : null;
+            errorWasm = options.estimateError ? NDWasm.runtime.createBuffer(xLen * dim, 'float64') : null;
 
             // 4. Execution
             NDWasm.runtime.exports.Pdepe_Solve_F64(
@@ -569,7 +571,7 @@ export const NDWasmOptimize = {
             
             if(errorWasm){
                 const errors = errorWasm.pull().reshape([xLen, dim]);
-                options.EstimateError=errors;
+                options.estimatedError=errors;
             }
 
             options.runtime_ms=runtimeMs;
