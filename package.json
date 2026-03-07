@@ -1,6 +1,6 @@
 {
   "name": "jsndarray",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A NumPy-like library for JavaScript, powered by WebAssembly.",
   "main": "dist/ndarray.cjs",
   "module": "dist/ndarray.mjs",
