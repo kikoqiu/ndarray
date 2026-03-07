@@ -1940,7 +1940,17 @@ export class NDArray {
     _binaryOp(other, opFn, isInplace = false) {
         // Unify scalars by wrapping them into a 1D/0D NDArray.
         // broadcastShapes will naturally assign a stride of 0 to broadcasted dimensions.
-        const b = (typeof other === 'number') ? array([other]) : other;
+        let b ;
+        if(typeof other === 'number') {
+            b = array([other]);
+        } else if(typeof other === 'object' && Array.isArray(other)) {
+            b = array(other);
+        } else if(other instanceof NDArray) {
+            b = other;
+        } else {
+            throw new Error(`Unsupported type for binary operation: ${typeof other}`);
+        }
+        
         const { outShape, strideA, strideB } = broadcastShapes(this, b);
         const result = isInplace ? this : zeros(outShape, this.dtype);
         
